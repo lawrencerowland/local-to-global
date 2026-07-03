@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Local to Global · Sheaf Models for PMO Coherence</title>
+<meta name="description" content="Local to Global Foray 001: an interactive sheaf-model demonstration for detecting scope incoherence across infrastructure work packages.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect x=%2718%27 y=%2718%27 width=%2728%27 height=%2728%27 fill=%27none%27 stroke=%27%23f5bc42%27 stroke-width=%278%27 transform=%27rotate(45 32 32)%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+
+  :root {
+    --bg: #0a0d0b;
+    --surface: #111814;
+    --surface2: #18231d;
+    --surface3: #223027;
+    --border: #31463d;
+    --amber: #f5bc42;
+    --amber-dim: #876224;
+    --cyan: #39c7b6;
+    --red: #ff6b57;
+    --green: #64d27a;
+    --violet: #9d86ff;
+    --rose: #f47aa3;
+    --text: #f3f0e7;
+    --muted: #9ca69d;
+    --mono: 'DM Mono', monospace;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'DM Sans', sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background: var(--bg); color: var(--text); font-family: var(--body); overflow-x:hidden; }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image: linear-gradient(rgba(49,70,61,0.18) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(49,70,61,0.18) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+  body::after {
+    content:''; position:fixed; inset:auto 0 0 0; height:48vh; z-index:0; pointer-events:none;
+    background: linear-gradient(180deg, rgba(10,13,11,0), rgba(10,13,11,0.78));
+  }
+  .container { max-width:1200px; margin:0 auto; padding:0 24px; position:relative; z-index:1; }
+  .skip-link { position:absolute; left:-999px; top:12px; background:var(--amber); color:#111814; padding:10px 14px; z-index:200; }
+  .skip-link:focus { left:12px; }
+
+  header { border-bottom:1px solid var(--border); padding:26px 0 28px; position:relative; overflow:hidden; }
+  header::after { content:''; position:absolute; bottom:0; left:0; right:0; height:1px; background:linear-gradient(90deg, transparent, var(--amber), transparent); }
+  .topbar { display:flex; align-items:center; justify-content:space-between; gap:18px; font-family:var(--mono); font-size:11px; letter-spacing:1.6px; text-transform:uppercase; color:var(--muted); margin-bottom:34px; }
+  .brand-mark { display:flex; align-items:center; gap:10px; color:var(--text); }
+  .brand-mark::before { content:''; width:12px; height:12px; border:2px solid var(--amber); transform:rotate(45deg); display:inline-block; }
+  .topbar .repo-note { color:var(--amber); }
+  .hero-grid { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(300px,0.65fr); gap:42px; align-items:end; }
+  .header-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(245,188,66,0.1); border:1px solid var(--amber-dim); padding:5px 12px; border-radius:2px; font-family:var(--mono); font-size:10px; color:var(--amber); letter-spacing:2px; text-transform:uppercase; margin-bottom:12px; }
+  .header-badge::before { content:'◆'; font-size:8px; }
+  h1 { font-family:var(--display); font-size:clamp(42px,6vw,82px); letter-spacing:0; line-height:0.96; max-width:850px; }
+  h1 span { color:var(--amber); }
+  .subtitle { color:var(--muted); font-size:16px; margin-top:16px; line-height:1.7; max-width:720px; }
+  .hero-actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+  .foray-panel { border:1px solid var(--border); background:rgba(17,24,20,0.82); padding:20px; border-radius:6px; box-shadow:0 20px 60px rgba(0,0,0,0.18); }
+  .foray-kicker { font-family:var(--mono); font-size:10px; letter-spacing:1.6px; color:var(--amber); text-transform:uppercase; margin-bottom:10px; }
+  .foray-panel h2 { font-family:var(--display); font-size:24px; letter-spacing:0; margin-bottom:10px; }
+  .foray-panel p { color:var(--muted); line-height:1.6; font-size:13px; }
+  .flow { display:grid; grid-template-columns:1fr; gap:8px; margin-top:16px; font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:1px; }
+  .flow-step { display:flex; justify-content:space-between; gap:12px; border:1px solid rgba(49,70,61,0.75); padding:10px 12px; }
+  .flow-step strong { color:var(--text); font-weight:500; }
+  .flow-step span { color:var(--muted); }
+  .foray-strip { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-top:28px; }
+  .foray-tile { border:1px solid var(--border); padding:12px; min-height:82px; background:rgba(17,24,20,0.52); }
+  .foray-tile.active { border-color:var(--amber); background:rgba(245,188,66,0.08); }
+  .foray-tile .num { font-family:var(--mono); font-size:10px; color:var(--amber); letter-spacing:1.4px; margin-bottom:8px; }
+  .foray-tile .name { font-size:13px; font-weight:600; line-height:1.35; }
+  .foray-tile .soon { color:var(--muted); font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:1px; }
+
+  .nav { display:flex; gap:0; border-bottom:1px solid var(--border); margin-bottom:0; overflow-x:auto; position:sticky; top:0; background:rgba(10,13,11,0.94); z-index:100; border-top:1px solid var(--border); backdrop-filter:blur(14px); }
+  .nav button { background:none; border:none; color:var(--muted); cursor:pointer; padding:14px 20px; font-family:var(--mono); font-size:11px; letter-spacing:1.5px; text-transform:uppercase; border-bottom:2px solid transparent; white-space:nowrap; transition:all 0.2s; }
+  .nav button:hover { color:var(--text); }
+  .nav button.active { color:var(--amber); border-bottom-color:var(--amber); }
+
+  .section { display:none; padding:32px 0 60px; }
+  .section.active { display:block; animation:fadeIn 0.3s ease; }
+  .card { background:rgba(17,24,20,0.94); border:1px solid var(--border); border-radius:6px; padding:24px; }
+  .card-label { font-family:var(--mono); font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--amber); margin-bottom:12px; }
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+  .section-title { font-family:var(--display); font-size:38px; letter-spacing:0; margin-bottom:6px; }
+  .section-desc { color:var(--muted); font-size:14px; line-height:1.6; margin-bottom:28px; max-width:760px; }
+
+  .wbs-container { display:flex; flex-direction:column; gap:12px; }
+  .wbs-pkg { border:1px solid var(--border); border-radius:4px; overflow:hidden; cursor:pointer; transition:border-color 0.2s, transform 0.2s; background:rgba(17,24,20,0.72); }
+  .wbs-pkg:hover { border-color:var(--amber-dim); transform:translateY(-1px); }
+  .wbs-pkg.expanded .wbs-header { border-bottom:1px solid var(--border); }
+  .wbs-header { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; background:var(--surface2); gap:14px; }
+  .wbs-name { font-weight:600; font-size:15px; }
+  .wbs-code { font-family:var(--mono); font-size:11px; color:var(--muted); }
+  .wbs-body { padding:16px 18px; display:none; }
+  .wbs-pkg.expanded .wbs-body { display:block; }
+  .scope-claim { display:flex; align-items:center; gap:10px; padding:8px 12px; margin:4px 0; border-radius:2px; font-size:13px; font-family:var(--mono); line-height:1.45; }
+  .scope-claim.ok { background:rgba(100,210,122,0.08); border-left:3px solid var(--green); }
+  .scope-claim.conflict { background:rgba(255,107,87,0.08); border-left:3px solid var(--red); animation:pulse-red 2s infinite; }
+  .scope-claim.hidden-conflict { background:rgba(245,188,66,0.08); border-left:3px solid var(--amber); }
+  @keyframes pulse-red { 0%,100%{opacity:1} 50%{opacity:0.65} }
+  .conflict-badge { display:inline-flex; align-items:center; gap:5px; background:rgba(255,107,87,0.15); border:1px solid var(--red); color:var(--red); padding:2px 8px; border-radius:2px; font-family:var(--mono); font-size:10px; letter-spacing:1px; }
+
+  #sheaf-canvas { width:100%; height:420px; display:block; cursor:pointer; }
+  .concept-box { border:1px solid var(--border); padding:20px; border-radius:4px; position:relative; overflow:hidden; background:rgba(17,24,20,0.62); }
+  .concept-box::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--amber); }
+  .concept-box h3 { font-family:var(--display); font-size:22px; letter-spacing:0; margin-bottom:8px; }
+  .concept-box p { font-size:13px; color:var(--muted); line-height:1.7; }
+  .math-block { background:var(--surface2); border:1px solid var(--border); padding:12px 16px; border-radius:2px; font-family:var(--mono); font-size:13px; color:var(--cyan); margin:12px 0; line-height:1.8; overflow-x:auto; }
+
+  .checker-grid { display:grid; grid-template-columns:280px 1fr; gap:20px; }
+  .pkg-list { display:flex; flex-direction:column; gap:8px; }
+  .pkg-item { padding:12px 14px; border:1px solid var(--border); border-radius:4px; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:space-between; background:rgba(17,24,20,0.72); gap:12px; }
+  .pkg-item:hover,.pkg-item.selected { border-color:var(--amber); background:rgba(245,188,66,0.06); }
+  .pkg-item .pkg-name { font-size:13px; font-weight:500; }
+  .pkg-item .pkg-status { width:8px; height:8px; border-radius:50%; flex:0 0 auto; }
+  .pkg-item .pkg-status.ok { background:var(--green); }
+  .pkg-item .pkg-status.warn { background:var(--amber); }
+  .pkg-item .pkg-status.err { background:var(--red); }
+  .checker-main { display:flex; flex-direction:column; gap:16px; min-width:0; }
+  .overlap-table { width:100%; border-collapse:collapse; font-size:13px; font-family:var(--mono); }
+  .overlap-table th { text-align:left; padding:10px 12px; border-bottom:1px solid var(--border); color:var(--muted); font-weight:400; font-size:11px; letter-spacing:1px; text-transform:uppercase; }
+  .overlap-table td { padding:10px 12px; border-bottom:1px solid rgba(49,70,61,0.55); vertical-align:top; }
+  .overlap-table tr:hover td { background:rgba(245,188,66,0.04); }
+  .status-pill { display:inline-block; padding:2px 8px; border-radius:2px; font-size:10px; letter-spacing:1px; text-transform:uppercase; }
+  .status-pill.coherent { background:rgba(100,210,122,0.15); color:var(--green); border:1px solid rgba(100,210,122,0.32); }
+  .status-pill.incoherent { background:rgba(255,107,87,0.15); color:var(--red); border:1px solid rgba(255,107,87,0.32); }
+  .status-pill.warn { background:rgba(245,188,66,0.15); color:var(--amber); border:1px solid rgba(245,188,66,0.32); }
+
+  .timeline { position:relative; padding-left:32px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:1px; background:var(--border); }
+  .timeline-item { position:relative; margin-bottom:28px; }
+  .timeline-item::before { content:''; position:absolute; left:-28px; top:6px; width:10px; height:10px; border-radius:50%; background:var(--surface); border:2px solid var(--border); }
+  .timeline-item.done::before { border-color:var(--green); background:rgba(100,210,122,0.2); }
+  .timeline-item.active::before { border-color:var(--amber); background:rgba(245,188,66,0.2); animation:pulse-amber 1.5s infinite; }
+  @keyframes pulse-amber { 0%,100%{box-shadow:0 0 0 0 rgba(245,188,66,0.4)} 50%{box-shadow:0 0 0 6px rgba(245,188,66,0)} }
+  .timeline-label { font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+  .timeline-title { font-weight:600; font-size:15px; margin-bottom:6px; }
+  .timeline-text { font-size:13px; color:var(--muted); line-height:1.6; }
+
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 20px; border:1px solid; border-radius:3px; cursor:pointer; font-family:var(--mono); font-size:12px; letter-spacing:1px; text-transform:uppercase; transition:all 0.2s; color:inherit; }
+  .btn-amber { border-color:var(--amber); color:var(--amber); background:rgba(245,188,66,0.05); }
+  .btn-amber:hover { background:rgba(245,188,66,0.15); }
+  .btn-cyan { border-color:var(--cyan); color:var(--cyan); background:rgba(57,199,182,0.05); }
+  .btn-cyan:hover { background:rgba(57,199,182,0.15); }
+  .btn-red { border-color:var(--red); color:var(--red); background:rgba(255,107,87,0.05); }
+  .btn-red:hover { background:rgba(255,107,87,0.14); }
+  .btn-green { border-color:var(--green); color:var(--green); background:rgba(100,210,122,0.05); }
+  .btn-green:hover { background:rgba(100,210,122,0.15); }
+  .controls { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+  .stat { text-align:center; padding:20px; }
+  .stat-val { font-family:var(--display); font-size:48px; letter-spacing:0; line-height:1; }
+  .stat-val.amber { color:var(--amber); }
+  .stat-val.red { color:var(--red); }
+  .stat-val.green { color:var(--green); }
+  .stat-label { font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-top:6px; line-height:1.45; }
+  #toast { position:fixed; bottom:24px; right:24px; z-index:999; background:var(--surface2); border:1px solid var(--amber); padding:14px 20px; border-radius:4px; font-family:var(--mono); font-size:13px; color:var(--amber); transform:translateY(80px); opacity:0; transition:all 0.3s; pointer-events:none; max-width:340px; }
+  #toast.show { transform:translateY(0); opacity:1; }
+  .tooltip-wrap { position:relative; display:inline-block; }
+  .tooltip-tip { display:none; position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%); background:var(--surface2); border:1px solid var(--border); padding:8px 12px; border-radius:2px; font-size:12px; white-space:nowrap; z-index:10; color:var(--text); font-family:var(--mono); }
+  .tooltip-wrap:hover .tooltip-tip { display:block; }
+  .progress-bar { height:4px; background:var(--surface2); border-radius:2px; overflow:hidden; margin:6px 0; }
+  .progress-fill { height:100%; border-radius:2px; transition:width 1s ease; }
+  .fill-green { background:var(--green); }
+  .fill-amber { background:var(--amber); }
+  .fill-red { background:var(--red); }
+  ::-webkit-scrollbar { width:6px; height:6px; }
+  ::-webkit-scrollbar-track { background:var(--bg); }
+  ::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+  .annotation { display:flex; gap:12px; padding:14px 16px; background:rgba(245,188,66,0.06); border-left:3px solid var(--amber); border-radius:0 3px 3px 0; font-size:13px; color:var(--text); line-height:1.6; }
+  .annotation .icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+  .info-row { display:flex; justify-content:space-between; gap:16px; padding:8px 0; border-bottom:1px solid rgba(49,70,61,0.55); font-size:13px; }
+  .info-row:last-child { border-bottom:none; }
+  .info-key { color:var(--muted); font-family:var(--mono); font-size:12px; }
+  .info-val { font-weight:500; text-align:right; }
+  canvas { border-radius:4px; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+
+  @media(max-width:900px){
+    .hero-grid { grid-template-columns:1fr; gap:26px; align-items:start; }
+    .foray-strip { grid-template-columns:1fr 1fr; }
+    .topbar { align-items:flex-start; flex-direction:column; }
+    .checker-grid { grid-template-columns:1fr; }
+  }
+  @media(max-width:768px){
+    .grid-2,.grid-3 { grid-template-columns:1fr; }
+    .overlap-table { display:block; overflow-x:auto; white-space:nowrap; }
+    .wbs-header { align-items:flex-start; }
+    .scope-claim { align-items:flex-start; flex-direction:column; }
+    .controls .btn { flex:1 1 240px; }
+  }
+  @media(max-width:560px){
+    .container { padding:0 16px; }
+    .foray-strip { grid-template-columns:1fr; }
+    h1 { font-size:clamp(36px,13vw,56px); }
+    .hero-actions .btn { width:100%; }
+    .section-title { font-size:30px; }
+    .stat-val { font-size:40px; }
+    #toast { left:16px; right:16px; bottom:16px; max-width:none; }
+  }
+
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#section-problem">Skip to first foray</a>
+<header>
+  <div class="container">
+    <div class="topbar">
+      <div class="brand-mark">Local to Global</div>
+      <div class="repo-note">Foray series · public working prototypes</div>
+    </div>
+    <div class="hero-grid">
+      <div>
+        <div class="header-badge">Foray 001 · Sheaf Theory Applied</div>
+        <h1>Scope <span>coherence</span><br>from local claims to global truth</h1>
+        <p class="subtitle">A first Local to Global artifact: an interactive worked example showing how local work-package scope registers can be tested, glued, or rejected as a coherent programme view.</p>
+        <div class="hero-actions">
+          <button class="btn btn-amber" onclick="jumpToSection('checker')">Open checker</button>
+          <button class="btn btn-cyan" onclick="jumpToSection('concept')">See the model</button>
+        </div>
+      </div>
+      <aside class="foray-panel" aria-label="Local to Global foray summary">
+        <div class="foray-kicker">Why this belongs here</div>
+        <h2>Local evidence, global consistency</h2>
+        <p>This series collects small demonstrations of a bigger move: using formal models, graphs, and working interfaces to turn scattered local observations into auditable global structure.</p>
+        <div class="flow">
+          <div class="flow-step"><strong>Local</strong><span>Work package claims</span></div>
+          <div class="flow-step"><strong>Interface</strong><span>Restriction maps</span></div>
+          <div class="flow-step"><strong>Global</strong><span>Coherent programme scope</span></div>
+        </div>
+      </aside>
+    </div>
+    <div class="foray-strip" id="forays" aria-label="Local to Global forays">
+      <div class="foray-tile active"><div class="num">001</div><div class="name">Sheaf models for PMO scope coherence</div></div>
+      <div class="foray-tile"><div class="num">002</div><div class="soon">Reserved</div><div class="name">Next local-to-global prototype</div></div>
+      <div class="foray-tile"><div class="num">003</div><div class="soon">Reserved</div><div class="name">Evidence graph or live corpus view</div></div>
+      <div class="foray-tile"><div class="num">004+</div><div class="soon">Open</div><div class="name">A growing public workbench</div></div>
+    </div>
+  </div>
+</header>
+
+<nav class="nav" id="main-nav" aria-label="Foray sections">
+  <div class="container" style="display:flex">
+    <button class="active" data-section="problem" onclick="showSection('problem', this)">01 · Problem</button>
+    <button data-section="concept" onclick="showSection('concept', this)">02 · Sheaf Model</button>
+    <button data-section="checker" onclick="showSection('checker', this)">03 · Checker</button>
+    <button data-section="resolution" onclick="showSection('resolution', this)">04 · Resolution</button>
+    <button data-section="value" onclick="showSection('value', this)">05 · PMO Value</button>
+  </div>
+</nav>
+
+
+<!-- ============================================================
+     SECTION 1: THE PROBLEM
+============================================================ -->
+<section class="section active" id="section-problem">
+  <div class="container">
+    <div class="section-title">THE HIDDEN CONTRADICTION</div>
+    <p class="section-desc">
+      The Pennine Viaduct Renewal Programme has four major work packages. Each package maintains its own scope register. 
+      Explore each package — then run the conflict detector to see what lurks in the overlaps.
+    </p>
+
+    <div class="grid-3" style="margin-bottom:20px">
+      <div class="card stat"><div class="stat-val amber">4</div><div class="stat-label">Work Packages</div></div>
+      <div class="card stat"><div id="conflict-count" class="stat-val red">?</div><div class="stat-label">Scope Conflicts</div></div>
+      <div class="card stat"><div id="risk-val" class="stat-val amber">?</div><div class="stat-label">Est. Cost at Risk</div></div>
+    </div>
+
+    <div class="controls">
+      <button class="btn btn-amber" onclick="expandAll()">▼ Expand All Packages</button>
+      <button class="btn btn-red" onclick="runConflictDetect()" id="detect-btn">⚡ Run Conflict Detector</button>
+    </div>
+
+    <div class="wbs-container" id="wbs-list">
+      <!-- Populated by JS -->
+    </div>
+
+    <div id="conflict-banner" style="display:none; margin-top:20px">
+      <div class="annotation">
+        <span class="icon">⚠️</span>
+        <div>
+          <strong>Sheaf Incoherence Detected.</strong> The WBS contains overlapping scope claims with contradictory values across package boundaries. Without a sheaf consistency model, these contradictions remain invisible until cost commitment — typically at contract award or construction start.
+          <br><br>Click <strong>02 · Sheaf Concept</strong> to understand the mathematical framework that catches these automatically.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 2: SHEAF CONCEPT
+============================================================ -->
+<section class="section" id="section-concept">
+  <div class="container">
+    <div class="section-title">WHAT IS A SHEAF MODEL?</div>
+    <p class="section-desc">
+      A sheaf provides a rigorous mathematical way to combine <em>local</em> data (each work package's view of scope) 
+      into a consistent <em>global</em> picture — or prove that no consistent picture exists.
+    </p>
+
+    <div class="grid-2" style="margin-bottom:20px">
+      <div class="concept-box">
+        <h3>The Project Graph</h3>
+        <p>Model the programme as a directed graph. Each node is a work package. Each edge represents an <strong>interface</strong> — shared physical space, shared deliverables, or shared resource claims between packages.</p>
+        <div class="math-block">
+          G = (V, E)<br>
+          V = {WP1, WP2, WP3, WP4}<br>
+          E = {(WP1,WP2), (WP1,WP3), (WP2,WP4), ...}
+        </div>
+        <p>Interfaces are where contradictions live. Most programmes have no formal model of interfaces.</p>
+      </div>
+      <div class="concept-box">
+        <h3>Local Sections</h3>
+        <p>Each work package carries <strong>local data</strong>: its own view of scope items, quantities, cost, and responsibility. This is the "local section" over that node.</p>
+        <div class="math-block">
+          F(WP2) = {deck_concrete: 2400m³,<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bearings: "WP2 supply",<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;drainage: "WP2 install"}
+        </div>
+        <p>Local sections are what each work package <em>believes to be true</em> about the overlapping zone.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-label">The Sheaf Consistency Condition — click nodes to explore</div>
+      <canvas id="sheaf-canvas"></canvas>
+      <div id="canvas-info" class="annotation" style="margin-top:14px">
+        <span class="icon">👆</span>
+        <div>Click any node or edge on the diagram above to explore the sheaf structure. Nodes represent work packages; edges represent interfaces where consistency must hold.</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="concept-box">
+        <h3>The Restriction Map</h3>
+        <p>For each edge (interface), a <strong>restriction map</strong> projects each work package's local data down to the shared interface zone.</p>
+        <div class="math-block">
+          ρ<sub>WP1→WP1∩WP2</sub> : F(WP1) → F(WP1∩WP2)<br>
+          ρ<sub>WP2→WP1∩WP2</sub> : F(WP2) → F(WP1∩WP2)
+        </div>
+        <p>The sheaf condition requires that both restriction maps produce the <em>same value</em> on the interface. If not → incoherence.</p>
+      </div>
+      <div class="concept-box">
+        <h3>Gluing: Building Global Scope</h3>
+        <p>If all local sections are mutually consistent on every interface, the sheaf can be <strong>glued</strong> into a unique global section — the authoritative programme scope.</p>
+        <div class="math-block">
+          ∃! global s ∈ F(G) such that<br>
+          ρ<sub>V→e</sub>(s) = s<sub>e</sub> ∀ edges e
+        </div>
+        <p>If gluing fails, the programme has no coherent scope. The conflict must be resolved before cost commitment.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 3: LIVE CHECKER
+============================================================ -->
+<section class="section" id="section-checker">
+  <div class="container">
+    <div class="section-title">SHEAF CONSISTENCY CHECKER</div>
+    <p class="section-desc">
+      Select a work package to inspect its interfaces. The checker applies restriction maps and tests coherence across every overlap. 
+      Green = consistent. Amber = ambiguous. Red = incoherent — scope must be resolved before contract award.
+    </p>
+
+    <div class="checker-grid">
+      <div>
+        <div class="card-label">Work Packages</div>
+        <div class="pkg-list" id="pkg-list">
+          <!-- Populated by JS -->
+        </div>
+        <div style="margin-top:16px">
+          <div class="card-label">Programme Stats</div>
+          <div class="card" style="padding:16px">
+            <div class="info-row"><span class="info-key">Total Interfaces</span><span class="info-val" id="stat-interfaces">6</span></div>
+            <div class="info-row"><span class="info-key">Coherent</span><span class="info-val" style="color:var(--green)" id="stat-ok">0</span></div>
+            <div class="info-row"><span class="info-key">Incoherent</span><span class="info-val" style="color:var(--red)" id="stat-bad">0</span></div>
+            <div class="info-row"><span class="info-key">Ambiguous</span><span class="info-val" style="color:var(--amber)" id="stat-warn">0</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="checker-main">
+        <div class="card" id="checker-detail">
+          <div class="card-label">Select a work package →</div>
+          <p style="color:var(--muted); font-size:13px">Choose a work package from the list to inspect its interfaces and consistency status.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 4: RESOLUTION
+============================================================ -->
+<section class="section" id="section-resolution">
+  <div class="container">
+    <div class="section-title">RESOLVING INCOHERENCE</div>
+    <p class="section-desc">
+      When sheaf incoherence is detected, it triggers a structured resolution workflow. 
+      This is <em>before</em> cost commitment — saving both time and budget.
+    </p>
+
+    <div class="grid-2" style="margin-bottom:20px">
+      <div class="card">
+        <div class="card-label">Conflict: Deck Drainage Ownership</div>
+        <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px">
+          <div class="scope-claim conflict">WP1 (Civils): drainage installation = £420k "in scope"</div>
+          <div style="text-align:center;color:var(--muted);font-family:var(--mono);font-size:12px">≠ INCOHERENT</div>
+          <div class="scope-claim conflict">WP2 (M&E): drainage installation = £380k "in scope"</div>
+        </div>
+        <div class="annotation">
+          <span class="icon">💷</span>
+          <div>Both packages have priced drainage installation. <strong>Potential double-count: £380–420k.</strong> If undetected, this represents either double payment or a gap when neither team actually delivers.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Resolution Protocol</div>
+        <div class="timeline">
+          <div class="timeline-item done">
+            <div class="timeline-label">Step 01 · Detected</div>
+            <div class="timeline-title">Sheaf Incoherence Flagged</div>
+            <div class="timeline-text">Automated checker identifies restriction map mismatch on WP1 ∩ WP2 interface.</div>
+          </div>
+          <div class="timeline-item active" id="res-step2">
+            <div class="timeline-label">Step 02 · In Progress</div>
+            <div class="timeline-title">Interface Meeting Called</div>
+            <div class="timeline-text">Package leads for WP1 and WP2 convened within 48hrs of flag. Design authority chairs.</div>
+          </div>
+          <div class="timeline-item" id="res-step3">
+            <div class="timeline-label">Step 03 · Pending</div>
+            <div class="timeline-title">Canonical Section Assigned</div>
+            <div class="timeline-text">Single responsible party assigned. WBS updated. Restriction maps re-run to verify coherence.</div>
+          </div>
+          <div class="timeline-item" id="res-step4">
+            <div class="timeline-label">Step 04 · Pending</div>
+            <div class="timeline-title">Global Gluing Re-attempted</div>
+            <div class="timeline-text">Full programme sheaf re-checked. If all interfaces coherent, global scope section is certified.</div>
+          </div>
+        </div>
+        <div style="margin-top:16px; display:flex; gap:10px">
+          <button class="btn btn-green" onclick="advanceResolution()">▶ Advance Resolution</button>
+          <button class="btn btn-amber" onclick="resetResolution()">↺ Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Before vs After: Sheaf Model Impact</div>
+      <div class="grid-2" style="margin-top:12px">
+        <div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--red);letter-spacing:1px;margin-bottom:10px">WITHOUT SHEAF MODEL</div>
+          <div class="info-row"><span class="info-key">Conflict detection point</span><span class="info-val" style="color:var(--red)">Contract award / construction</span></div>
+          <div class="info-row"><span class="info-key">Cost to resolve</span><span class="info-val" style="color:var(--red)">£2–8M variation order</span></div>
+          <div class="info-row"><span class="info-key">Programme delay</span><span class="info-val" style="color:var(--red)">8–16 weeks</span></div>
+          <div class="info-row"><span class="info-key">Accountability</span><span class="info-val" style="color:var(--red)">Disputed, litigated</span></div>
+          <div class="progress-bar"><div class="progress-fill fill-red" style="width:85%"></div></div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--green);letter-spacing:1px;margin-bottom:10px">WITH SHEAF MODEL</div>
+          <div class="info-row"><span class="info-key">Conflict detection point</span><span class="info-val" style="color:var(--green)">Pre-RIBA Stage 3 design</span></div>
+          <div class="info-row"><span class="info-key">Cost to resolve</span><span class="info-val" style="color:var(--green)">Design change, £0 contract impact</span></div>
+          <div class="info-row"><span class="info-key">Programme delay</span><span class="info-val" style="color:var(--green)">0 weeks</span></div>
+          <div class="info-row"><span class="info-key">Accountability</span><span class="info-val" style="color:var(--green)">Clear, auditable, resolved</span></div>
+          <div class="progress-bar"><div class="progress-fill fill-green" style="width:18%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 5: PMO VALUE
+============================================================ -->
+<section class="section" id="section-value">
+  <div class="container">
+    <div class="section-title">PMO VALUE PROPOSITION</div>
+    <p class="section-desc">
+      The sheaf model approach transforms the PMO from a reporting function into a <em>mathematical consistency engine</em> — 
+      detecting incoherence in scope before it becomes cost.
+    </p>
+
+    <div class="grid-3" style="margin-bottom:24px">
+      <div class="card stat">
+        <div class="stat-val green">£3.2M</div>
+        <div class="stat-label">Avg Conflict Cost Avoided<br>per Programme</div>
+      </div>
+      <div class="card stat">
+        <div class="stat-val amber">94%</div>
+        <div class="stat-label">Conflicts Detectable<br>Pre-Contract</div>
+      </div>
+      <div class="card stat">
+        <div class="stat-val green">12wk</div>
+        <div class="stat-label">Typical Programme<br>Delay Avoided</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-label">Application Roadmap for Movar</div>
+      <div class="grid-2" style="margin-top:12px">
+        <div class="timeline" style="padding-top:8px">
+          <div class="timeline-item done">
+            <div class="timeline-label">Phase 01 · Now</div>
+            <div class="timeline-title">Concept & Toy Example</div>
+            <div class="timeline-text">Demonstrate sheaf consistency checking on worked Pennine Viaduct scenario. Leadership alignment.</div>
+          </div>
+          <div class="timeline-item active">
+            <div class="timeline-label">Phase 02 · Q2 2026</div>
+            <div class="timeline-title">Prototype on Live PMO Data</div>
+            <div class="timeline-text">Extract WBS and interface register from one live programme. Build graph model. Run first automated consistency check.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-label">Phase 03 · Q4 2026</div>
+            <div class="timeline-title">PMO Integration</div>
+            <div class="timeline-text">Embed sheaf checker into stage gate process. Coherence certificate required before RIBA Stage 4 sign-off.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-label">Phase 04 · 2027+</div>
+            <div class="timeline-title">Sector Standard</div>
+            <div class="timeline-text">Open methodology published. Applicable across UK infrastructure portfolio — transport, energy, water, nuclear.</div>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div class="concept-box">
+            <h3>Why This Works for UK Infra</h3>
+            <p>UK public sector projects typically have 6–12 major work packages with complex interfaces. NEC contract structures create hard boundaries between packages — making scope conflicts expensive once committed. Sheaf models provide a <em>pre-commitment</em> mechanism that fits perfectly into IPA stage gate reviews.</p>
+          </div>
+          <div class="concept-box">
+            <h3>The Digital PMO Angle</h3>
+            <p>BIM models already capture spatial data per package. The sheaf graph can be derived from federated BIM clash detection reports — turning a manual spatial process into an automated scope coherence engine running on existing data.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <span class="icon">🎯</span>
+      <div>
+        <strong>Proposed next step for Movar:</strong> Identify one live programme with a complex WBS and interface register (4+ packages, 6+ interfaces). 
+        Run a retrospective sheaf analysis using historical scope data to validate the detection capability before forward-looking deployment. 
+        Target: demonstrate ≥2 conflict detections that caused actual cost/programme impact.
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="toast">⚡ Conflict detected in restriction map</div>
+
+<script>
+// ============================================================
+// DATA MODEL
+// ============================================================
+const packages = [
+  {
+    id:'WP1', code:'WP-CIV-001', name:'Civil & Structural Works',
+    color:'#f5bc42', lead:'Laing O\'Rourke', value:'£48M',
+    scope:[
+      {id:'c1', text:'Viaduct pier reconstruction (spans 1-8)', status:'ok'},
+      {id:'c2', text:'Deck concrete — full deck slab pour 2400m³', status:'ok'},
+      {id:'c3', text:'Drainage installation on deck level', status:'conflict', note:'Also claimed by WP2 at £380k'},
+      {id:'c4', text:'Temporary works design & execution', status:'ok'},
+      {id:'c5', text:'Waterproofing membrane to deck', status:'hidden-conflict', note:'WP3 claims responsibility for membrane inspection'},
+    ]
+  },
+  {
+    id:'WP2', code:'WP-MEP-002', name:'Mechanical & Electrical Systems',
+    color:'#39c7b6', lead:'Amey', value:'£22M',
+    scope:[
+      {id:'m1', text:'Bridge management system hardware install', status:'ok'},
+      {id:'m2', text:'Deck drainage installation & outfall connections', status:'conflict', note:'Also claimed by WP1 at £420k'},
+      {id:'m3', text:'Lighting column installation (48nr)', status:'ok'},
+      {id:'m4', text:'Cable containment — primary routes', status:'hidden-conflict', note:'WP4 plans to use same containment routes for telecoms'},
+    ]
+  },
+  {
+    id:'WP3', code:'WP-SFT-003', name:'Safety & Environmental Compliance',
+    color:'#9d86ff', lead:'WSP', value:'£8M',
+    scope:[
+      {id:'s1', text:'Safety barrier installation to parapet', status:'ok'},
+      {id:'s2', text:'Membrane inspection & sign-off (pre-surfacing)', status:'hidden-conflict', note:'WP1 has not included hold-point in their programme'},
+      {id:'s3', text:'Environmental monitoring during construction', status:'ok'},
+      {id:'s4', text:'CDM Principal Designer coordination', status:'ok'},
+    ]
+  },
+  {
+    id:'WP4', code:'WP-DIG-004', name:'Digital & Connectivity Infrastructure',
+    color:'#f47aa3', lead:'Telent', value:'£6M',
+    scope:[
+      {id:'d1', text:'Fibre network — primary backbone installation', status:'ok'},
+      {id:'d2', text:'Cable containment via WP2 primary routes', status:'hidden-conflict', note:'WP2 has not sized containment for telecoms cables'},
+      {id:'d3', text:'Traffic monitoring sensors (12nr locations)', status:'ok'},
+      {id:'d4', text:'CCTV installation at pier positions', status:'ok'},
+    ]
+  }
+];
+
+const interfaces = [
+  { id:'I1', a:'WP1', b:'WP2', topic:'Deck Drainage', status:'incoherent',
+    details:'WP1 prices drainage installation at £420k. WP2 prices same work at £380k. Both in scope. Restriction map: ρ(WP1→I1) ≠ ρ(WP2→I1). Incoherent.',
+    risk:'£380–420k double-count or gap' },
+  { id:'I2', a:'WP1', b:'WP3', topic:'Waterproof Membrane Hold-Point', status:'warn',
+    details:'WP3 requires hold-point inspection before WP1 proceeds to surfacing. WP1 programme has no hold-point. Ambiguous — may cause unplanned stop.',
+    risk:'2–4 week programme delay' },
+  { id:'I3', a:'WP2', b:'WP4', topic:'Cable Containment Sizing', status:'incoherent',
+    details:'WP2 specifies 150mm containment. WP4 requires minimum 200mm for telecoms backbone. Restriction map mismatch on containment spec. Incoherent.',
+    risk:'£85k re-work + 3 week delay' },
+  { id:'I4', a:'WP1', b:'WP4', topic:'Sensor Fixing to Piers', status:'coherent',
+    details:'WP1 has included fixings schedule for sensor mounting. WP4 confirms positions match. Local sections consistent on this interface.',
+    risk:'None identified' },
+  { id:'I5', a:'WP2', b:'WP3', topic:'M&E Safety Sign-off', status:'coherent',
+    details:'WP2 and WP3 have aligned on IEC 61439 verification. Restriction maps agree on inspection protocol.',
+    risk:'None identified' },
+  { id:'I6', a:'WP3', b:'WP4', topic:'Environmental Sensor Network', status:'warn',
+    details:'WP3 environmental monitoring and WP4 sensor network use overlapping positions. Currently managed by email coordination only — not formally modelled.',
+    risk:'Coordination risk — not yet quantified' },
+];
+
+// ============================================================
+// SECTION 1: WBS BUILDER
+// ============================================================
+function buildWBS() {
+  const container = document.getElementById('wbs-list');
+  container.innerHTML = '';
+  packages.forEach(pkg => {
+    const div = document.createElement('div');
+    div.className = 'wbs-pkg';
+    div.id = 'wbs-' + pkg.id;
+    div.innerHTML = `
+      <div class="wbs-header" onclick="togglePkg('${pkg.id}')">
+        <div>
+          <div class="wbs-name" style="color:${pkg.color}">${pkg.name}</div>
+          <div class="wbs-code">${pkg.code} · ${pkg.lead} · ${pkg.value}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="conflict-badge" id="badge-${pkg.id}" style="display:none">⚠ CONFLICTS HIDDEN</div>
+          <div style="color:var(--muted);font-size:18px" id="arrow-${pkg.id}">›</div>
+        </div>
+      </div>
+      <div class="wbs-body">
+        ${pkg.scope.map(s => `
+          <div class="scope-claim ok" id="claim-${s.id}" data-status="${s.status}">
+            <span style="flex:1">${s.text}</span>
+            <span id="note-${s.id}"></span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function togglePkg(id) {
+  const el = document.getElementById('wbs-' + id);
+  el.classList.toggle('expanded');
+  const arrow = document.getElementById('arrow-' + id);
+  arrow.textContent = el.classList.contains('expanded') ? '⌄' : '›';
+}
+
+function expandAll() {
+  packages.forEach(p => {
+    const el = document.getElementById('wbs-' + p.id);
+    el.classList.add('expanded');
+    document.getElementById('arrow-' + p.id).textContent = '⌄';
+  });
+}
+
+let conflictsRevealed = false;
+function runConflictDetect() {
+  if (conflictsRevealed) return;
+  conflictsRevealed = true;
+  expandAll();
+  
+  let count = 0;
+  packages.forEach(pkg => {
+    let hasPkg = false;
+    pkg.scope.forEach(s => {
+      if (s.status !== 'ok') {
+        const el = document.getElementById('claim-' + s.id);
+        const note = document.getElementById('note-' + s.id);
+        setTimeout(() => {
+          el.className = 'scope-claim ' + s.status;
+          if (s.note) note.innerHTML = `<span class="conflict-badge">⚠ ${s.note}</span>`;
+          showToast('⚠ Conflict: ' + s.text.substring(0,40) + '...');
+        }, count * 600);
+        hasPkg = true;
+        count++;
+      }
+    });
+    if (hasPkg) {
+      setTimeout(() => {
+        document.getElementById('badge-' + pkg.id).style.display = 'inline-flex';
+        document.getElementById('badge-' + pkg.id).textContent = '⚠ CONFLICTS FOUND';
+      }, 100);
+    }
+  });
+
+  setTimeout(() => {
+    document.getElementById('conflict-count').textContent = '5';
+    document.getElementById('risk-val').textContent = '£1.2M';
+    document.getElementById('conflict-banner').style.display = 'block';
+    document.getElementById('detect-btn').className = 'btn btn-red';
+    document.getElementById('detect-btn').textContent = '✓ Analysis Complete';
+  }, count * 600 + 400);
+}
+
+// ============================================================
+// SECTION 2: SHEAF CANVAS
+// ============================================================
+function drawSheafCanvas() {
+  const canvas = document.getElementById('sheaf-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth;
+  canvas.width = W;
+  canvas.height = 420;
+  const H = 420;
+
+  // Node positions
+  const nodes = {
+    WP1: { x: W*0.25, y: H*0.28, label: 'WP1\nCIVILS', color: '#f5bc42' },
+    WP2: { x: W*0.65, y: H*0.28, label: 'WP2\nM&E', color: '#39c7b6' },
+    WP3: { x: W*0.25, y: H*0.72, label: 'WP3\nSAFETY', color: '#9d86ff' },
+    WP4: { x: W*0.65, y: H*0.72, label: 'WP4\nDIGITAL', color: '#f47aa3' },
+  };
+
+  const edges = [
+    {a:'WP1',b:'WP2',status:'incoherent',label:'Drainage'},
+    {a:'WP1',b:'WP3',status:'warn',label:'Membrane'},
+    {a:'WP2',b:'WP4',status:'incoherent',label:'Containment'},
+    {a:'WP1',b:'WP4',status:'coherent',label:'Sensors'},
+    {a:'WP2',b:'WP3',status:'coherent',label:'Safety'},
+    {a:'WP3',b:'WP4',status:'warn',label:'Env. Net'},
+  ];
+
+  const statusColor = { incoherent:'#ff6b57', coherent:'#64d27a', warn:'#f5bc42' };
+
+  ctx.clearRect(0,0,W,H);
+
+  // Draw edges
+  edges.forEach(e => {
+    const a = nodes[e.a], b = nodes[e.b];
+    const mx = (a.x+b.x)/2, my = (a.y+b.y)/2;
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(b.x, b.y);
+    ctx.strokeStyle = statusColor[e.status];
+    ctx.lineWidth = e.status === 'incoherent' ? 2.5 : 1.5;
+    ctx.setLineDash(e.status === 'coherent' ? [] : [6,4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Edge midpoint label
+    ctx.fillStyle = statusColor[e.status];
+    ctx.font = '600 11px DM Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    // Background
+    const tw = ctx.measureText(e.label).width;
+    ctx.fillStyle = '#0a0d0b';
+    ctx.fillRect(mx - tw/2 - 5, my - 9, tw + 10, 18);
+    ctx.fillStyle = statusColor[e.status];
+    ctx.fillText(e.label, mx, my);
+  });
+
+  // Draw nodes
+  Object.entries(nodes).forEach(([id, n]) => {
+    const r = 40;
+    // Glow
+    const grd = ctx.createRadialGradient(n.x,n.y,r*0.5,n.x,n.y,r*1.4);
+    grd.addColorStop(0, n.color + '22');
+    grd.addColorStop(1, 'transparent');
+    ctx.fillStyle = grd;
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, r*1.4, 0, Math.PI*2);
+    ctx.fill();
+
+    // Circle
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, r, 0, Math.PI*2);
+    ctx.fillStyle = '#111814';
+    ctx.fill();
+    ctx.strokeStyle = n.color;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Label
+    const lines = n.label.split('\n');
+    ctx.fillStyle = n.color;
+    ctx.font = '700 13px Bebas Neue, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(lines[0], n.x, n.y - 7);
+    ctx.font = '400 10px DM Mono, monospace';
+    ctx.fillStyle = '#9ca69d';
+    ctx.fillText(lines[1], n.x, n.y + 9);
+  });
+
+  // Legend
+  const items = [{c:'#64d27a',l:'Coherent'},{c:'#f5bc42',l:'Ambiguous'},{c:'#ff6b57',l:'Incoherent'}];
+  let lx = 16;
+  items.forEach(it => {
+    ctx.fillStyle = it.c;
+    ctx.fillRect(lx, H - 26, 10, 10);
+    ctx.fillStyle = '#9ca69d';
+    ctx.font = '11px DM Mono, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText(it.l, lx + 14, H - 19);
+    lx += 100;
+  });
+
+  // Store for click
+  canvas._nodes = nodes;
+  canvas._edges = edges;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const canvas = document.getElementById('sheaf-canvas');
+  if (canvas) {
+    setTimeout(drawSheafCanvas, 100);
+    canvas.addEventListener('click', e => {
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      const cx = mx * scaleX, cy = my * scaleY;
+
+      if (!canvas._nodes) return;
+      
+      // Check nodes
+      let hit = null;
+      Object.entries(canvas._nodes).forEach(([id, n]) => {
+        const d = Math.sqrt((cx-n.x)**2 + (cy-n.y)**2);
+        if (d < 44) hit = {type:'node', id};
+      });
+
+      // Check edge midpoints
+      if (!hit && canvas._edges) {
+        canvas._edges.forEach(ed => {
+          const a = canvas._nodes[ed.a], b = canvas._nodes[ed.b];
+          const emx = (a.x+b.x)/2, emy = (a.y+b.y)/2;
+          if (Math.sqrt((cx-emx)**2+(cy-emy)**2) < 28) hit = {type:'edge', edge:ed};
+        });
+      }
+
+      const info = document.getElementById('canvas-info');
+      if (hit && hit.type === 'node') {
+        const pkg = packages.find(p => p.id === hit.id);
+        info.innerHTML = `<span class="icon">📦</span><div><strong>${pkg.name}</strong> (${hit.id})<br>Lead: ${pkg.lead} · Value: ${pkg.value}<br>Scope items: ${pkg.scope.length} · Conflicts in scope: ${pkg.scope.filter(s=>s.status!=='ok').length}</div>`;
+      } else if (hit && hit.type === 'edge') {
+        const iface = interfaces.find(i => (i.a===hit.edge.a && i.b===hit.edge.b));
+        const col = {incoherent:'var(--red)',coherent:'var(--green)',warn:'var(--amber)'}[hit.edge.status];
+        info.innerHTML = `<span class="icon">🔗</span><div><strong>Interface: ${hit.edge.a} ∩ ${hit.edge.b} — ${hit.edge.label}</strong><br><span style="color:${col}">${hit.edge.status.toUpperCase()}</span><br><br>${iface ? iface.details + '<br><em>Risk: ' + iface.risk + '</em>' : ''}</div>`;
+      }
+    });
+  }
+});
+
+window.addEventListener('resize', drawSheafCanvas);
+
+// ============================================================
+// SECTION 3: CHECKER
+// ============================================================
+function buildChecker() {
+  const list = document.getElementById('pkg-list');
+  list.innerHTML = '';
+  let okC=0, badC=0, warnC=0;
+  interfaces.forEach(i => {
+    if(i.status==='coherent') okC++;
+    else if(i.status==='incoherent') badC++;
+    else warnC++;
+  });
+  document.getElementById('stat-ok').textContent = okC;
+  document.getElementById('stat-bad').textContent = badC;
+  document.getElementById('stat-warn').textContent = warnC;
+
+  packages.forEach(pkg => {
+    const myInterfaces = interfaces.filter(i => i.a===pkg.id || i.b===pkg.id);
+    const hasErr = myInterfaces.some(i=>i.status==='incoherent');
+    const hasWarn = myInterfaces.some(i=>i.status==='warn');
+    const statusCls = hasErr ? 'err' : hasWarn ? 'warn' : 'ok';
+
+    const div = document.createElement('div');
+    div.className = 'pkg-item';
+    div.innerHTML = `
+      <div>
+        <div class="pkg-name" style="color:${pkg.color}">${pkg.name}</div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--muted)">${pkg.code}</div>
+      </div>
+      <div class="pkg-status ${statusCls}"></div>
+    `;
+    div.onclick = () => selectPackage(pkg.id, div);
+    list.appendChild(div);
+  });
+}
+
+function selectPackage(pkgId, el) {
+  document.querySelectorAll('.pkg-item').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+
+  const pkg = packages.find(p=>p.id===pkgId);
+  const myInterfaces = interfaces.filter(i=>i.a===pkgId||i.b===pkgId);
+  const detail = document.getElementById('checker-detail');
+
+  detail.innerHTML = `
+    <div class="card-label">${pkg.name} — Interface Analysis</div>
+    <div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap">
+      <div><span class="info-key" style="font-family:var(--mono);font-size:11px;color:var(--muted)">Lead: </span><strong>${pkg.lead}</strong></div>
+      <div><span class="info-key" style="font-family:var(--mono);font-size:11px;color:var(--muted)">Value: </span><strong>${pkg.value}</strong></div>
+      <div><span class="info-key" style="font-family:var(--mono);font-size:11px;color:var(--muted)">Interfaces: </span><strong>${myInterfaces.length}</strong></div>
+    </div>
+    <table class="overlap-table">
+      <thead>
+        <tr>
+          <th>Interface</th>
+          <th>Other Package</th>
+          <th>Topic</th>
+          <th>Sheaf Status</th>
+          <th>Risk</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${myInterfaces.map(i => {
+          const other = i.a===pkgId ? i.b : i.a;
+          const otherPkg = packages.find(p=>p.id===other);
+          return `
+          <tr style="cursor:pointer" onclick="showInterfaceDetail('${i.id}')">
+            <td><span style="font-family:var(--mono);color:var(--muted)">${i.id}</span></td>
+            <td><span style="color:${otherPkg.color}">${other}</span> <span style="color:var(--muted);font-size:11px">${otherPkg.name}</span></td>
+            <td>${i.topic}</td>
+            <td><span class="status-pill ${i.status === 'incoherent' ? 'incoherent' : i.status === 'coherent' ? 'coherent' : 'warn'}">${i.status}</span></td>
+            <td style="color:var(--muted);font-size:12px">${i.risk}</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+    <div id="iface-detail" style="margin-top:14px"></div>
+    <div style="margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--muted)">↑ Click a row to see restriction map detail</div>
+  `;
+}
+
+function showInterfaceDetail(id) {
+  const i = interfaces.find(x=>x.id===id);
+  const col = {incoherent:'var(--red)',coherent:'var(--green)',warn:'var(--amber)'}[i.status];
+  document.getElementById('iface-detail').innerHTML = `
+    <div class="annotation" style="border-left-color:${col}">
+      <span class="icon">${i.status==='incoherent'?'❌':i.status==='coherent'?'✅':'⚠️'}</span>
+      <div>
+        <strong>Restriction Map Analysis — ${i.id}: ${i.topic}</strong><br>
+        ${i.details}<br><br>
+        <strong>Risk Quantification:</strong> ${i.risk}
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+// SECTION 4: RESOLUTION
+// ============================================================
+let resStep = 2;
+function advanceResolution() {
+  resStep++;
+  if (resStep > 4) { resStep = 4; return; }
+  const el = document.getElementById('res-step' + resStep);
+  if (el) {
+    el.className = 'timeline-item active';
+    const prev = document.getElementById('res-step' + (resStep-1));
+    if (prev) prev.className = 'timeline-item done';
+  }
+  if (resStep === 4) {
+    showToast('✓ Sheaf coherence restored — global scope section certified');
+  }
+}
+
+function resetResolution() {
+  resStep = 2;
+  [2,3,4].forEach(n => {
+    const el = document.getElementById('res-step'+n);
+    if(el) el.className = n===2 ? 'timeline-item active' : 'timeline-item';
+    const lbl = el ? el.querySelector('.timeline-label') : null;
+    if(lbl && n>2) lbl.textContent = 'Step 0'+n+' · Pending';
+  });
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function jumpToSection(name) {
+  const btn = document.querySelector(`[data-section="${name}"]`);
+  showSection(name, btn);
+  const nav = document.getElementById('main-nav');
+  if (nav) nav.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showSection(name, btn) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  const section = document.getElementById('section-'+name);
+  if (section) section.classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'concept') setTimeout(drawSheafCanvas, 50);
+  if (name === 'checker') buildChecker();
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+let toastTimer;
+function showToast(msg) {
+  clearTimeout(toastTimer);
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+buildWBS();
+</script>
+</body>
+</html>
