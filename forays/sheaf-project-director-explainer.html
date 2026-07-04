@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sheaf Models for Scope Coherence</title>
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --bg-soft: #e2e8f0;
+      --panel: #ffffff;
+      --panel-soft: #f8fafc;
+      --text: #0f172a;
+      --muted: #475569;
+      --line: #d9e2ec;
+      --accent: #0ea5e9;
+      --accent-dark: #0369a1;
+      --good: #16a34a;
+      --good-soft: #dcfce7;
+      --warn: #d97706;
+      --warn-soft: #ffedd5;
+      --bad: #dc2626;
+      --bad-soft: #fee2e2;
+      --shadow: 0 18px 44px rgba(15, 23, 42, 0.10);
+      --radius: 20px;
+      --radius-sm: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 0%, rgba(14,165,233,0.20), transparent 32%),
+        radial-gradient(circle at 85% 10%, rgba(2,132,199,0.16), transparent 30%),
+        linear-gradient(180deg, #08111f 0%, #0f172a 18%, #e2e8f0 18%, #e2e8f0 100%);
+      min-height: 100vh;
+    }
+
+    .page {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 24px 24px 48px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      color: #fff;
+      margin-bottom: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .mark {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(14,165,233,.95), rgba(34,211,238,.45));
+      font-weight: 800;
+      box-shadow: 0 10px 24px rgba(14,165,233,.35);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.2;
+    }
+
+    .brand p {
+      margin: 3px 0 0;
+      color: rgba(255,255,255,.78);
+      font-size: .92rem;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .pill-input {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      color: #fff;
+      backdrop-filter: blur(10px);
+    }
+
+    .pill-input input {
+      background: transparent;
+      border: 0;
+      outline: none;
+      color: #fff;
+      font: inherit;
+      min-width: 220px;
+    }
+
+    .pill-input input::placeholder { color: rgba(255,255,255,.55); }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease, color .18s ease, border-color .18s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+
+    .action {
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 16px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, #0284c7, #0ea5e9);
+      box-shadow: 0 10px 24px rgba(14,165,233,.28);
+    }
+
+    .action.secondary {
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: none;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.35fr .95fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: var(--panel);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(148,163,184,.15);
+    }
+
+    .hero-main,
+    .hero-side,
+    .panel {
+      padding: 26px;
+    }
+
+    .hero-main {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-main::after {
+      content: "";
+      position: absolute;
+      right: -70px;
+      bottom: -70px;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle at center, rgba(14,165,233,.18), transparent 66%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #e0f2fe;
+      color: #075985;
+      font-weight: 800;
+      font-size: .82rem;
+      margin-bottom: 14px;
+    }
+
+    .hero-main h2 {
+      margin: 0 0 14px;
+      font-size: clamp(2rem, 3.2vw, 3.3rem);
+      line-height: 1.04;
+      letter-spacing: -.03em;
+      max-width: 12ch;
+    }
+
+    .lead {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 1.06rem;
+      max-width: 72ch;
+    }
+
+    .tag-row,
+    .button-row,
+    .scenario-row,
+    .tab-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tag-row { margin: 18px 0 20px; }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: var(--panel-soft);
+      border: 1px solid #dbe4ee;
+      font-weight: 600;
+      font-size: .92rem;
+    }
+
+    .q,
+    .chip,
+    .plain,
+    .mini,
+    .tab,
+    .scenario {
+      border-radius: 999px;
+      border: 1px solid #d5dde7;
+      background: #fff;
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .q {
+      width: 28px;
+      height: 28px;
+      display: inline-grid;
+      place-items: center;
+      padding: 0;
+      background: #eff6ff;
+      color: #0c4a6e;
+      border-color: #bfdbfe;
+      flex: 0 0 auto;
+    }
+
+    .chip {
+      padding: 7px 10px;
+      font-size: .83rem;
+      color: #0c4a6e;
+      background: #eff6ff;
+      border-color: #bfdbfe;
+    }
+
+    .plain,
+    .scenario,
+    .tab {
+      padding: 11px 14px;
+      font-size: .94rem;
+      background: #f8fafc;
+    }
+
+    .mini {
+      padding: 7px 10px;
+      font-size: .82rem;
+    }
+
+    .scenario.active,
+    .tab.active {
+      background: #0f172a;
+      color: #fff;
+      border-color: #0f172a;
+      box-shadow: 0 14px 30px rgba(15,23,42,.16);
+    }
+
+    .story-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .story {
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid #e2e8f0;
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+      min-height: 170px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .story .label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: #0369a1;
+    }
+
+    .story h3 {
+      margin: 0;
+      font-size: 1.02rem;
+      line-height: 1.24;
+    }
+
+    .story p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: .95rem;
+      flex: 1;
+    }
+
+    .hero-side {
+      background:
+        radial-gradient(circle at top right, rgba(14,165,233,.12), transparent 36%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .hero-side h3 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    .hero-side p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.58;
+    }
+
+    .brief {
+      padding: 18px;
+      border-radius: 18px;
+      background: #0f172a;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brief::before {
+      content: "";
+      position: absolute;
+      left: -38px;
+      bottom: -52px;
+      width: 160px;
+      height: 160px;
+      background: radial-gradient(circle at center, rgba(14,165,233,.22), transparent 66%);
+      pointer-events: none;
+    }
+
+    .brief h4 {
+      margin: 0 0 10px;
+      font-size: .94rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: #7dd3fc;
+    }
+
+    .brief p {
+      color: rgba(255,255,255,.92);
+      position: relative;
+      z-index: 1;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .stack { display: grid; gap: 24px; }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .section-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-weight: 800;
+      font-size: .8rem;
+      margin-bottom: 10px;
+    }
+
+    .panel h3 {
+      margin: 0 0 8px;
+      font-size: 1.32rem;
+      letter-spacing: -.02em;
+    }
+
+    .panel p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.58;
+      max-width: 78ch;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .metric {
+      padding: 14px;
+      border-radius: 16px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+    }
+
+    .metric .meta {
+      font-size: .76rem;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      font-weight: 800;
+      color: #64748b;
+      margin-bottom: 8px;
+    }
+
+    .metric .value {
+      font-size: 1.56rem;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      margin-bottom: 4px;
+    }
+
+    .metric .sub {
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.45;
+    }
+
+    .metric.good .value { color: var(--good); }
+    .metric.warn .value { color: var(--warn); }
+    .metric.bad .value { color: var(--bad); }
+
+    .sim-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(320px, .8fr);
+      gap: 18px;
+    }
+
+    .subcard {
+      border-radius: 18px;
+      border: 1px solid #e2e8f0;
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .graph-card { padding: 14px; min-height: 510px; }
+    .detail-card, .issue-card, .tab-panel { padding: 16px; }
+
+    .graph-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .legend {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: .88rem;
+      align-items: center;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    #graph {
+      width: 100%;
+      min-height: 430px;
+      display: block;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+      background:
+        linear-gradient(180deg, #ffffff, #f8fafc),
+        linear-gradient(90deg, rgba(148,163,184,.06) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(148,163,184,.06) 1px, transparent 1px);
+    }
+
+    .side-stack { display: grid; gap: 14px; }
+
+    .detail-card h4,
+    .issue-card h4,
+    .explainer h4,
+    .tab-panel h4,
+    .mini-card h4,
+    .step h4 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+    }
+
+    .detail-card p,
+    .issue-card p,
+    .tab-panel p,
+    .mini-card p,
+    .step p {
+      color: var(--muted);
+      line-height: 1.56;
+    }
+
+    .meta-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .pill {
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: .8rem;
+      font-weight: 800;
+      border: 1px solid transparent;
+    }
+
+    .pill.good { background: var(--good-soft); color: #166534; border-color: #bbf7d0; }
+    .pill.warn { background: var(--warn-soft); color: #9a3412; border-color: #fed7aa; }
+    .pill.bad { background: var(--bad-soft); color: #991b1b; border-color: #fecaca; }
+
+    .issue-list,
+    .bullet-list,
+    .mini-grid,
+    .data-grid,
+    .limit-grid,
+    .steps {
+      display: grid;
+      gap: 12px;
+    }
+
+    .issue {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 12px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+    }
+
+    .badge {
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      font-size: .85rem;
+      font-weight: 800;
+      flex: 0 0 auto;
+      margin-top: 2px;
+    }
+
+    .badge.good { background: var(--good-soft); color: #166534; }
+    .badge.warn { background: var(--warn-soft); color: #9a3412; }
+    .badge.bad { background: var(--bad-soft); color: #991b1b; }
+
+    .issue h5 {
+      margin: 0 0 5px;
+      font-size: .95rem;
+      line-height: 1.34;
+    }
+
+    .issue p { margin: 0; font-size: .92rem; }
+
+    .mini-grid,
+    .data-grid,
+    .limit-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mini-card {
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid #e2e8f0;
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+      min-height: 152px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .mini-card h4 {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.34;
+    }
+
+    .formula {
+      margin-top: 14px;
+      padding: 16px;
+      border-radius: 18px;
+      background: #0f172a;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.08);
+      overflow: auto;
+    }
+
+    .formula pre {
+      margin: 0;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      font-size: .93rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    .tab-panel {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 18px;
+      border-radius: 18px;
+      border: 1px solid #e2e8f0;
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .bullet-list {
+      align-content: start;
+    }
+
+    .bullet {
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      color: var(--text);
+      font-size: .93rem;
+      line-height: 1.48;
+    }
+
+    .steps {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-top: 18px;
+    }
+
+    .step {
+      position: relative;
+      overflow: hidden;
+      padding: 16px;
+      min-height: 184px;
+      border-radius: 18px;
+      border: 1px solid #dbe4ee;
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .step::before {
+      content: attr(data-step);
+      position: absolute;
+      right: 12px;
+      top: 10px;
+      font-size: 2.6rem;
+      font-weight: 850;
+      color: rgba(2,132,199,.08);
+      line-height: 1;
+    }
+
+    .explainer {
+      position: sticky;
+      top: 24px;
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .explainer-head {
+      padding: 18px 18px 14px;
+      background: linear-gradient(135deg, #0f172a, #0b1a32);
+      color: #fff;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .explainer-head h3 { margin: 0 0 6px; font-size: 1.08rem; }
+    .explainer-head p { margin: 0; color: rgba(255,255,255,.78); font-size: .92rem; line-height: 1.5; }
+
+    .explainer-body {
+      padding: 18px;
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+      display: grid;
+      gap: 14px;
+      min-height: 420px;
+    }
+
+    .topic {
+      font-size: .76rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #0369a1;
+    }
+
+    .explainer-title {
+      margin: 0;
+      font-size: 1.22rem;
+      line-height: 1.22;
+      letter-spacing: -.02em;
+    }
+
+    .ex-block {
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+    }
+
+    .ex-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .76rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: #0369a1;
+      margin-bottom: 8px;
+    }
+
+    .ex-block p,
+    .ex-block li {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.62;
+    }
+
+    .ex-block ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .note {
+      margin-top: 20px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.70);
+      border: 1px solid rgba(148,163,184,.22);
+      color: #334155;
+      font-size: .92rem;
+      line-height: 1.55;
+    }
+
+    .svg-label { font-size: 13px; font-weight: 800; fill: #0f172a; pointer-events: none; }
+    .svg-sub { font-size: 11px; fill: #475569; pointer-events: none; }
+    .svg-edge-label { font-size: 11px; font-weight: 700; fill: #334155; pointer-events: none; }
+    .svg-edge-line { fill: none; stroke-width: 4; stroke-linecap: round; }
+    .svg-edge-hit { fill: none; stroke: transparent; stroke-width: 18; cursor: pointer; }
+    .svg-node-rect { stroke-width: 1.5; cursor: pointer; }
+
+    @media (max-width: 1220px) {
+      .hero,
+      .layout { grid-template-columns: 1fr; }
+      .explainer { position: relative; top: 0; }
+    }
+
+    @media (max-width: 1100px) {
+      .story-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .sim-grid,
+      .tab-panel,
+      .mini-grid,
+      .data-grid,
+      .limit-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 760px) {
+      .page { padding: 18px 14px 36px; }
+      .hero-main,
+      .hero-side,
+      .panel { padding: 18px; }
+      .story-grid,
+      .metrics,
+      .steps { grid-template-columns: 1fr; }
+      .pill-input { width: 100%; justify-content: space-between; }
+      .pill-input input { min-width: 0; width: 100%; }
+      .hero-main h2 { max-width: none; font-size: 2rem; }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .page { max-width: none; padding: 0; }
+      .topbar,
+      .q,
+      .chip,
+      .plain,
+      .mini,
+      .scenario-row,
+      .tab-row,
+      .explainer,
+      .action { display: none !important; }
+      .hero,
+      .layout,
+      .sim-grid,
+      .tab-panel,
+      .mini-grid,
+      .data-grid,
+      .limit-grid,
+      .steps { grid-template-columns: 1fr !important; }
+      .card,
+      .subcard,
+      .note,
+      .brief,
+      .step { box-shadow: none; border: 1px solid #cbd5e1; }
+      .hero-main::after,
+      .brief::before,
+      .step::before { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark">∮</div>
+        <div>
+          <h1>Sheaf Models for Scope Coherence</h1>
+          <p>Interactive explainer for a UK public-sector project director</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <label class="pill-input">
+          <span>Project name</span>
+          <input id="projectName" type="text" value="Movar public-sector pilot" aria-label="Project name" />
+        </label>
+        <button class="action" id="copySummary">Copy 90-second summary</button>
+        <button class="action secondary" id="printView">Print clean view</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <article class="card hero-main">
+        <div class="eyebrow">Project director mode • board language first</div>
+        <h2>From fragmented WBS views to coherent scope</h2>
+        <p class="lead">A sheaf model treats each work package as a local view of the project and asks whether those views agree where they overlap. The point is not mathematical ornament; it is early detection of scope incoherence before design, procurement, or cost approval hardens incompatible assumptions into spend.</p>
+        <div class="tag-row">
+          <span class="tag">Hidden contradictions across packages <button class="q" data-topic="problem">?</button></span>
+          <span class="tag">Interface rules made explicit <button class="q" data-topic="consistency">?</button></span>
+          <span class="tag">Better readiness for approval gates <button class="q" data-topic="publicSectorFit">?</button></span>
+          <span class="tag">Pilot on live PMO data <button class="q" data-topic="pilot">?</button></span>
+        </div>
+
+        <div class="story-grid">
+          <div class="story">
+            <div class="label">Problem <button class="q" data-topic="problem">?</button></div>
+            <h3>Fragmented WBS views create contradictions nobody owns</h3>
+            <p>Package plans can each look sensible while the combined scope still contradicts itself at interfaces.</p>
+            <div class="button-row">
+              <button class="chip" data-topic="wbs">Why not just WBS?</button>
+              <button class="chip" data-topic="MondayQuestions">What should a director ask?</button>
+            </div>
+          </div>
+          <div class="story">
+            <div class="label">Method <button class="q" data-topic="sheaf">?</button></div>
+            <h3>Model scope as a sheaf over the project graph</h3>
+            <p>Attach local data to packages and define what must match on the overlaps between them.</p>
+            <div class="button-row">
+              <button class="chip" data-topic="projectGraph">Project graph</button>
+              <button class="chip" data-topic="formal">Formal version</button>
+            </div>
+          </div>
+          <div class="story">
+            <div class="label">Mechanism <button class="q" data-topic="consistency">?</button></div>
+            <h3>Enforce agreement where packages overlap</h3>
+            <p>If Civils and Utilities share a corridor, the corridor facts must reconcile rather than merely coexist in separate files.</p>
+            <div class="button-row">
+              <button class="chip" data-topic="overlap">What is an overlap?</button>
+              <button class="chip" data-topic="schedule">Date example</button>
+            </div>
+          </div>
+          <div class="story">
+            <div class="label">Result <button class="q" data-topic="globalSection">?</button></div>
+            <h3>Detect incoherence before cost commitment</h3>
+            <p>The output is a contradiction heatmap: where the current baseline cannot all be true at once.</p>
+            <div class="button-row">
+              <button class="chip" data-topic="cost">Cost lens</button>
+              <button class="chip" data-topic="boardLanguage">Board language</button>
+            </div>
+          </div>
+          <div class="story">
+            <div class="label">Next step <button class="q" data-topic="pilot">?</button></div>
+            <h3>Prototype on one live, interface-rich PMO slice</h3>
+            <p>Start narrow: one station box, corridor segment, reservoir zone, or package cluster with real interface pressure.</p>
+            <div class="button-row">
+              <button class="chip" data-topic="pilot">Pilot design</button>
+              <button class="chip" data-topic="notMagic">What not to overclaim</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <aside class="card hero-side">
+        <h3>90-second director summary</h3>
+        <p>Use this as the speaking note in the awayday, then switch the simulator scenarios below to change the wording.</p>
+        <div class="brief">
+          <h4>Board-ready line</h4>
+          <p id="summaryText">Loading summary…</p>
+        </div>
+        <div class="button-row">
+          <button class="plain" data-topic="boardLanguage">Translate the maths</button>
+          <button class="plain" data-topic="MondayQuestions">Questions to ask Monday</button>
+          <button class="plain" data-topic="publicSectorFit">Why this fits UK infrastructure</button>
+        </div>
+        <div class="note"><strong>How to use this page:</strong> click the many <strong>?</strong> and explainer buttons, switch the scenarios, and use the right-hand panel as your deeper commentary for a project director.</div>
+      </aside>
+    </section>
+
+    <div class="layout">
+      <main class="stack">
+        <section class="card panel">
+          <div class="panel-head">
+            <div>
+              <div class="section-kicker">1 • Interactive scope-coherence simulator</div>
+              <h3>See how hidden contradictions emerge in the overlaps</h3>
+              <p>Select a scenario. The graph shows a stylised public-sector infrastructure slice: packages are local views; the lines are overlaps where consistency should hold. Click any package or any overlap line for detail.</p>
+            </div>
+            <div class="button-row">
+              <button class="plain" data-topic="boardLanguage">How to explain this</button>
+              <button class="plain" data-topic="problem">Why a director cares</button>
+            </div>
+          </div>
+
+          <div class="metrics" id="metrics"></div>
+          <div class="scenario-row" id="scenarioButtons"></div>
+
+          <div class="sim-grid">
+            <div class="subcard graph-card">
+              <div class="graph-toolbar">
+                <div class="legend">
+                  <span><span class="dot" style="background:#16a34a"></span>coherent overlap</span>
+                  <span><span class="dot" style="background:#d97706"></span>watch / immature</span>
+                  <span><span class="dot" style="background:#dc2626"></span>contradiction</span>
+                </div>
+                <div class="button-row">
+                  <button class="mini" data-topic="globalSection">Global section</button>
+                  <button class="mini" data-topic="formal">Formal version</button>
+                </div>
+              </div>
+              <svg id="graph" viewBox="0 0 1000 540" role="img" aria-label="Project graph"></svg>
+            </div>
+
+            <div class="side-stack">
+              <div class="subcard detail-card">
+                <h4>Scenario detail</h4>
+                <div class="meta-row" id="detailMeta"></div>
+                <p id="detailText">Choose a scenario or click a package / interface in the graph.</p>
+                <div class="button-row">
+                  <button class="mini" data-topic="overlap">Explain overlaps</button>
+                  <button class="mini" data-topic="consistency">Explain consistency</button>
+                </div>
+              </div>
+              <div class="subcard issue-card">
+                <h4>What the sheaf check flags</h4>
+                <p>These are not vague “risks”. They are direct contradictions or unstable shared facts in the current scope slice.</p>
+                <div class="issue-list" id="issues"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card panel">
+          <div class="panel-head">
+            <div>
+              <div class="section-kicker">2 • Translation layer</div>
+              <h3>Turn the mathematics into delivery language</h3>
+              <p>The audience does not need category theory. They need a disciplined way to ask whether package views can be stitched into one spendable baseline.</p>
+            </div>
+            <div class="button-row">
+              <button class="plain" data-topic="boardLanguage">Board language</button>
+              <button class="plain" data-topic="formal">Formal version</button>
+            </div>
+          </div>
+
+          <div class="mini-grid">
+            <div class="mini-card">
+              <h4>Sheaf = disciplined stitching of local scope views <button class="q" data-topic="sheaf">?</button></h4>
+              <p>Each team can keep its own detailed view. The model asks whether those views agree when projected onto shared interfaces.</p>
+              <div class="button-row"><button class="chip" data-topic="sheaf">Expand</button><button class="chip" data-topic="boardLanguage">Director wording</button></div>
+            </div>
+            <div class="mini-card">
+              <h4>Overlap = shared boundary where truth must match <button class="q" data-topic="overlap">?</button></h4>
+              <p>The overlap is where two packages refer to the same corridor, asset, handover, readiness condition, or quantity.</p>
+              <div class="button-row"><button class="chip" data-topic="overlap">Expand</button><button class="chip" data-topic="interfaceRegister">Interface register link</button></div>
+            </div>
+            <div class="mini-card">
+              <h4>Consistency rule = what each package must agree on <button class="q" data-topic="consistency">?</button></h4>
+              <p>Dates, quantities, retained assets, consent conditions, and readiness prerequisites are typical early rules.</p>
+              <div class="button-row"><button class="chip" data-topic="consistency">Expand</button><button class="chip" data-topic="cost">Cost relevance</button></div>
+            </div>
+            <div class="mini-card">
+              <h4>Global section = a scope picture you can commit against <button class="q" data-topic="globalSection">?</button></h4>
+              <p>If all local claims agree on the checked overlaps, you have the closest mathematical analogue of a coherent scope baseline.</p>
+              <div class="button-row"><button class="chip" data-topic="globalSection">Expand</button><button class="chip" data-topic="publicSectorFit">Approval relevance</button></div>
+            </div>
+            <div class="mini-card">
+              <h4>Contradiction heatmap = where to intervene first <button class="q" data-topic="problem">?</button></h4>
+              <p>The output shows where incompatible claims sit, who owns them, and which cost gates they threaten.</p>
+              <div class="button-row"><button class="chip" data-topic="problem">Expand</button><button class="chip" data-topic="MondayQuestions">Use in reviews</button></div>
+            </div>
+            <div class="mini-card">
+              <h4>Board language = scope coherence, not mathematical theatre <button class="q" data-topic="boardLanguage">?</button></h4>
+              <p>Lead with “hidden contradictions across interfaces” and only reveal the formalism underneath when useful.</p>
+              <div class="button-row"><button class="chip" data-topic="boardLanguage">Expand</button><button class="chip" data-topic="notMagic">What not to say</button></div>
+            </div>
+          </div>
+
+          <div class="formula">
+            <pre>Formal version, stripped down:
+
+For each work package Pᵢ attach data F(Pᵢ)
+  e.g. boundary, dates, quantities, design assumptions, asset states.
+
+For each overlap Pᵢ ∩ Pⱼ define shared fields and restriction maps.
+A coherent baseline is a family of local sections sᵢ such that
+  rᵢⱼ(sᵢ) = rⱼᵢ(sⱼ)
+on every overlap.
+
+In plain English:
+all package views tell the same story where they touch.</pre>
+          </div>
+        </section>
+
+        <section class="card panel">
+          <div class="panel-head">
+            <div>
+              <div class="section-kicker">3 • UK public-sector lifecycle fit</div>
+              <h3>Where does this help in a real infrastructure programme?</h3>
+              <p>Use the tabs to retune the framing. The same logic can support option development, business-case confidence, procurement interface clarity, live delivery control, and assurance.</p>
+            </div>
+            <div class="button-row">
+              <button class="plain" data-topic="publicSectorFit">Why this fits the UK public sector</button>
+              <button class="plain" data-topic="MondayQuestions">Questions for the room</button>
+            </div>
+          </div>
+
+          <div class="tab-row" id="lifecycleTabs"></div>
+          <div class="tab-panel" id="lifecyclePanel"></div>
+        </section>
+
+        <section class="card panel">
+          <div class="panel-head">
+            <div>
+              <div class="section-kicker">4 • Pilot blueprint on live PMO data</div>
+              <h3>Prototype this without creating a giant digital-theory programme</h3>
+              <p>The fastest credible route is one interface-rich slice with real PMO artefacts. The model needs just enough structure to reveal contradictions that existing governance is not surfacing early enough.</p>
+            </div>
+            <div class="button-row">
+              <button class="plain" data-topic="pilot">Pilot design</button>
+              <button class="plain" data-topic="notMagic">Positioning caution</button>
+            </div>
+          </div>
+
+          <div class="data-grid">
+            <div class="mini-card">
+              <h4>WBS and package list <button class="q" data-topic="wbs">?</button></h4>
+              <p>Useful for defining nodes, owners, and decomposition — but not sufficient on its own for truth at overlaps.</p>
+              <div class="button-row"><button class="chip" data-topic="wbs">Expand</button></div>
+            </div>
+            <div class="mini-card">
+              <h4>Interface register <button class="q" data-topic="interfaceRegister">?</button></h4>
+              <p>Usually the best starting point. Each interface becomes an overlap candidate with named owners and shared facts to test.</p>
+              <div class="button-row"><button class="chip" data-topic="interfaceRegister">Expand</button></div>
+            </div>
+            <div class="mini-card">
+              <h4>Master schedule and key dates <button class="q" data-topic="schedule">?</button></h4>
+              <p>Dates are often the quickest contradictions to surface because different packages silently rely on different readiness assumptions.</p>
+              <div class="button-row"><button class="chip" data-topic="schedule">Expand</button></div>
+            </div>
+            <div class="mini-card">
+              <h4>Assumptions log and design basis <button class="q" data-topic="assumptions">?</button></h4>
+              <p>Assumptions are local truths until the model forces them onto shared interfaces.</p>
+              <div class="button-row"><button class="chip" data-topic="assumptions">Expand</button></div>
+            </div>
+            <div class="mini-card">
+              <h4>Cost plan / estimate basis <button class="q" data-topic="cost">?</button></h4>
+              <p>Link costed items back to the same overlap facts so the output becomes decision-relevant rather than conceptually interesting.</p>
+              <div class="button-row"><button class="chip" data-topic="cost">Expand</button></div>
+            </div>
+            <div class="mini-card">
+              <h4>Asset / GIS / BIM / drawing boundaries <button class="q" data-topic="boundary">?</button></h4>
+              <p>Spatial or asset definitions help when the contradiction is literally a boundary or retained-asset problem.</p>
+              <div class="button-row"><button class="chip" data-topic="boundary">Expand</button></div>
+            </div>
+          </div>
+
+          <div class="steps">
+            <div class="step" data-step="01">
+              <h4>Pick a slice with pain, not a showcase</h4>
+              <p>Choose 8–12 packages around one interface-rich area where the PMO already suspects coordination friction.</p>
+              <div class="button-row"><button class="mini" data-topic="pilot">What good looks like</button></div>
+            </div>
+            <div class="step" data-step="02">
+              <h4>Extract the local truths each team already uses</h4>
+              <p>Dates, quantities, assumptions, boundaries, access rules, and readiness conditions usually exist already — just scattered.</p>
+              <div class="button-row"><button class="mini" data-topic="assumptions">Which fields to take</button></div>
+            </div>
+            <div class="step" data-step="03">
+              <h4>Define 10–20 overlap rules with commercial bite</h4>
+              <p>Start with same corridor release date, same retained asset owner, same quantity tolerance, same consent window, or same readiness prerequisite.</p>
+              <div class="button-row"><button class="mini" data-topic="consistency">Rule design</button></div>
+            </div>
+            <div class="step" data-step="04">
+              <h4>Run a contradiction review before the next commitment gate</h4>
+              <p>The pilot succeeds if it changes a real decision: interface clarity, estimate assumption, stage-gate confidence, or escalation sequence.</p>
+              <div class="button-row"><button class="mini" data-topic="cost">What counts as success</button></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card panel">
+          <div class="panel-head">
+            <div>
+              <div class="section-kicker">5 • Limits and honest positioning</div>
+              <h3>What to say so this does not sound like mathematical theatre</h3>
+              <p>The credibility move is restraint. Present this as a scope-coherence engine that sharpens interface discipline and approval confidence, not as an all-purpose prediction machine.</p>
+            </div>
+            <div class="button-row">
+              <button class="plain" data-topic="notMagic">Not magic</button>
+              <button class="plain" data-topic="boardLanguage">How to position it</button>
+            </div>
+          </div>
+
+          <div class="limit-grid">
+            <div class="mini-card">
+              <h4>It does not replace project governance <button class="q" data-topic="notMagic">?</button></h4>
+              <p>It helps governance by making contradictions explicit. Someone still needs to decide, reconcile, own, and approve the resulting changes.</p>
+              <div class="button-row"><button class="chip" data-topic="notMagic">Expand</button></div>
+            </div>
+            <div class="mini-card">
+              <h4>It only checks the rules you encode <button class="q" data-topic="consistency">?</button></h4>
+              <p>A poor rule set gives false comfort. Start with a few commercially material overlaps rather than trying to encode the universe badly.</p>
+              <div class="button-row"><button class="chip" data-topic="consistency">Expand</button></div>
+            </div>
+            <div class="mini-card">
+              <h4>It is not a digital twin by itself <button class="q" data-topic="notMagic">?</button></h4>
+              <p>The model checks coherence of declared scope facts; it does not by itself simulate physical behaviour or operational performance.</p>
+              <div class="button-row"><button class="chip" data-topic="notMagic">Expand</button></div>
+            </div>
+            <div class="mini-card">
+              <h4>It should start narrow and prove value fast <button class="q" data-topic="pilot">?</button></h4>
+              <p>A modest pilot on one difficult interface zone is more persuasive than a grand architecture that never touches a live decision.</p>
+              <div class="button-row"><button class="chip" data-topic="pilot">Expand</button></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="note"><strong>UK public-sector framing:</strong> this explainer uses the language of business cases, assurance, major-project readiness, and PMO data because the aim is to make the method legible inside a real UK infrastructure decision process, not merely inside a mathematical seminar.</div>
+      </main>
+
+      <aside class="card explainer" aria-live="polite">
+        <div class="explainer-head">
+          <h3>Explainer panel</h3>
+          <p>Click any explainer button on the page. This panel gives a director-level interpretation, a slightly more formal reading, and a useful question to ask in the room.</p>
+        </div>
+        <div class="explainer-body">
+          <div class="topic" id="expTopic">Ready</div>
+          <h4 class="explainer-title" id="expTitle">Start with “Problem”, “Board language”, or any question-mark button</h4>
+
+          <div class="ex-block">
+            <div class="ex-label">Core idea</div>
+            <p id="expText">This page keeps the visible surface concise while the right-hand panel holds the deeper explanation. Use it like speaker notes during the awayday.</p>
+          </div>
+          <div class="ex-block">
+            <div class="ex-label">Why it matters to a project director</div>
+            <p id="expWhy">The director lens is simple: where are we relying on multiple local truths that cannot all be true together by the time we approve spend, lock sequence, or let contracts?</p>
+          </div>
+          <div class="ex-block">
+            <div class="ex-label">Example</div>
+            <p id="expExample">One package assumes corridor access in October; another says utilities clear in December. The sheaf check does not “discover a risk” in the abstract — it shows the interface has no coherent shared truth yet.</p>
+          </div>
+          <div class="ex-block">
+            <div class="ex-label">Question to ask in the room</div>
+            <p id="expQuestion">Which specific overlaps matter enough that we should not approve cost or schedule assumptions until they reconcile?</p>
+          </div>
+          <div class="ex-block">
+            <div class="ex-label">Deeper notes</div>
+            <ul id="expBullets">
+              <li>Use the simulator to make the concept concrete.</li>
+              <li>Use the lifecycle section to retune the framing for the audience in the room.</li>
+              <li>Use the pilot blueprint if the discussion turns from “why?” to “how?”.</li>
+            </ul>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    const EXPLAINERS = {
+      problem: {
+        topic: 'Problem',
+        title: 'Why fragmented views create hidden contradictions',
+        text: 'Major infrastructure projects rarely fail because nobody had a plan. They fail because multiple local plans, each plausible in isolation, do not reconcile where packages meet. The WBS, schedule, cost plan, interface register, design basis, and risk log can each look orderly while the combined scope remains incoherent.',
+        why: 'For a project director, this is the difference between apparent control and real control. Hidden contradictions become rework, compensation events, or late assurance surprises because nobody forced the overlap facts into one shared truth early enough.',
+        example: 'Civils assumes a corridor is available on 1 October. Utilities assumes diversions complete on 15 December. Both statements can sit peacefully in separate artefacts for months.',
+        question: 'Where are our most commercially material overlaps, and do we currently have one coherent answer on each?',
+        bullets: ['The contradiction usually lives at the interface, not inside one package.', 'A good PMO already holds many of the relevant facts, but scattered.', 'The value is earlier escalation of incoherence, not more status reporting.']
+      },
+      sheaf: {
+        topic: 'Method',
+        title: 'What a sheaf model means here',
+        text: 'In this setting, a sheaf is a disciplined way to attach scope data to local parts of a project and then test whether those local claims agree on every overlap. It keeps local detail local while still demanding a coherent global story.',
+        why: 'This lets a project remain decomposed — which it must — without surrendering the ambition of an integrated, spendable baseline.',
+        example: 'Each package keeps its own dates, quantities, and assumptions, but shared interface facts must reconcile when projected onto the overlap between packages.',
+        question: 'Can our local package truths be stitched into one global scope picture without contradiction?',
+        bullets: ['Local richness is allowed.', 'Only the shared facts need to match on overlaps.', 'The payoff is a more honest picture of baseline maturity.']
+      },
+      projectGraph: {
+        topic: 'Project graph',
+        title: 'Why use a graph for the project slice',
+        text: 'The graph is not the whole project universe. It is a practical representation of packages, assets, or geographies as nodes, with overlaps or interfaces as edges. This is usually enough structure to locate where consistency must hold.',
+        why: 'Directors are comfortable with interface maps. The graph makes the abstract structure visible without pretending the project is simpler than it is.',
+        example: 'Civils, Utilities, Stations, Systems, and Consents are nodes; the corridor, handover, and readiness seams between them are edges.',
+        question: 'What is the smallest graph that still captures the painful interfaces around the next decision?',
+        bullets: ['Nodes can be packages, assets, places, or phases.', 'Edges should represent materially shared facts, not every weak dependency.', 'Keep the pilot graph small enough to govern.']
+      },
+      overlap: {
+        topic: 'Overlap',
+        title: 'Why overlaps are the real action',
+        text: 'An overlap is where two parts of the project speak about the same thing or depend on the same shared fact. It can be a physical boundary, an interface register item, a handover condition, a quantity, or a consent condition.',
+        why: 'Most expensive surprises are overlap failures: nobody owned the shared truth tightly enough.',
+        example: 'A station equipment room is both a building element and a systems prerequisite. That shared condition is an overlap even if two teams record it differently.',
+        question: 'Which overlaps should we elevate from “coordination issues” to formal scope-consistency checks?',
+        bullets: ['Physical overlap.', 'Temporal overlap.', 'Data overlap.', 'Commercial overlap.']
+      },
+      consistency: {
+        topic: 'Consistency',
+        title: 'What a useful consistency rule looks like',
+        text: 'A good rule is concrete, commercially material, and owned. It checks equality or compatibility of shared facts that matter to design freeze, procurement, possession, handover, testing, or cost approval.',
+        why: 'Without explicit rules, teams can talk past one another. With explicit rules, contradictions become actionable rather than atmospheric.',
+        example: 'Same corridor release date; same retained asset owner; same quantity within tolerance; same consent window; same readiness prerequisite.',
+        question: 'Which 10–20 rules would make a visible difference before the next approval or package commitment?',
+        bullets: ['Prefer rules tied to real decisions.', 'Avoid abstract completeness claims at pilot stage.', 'Encode ownership and escalation alongside each rule.']
+      },
+      globalSection: {
+        topic: 'Global section',
+        title: 'What a coherent global scope actually means',
+        text: 'A global section is not omniscience. It means there exists one set of project-wide scope statements that is compatible with every checked local view on every checked overlap. In governance language: you can tell one coherent story about the slice you are about to commit against.',
+        why: 'This sharpens the question before spend. The issue is not “are we certain?”, but “are our declared local truths compatible enough to justify the next commitment?”',
+        example: 'If all interfaces in the pilot slice reconcile, you have materially higher confidence that the baseline is at least internally coherent there.',
+        question: 'What level of coherence is enough for the next decision, and where are we still merely hoping?',
+        bullets: ['Coherent does not mean complete forever.', 'It means no known contradiction on the tested overlaps.', 'It is a maturity statement about internal consistency.']
+      },
+      boardLanguage: {
+        topic: 'Board language',
+        title: 'How to say this without sounding academic',
+        text: 'Try this wording: “We are using a formal interface-coherence check across work packages. It tells us whether local scope views can be stitched into one baseline without contradiction before we commit cost, dates, or contracts.”',
+        why: 'This preserves the intellectual substance while making the purpose immediately legible to a director or sponsor.',
+        example: 'Avoid opening with sheaf theory itself. Open with “hidden contradictions across overlaps” and only then explain the formalism if invited.',
+        question: 'What one sentence would make this sound useful rather than exotic to the room you are in?',
+        bullets: ['Lead with problem and decision value.', 'Use “scope coherence” before “sheaf”.', 'Offer the mathematics as the discipline underneath, not as the headline.']
+      },
+      publicSectorFit: {
+        topic: 'UK fit',
+        title: 'Why this is a plausible fit for UK public-sector infrastructure',
+        text: 'Public-sector projects need coherent scope narratives for approval, assurance, accountability, and value-for-money decisions. A sheaf-style check strengthens the internal coherence of those narratives by testing whether local package truths agree where they overlap.',
+        why: 'This translates the method into familiar public-sector concerns: scope maturity, interface clarity, assurance confidence, and discipline before commitment.',
+        example: 'The method can sit alongside business-case development, delivery controls, and assurance rather than trying to displace them.',
+        question: 'Where in our approval and assurance rhythm would an explicit scope-coherence check add the most value?',
+        bullets: ['Useful before cost commitment and procurement packaging.', 'Useful at interface-heavy assurance reviews.', 'Useful for making PMO data more decision-relevant.']
+      },
+      pilot: {
+        topic: 'Pilot',
+        title: 'What a good pilot looks like',
+        text: 'The best pilot is narrow, painful, and real. Pick one interface-rich slice where contradictions matter to the next decision, ingest existing PMO artefacts, define a modest rule set, and see whether the output changes a live review conversation.',
+        why: 'This avoids two classic failure modes: grand architecture with no decision impact, and toy examples with no organisational credibility.',
+        example: 'A station box with civils, utilities, systems, consents, and access dependencies is often rich enough to prove value within weeks.',
+        question: 'What slice would let us find contradictions that the room already suspects but cannot yet pin down formally?',
+        bullets: ['8–12 nodes is often enough.', '10–20 rules is often enough.', 'One changed decision beats a hundred beautiful diagrams.']
+      },
+      wbs: {
+        topic: 'WBS',
+        title: 'Why a WBS is necessary but not sufficient',
+        text: 'A work breakdown structure is excellent for decomposition, ownership, and reporting. But decomposition is not the same as consistency. A WBS tells you what buckets exist; it does not prove that the facts declared in those buckets agree where buckets touch.',
+        why: 'Directors often receive reassuring package-level views. The sheaf move asks a harder question: do the package stories compose into one baseline without contradiction?',
+        example: 'Package A and Package B both report green internally. Yet both refer to the same duct bank with different quantities and access assumptions.',
+        question: 'Which cross-package truths are too important to leave implicit inside a decomposition structure?',
+        bullets: ['Use the WBS to define nodes and owners.', 'Use overlaps and interface rules to test coherence.', 'Treat WBS as necessary plumbing, not proof of integrated scope.']
+      },
+      interfaceRegister: {
+        topic: 'Interface register',
+        title: 'Why the interface register is often the best starting point',
+        text: 'The interface register already gestures toward the overlaps the sheaf model needs. It names the seam, the parties, and often the shared issues. The pilot’s task is to formalise some of those issues into explicit consistency checks.',
+        why: 'This is usually easier organisationally than inventing a new data universe from scratch.',
+        example: 'An interface item about corridor release can become a rule comparing release date, access condition, and completion prerequisites across packages.',
+        question: 'Which existing interface items are mature enough to turn into explicit coherence rules now?',
+        bullets: ['Start with named interfaces that have owners.', 'Translate prose issues into shared fields.', 'Use the register as bridge between PMO practice and formalism.']
+      },
+      schedule: {
+        topic: 'Schedule',
+        title: 'How schedule data enters the model',
+        text: 'You do not need the whole schedule at first. Pull only the dates that act as shared interface truths: access windows, handovers, possessions, energisation, diversions, readiness milestones, or testing prerequisites.',
+        why: 'This keeps the pilot light while still surfacing the most actionable contradictions.',
+        example: 'A single clash between “corridor clear” and “diversion complete” may matter more than a thousand internal activities.',
+        question: 'Which dates would a sponsor reasonably ask us to defend before the next approval?',
+        bullets: ['Prefer milestone truth over full schedule ingestion initially.', 'Normalise meanings, not just date values.', 'Record ownership of each interface date.']
+      },
+      assumptions: {
+        topic: 'Assumptions',
+        title: 'Why assumption clashes matter so much',
+        text: 'Assumptions feel soft until they underpin spend, dates, or contractor expectations. Because assumptions are often stored in prose, they escape structured comparison unless you deliberately model them as shared fields on overlaps.',
+        why: 'This is where a lot of “surprise” really comes from: silent assumption misalignment rather than genuine external shock.',
+        example: 'Drainage assumes utilities surveyed and fixed; Utilities assumes intrusive surveys still outstanding; both plans look reasonable locally.',
+        question: 'Which local assumptions are currently acting as if they were shared truths?',
+        bullets: ['Promote critical assumptions into explicit fields.', 'Do not leave important interface logic buried in narrative text.', 'Record who owns the reconciliation.']
+      },
+      cost: {
+        topic: 'Cost commitment',
+        title: 'Why cost commitment is the decisive framing',
+        text: 'The strongest practical claim for this method is not that it makes projects “better understood” in some abstract sense. It is that it can reveal scope incoherence before estimates, contracts, possession strategies, or package commitments crystallise around incompatible assumptions.',
+        why: 'That is where public-sector credibility sits: before commitment, not after forensic explanation.',
+        example: 'A contradiction tied to an upcoming enabling-works package or approval gate deserves red treatment; a distant contradiction may sit amber.',
+        question: 'Which unresolved overlaps are carrying money or dates right now?',
+        bullets: ['Prioritise contradictions close to spend.', 'Link output to approval rhythm.', 'Keep the model decision-facing.']
+      },
+      boundary: {
+        topic: 'Boundary',
+        title: 'Why boundary data matters',
+        text: 'Where scope disagreement is geometric, textual governance alone is often too weak. Asset IDs, spatial extents, GIS layers, drawing boundaries, or BIM references help define what the overlap actually is.',
+        why: 'Without a precise overlap, teams may argue forever because they are not referring to the same thing.',
+        example: 'The same retaining wall segment may be named differently across packages; spatial references force convergence.',
+        question: 'Where would a spatial or asset-based representation remove ambiguity that meeting notes keep preserving?',
+        bullets: ['Do not overbuild geometry for the pilot.', 'Use just enough precision to define the shared object.', 'Pair boundaries with owner and date fields.']
+      },
+      formal: {
+        topic: 'Formal version',
+        title: 'The least mathematics you need to say aloud',
+        text: 'Attach a data set to each package. Define what counts as shared truth on each overlap. Ask whether the local sections agree after restriction onto those overlaps. If yes, you have a global section: one coherent scope picture.',
+        why: 'That is enough mathematical honesty to satisfy the concept without losing a director audience.',
+        example: 'If Utilities and Civils both restrict to the shared field “corridor release date”, those two values must match or the global section fails.',
+        question: 'Which shared fields should be treated as strict equalities, and which as toleranced compatibility checks?',
+        bullets: ['Think: nodes, overlaps, restrictions, global section.', 'Do not open with category theory; open with interface truth.', 'The mathematics earns its keep only when it changes a live decision.']
+      },
+      notMagic: {
+        topic: 'Caution',
+        title: 'What the method does not magically do',
+        text: 'It does not predict every delivery failure, eliminate uncertainty, or replace management judgement. It checks consistency of declared local truths on defined overlaps. That is powerful, but narrower than a universal project-intelligence claim.',
+        why: 'Overclaiming is the quickest way to lose credibility with experienced project leaders.',
+        example: 'A coherent baseline can still fail because of external shocks or poor execution. An incoherent baseline, however, is already in trouble on its own terms.',
+        question: 'How do we state the value strongly without implying impossible certainty?',
+        bullets: ['Scope coherence, not omniscience.', 'Decision support, not autopilot.', 'Formal discipline, not mystical insight.']
+      },
+      MondayQuestions: {
+        topic: 'Room prompts',
+        title: 'Questions a project director can ask on Monday',
+        text: 'Use the method to sharpen leadership questions, not just technical ones. Ask where the baseline is relying on incompatible local truths and which contradictions threaten the next commitment or assurance point.',
+        why: 'Good leadership questions often shift behaviour faster than technical exposition does.',
+        example: 'Which overlaps are red because the facts clash, and which are amber because nobody has yet declared a defensible shared truth?',
+        question: 'What am I currently being asked to approve that rests on unresolved overlap facts?',
+        bullets: ['Which contradictions are blocking the next gate?', 'Who owns each overlap, not just each package?', 'Which local assumptions look cheapest only because the interface truth is still fuzzy?']
+      }
+    };
+
+    const STAGES = [
+      {
+        id: 'strategic',
+        label: 'Strategic case',
+        title: 'At strategic case: test whether options are internally coherent',
+        text: 'The method helps test whether option families rely on compatible interface assumptions, not merely attractive narratives. It can reveal that one option looks cheaper only because its cross-package assumptions are under-specified or incompatible.',
+        bullets: ['Check whether option assumptions compose across interfaces.', 'Expose options that look cheap because shared constraints are under-specified.', 'Use as a discipline for early strategic honesty, not false precision.'],
+        buttons: [{label: 'Why this fits UK projects', topic: 'publicSectorFit'}, {label: 'Board language', topic: 'boardLanguage'}]
+      },
+      {
+        id: 'business',
+        label: 'Business case',
+        title: 'At outline / full business case: strengthen confidence in scope maturity',
+        text: 'The question here is whether the scope narrative behind cost, schedule, and procurement claims is internally compatible on the overlaps that matter. The method helps separate “uncertain but coherent” from “actively contradictory”.',
+        bullets: ['Target overlaps carrying estimate and schedule assumptions.', 'Use the output to inform maturity and confidence statements.', 'Do not confuse coherence with certainty; it improves one important dimension.'],
+        buttons: [{label: 'Cost commitment lens', topic: 'cost'}, {label: 'Questions for the room', topic: 'MondayQuestions'}]
+      },
+      {
+        id: 'procurement',
+        label: 'Procurement',
+        title: 'Before procurement: clarify boundaries and interface obligations',
+        text: 'Procurement pain often begins with unresolved shared truths about who owns what, when access exists, and what conditions are assumed. A sheaf-style check makes those shared truths explicit before package commitments harden.',
+        bullets: ['Use on the interfaces most likely to become commercial disputes.', 'Clarify retained assets, access assumptions, and readiness obligations.', 'Show what still needs reconciling before package commitment.'],
+        buttons: [{label: 'Boundary example', topic: 'boundary'}, {label: 'Why WBS is not enough', topic: 'wbs'}]
+      },
+      {
+        id: 'delivery',
+        label: 'Delivery controls',
+        title: 'In delivery: monitor the critical overlaps rather than everything',
+        text: 'Once work is live, the model should stay selective. Focus on the interfaces with disproportionate commercial or readiness consequence and ask whether the local truths still compose as plans evolve.',
+        bullets: ['Re-check only the most consequential overlaps regularly.', 'Use contradiction outputs as escalation material.', 'Avoid turning the method into a noisy all-project dashboard.'],
+        buttons: [{label: 'Schedule example', topic: 'schedule'}, {label: 'Assumption clash', topic: 'assumptions'}]
+      },
+      {
+        id: 'assurance',
+        label: 'Assurance / change',
+        title: 'In assurance and change: make escalation more exact',
+        text: 'Assurance and change control benefit when contradictions are named precisely rather than gestured at broadly. The method can show which shared truths are unstable, contradictory, or merely immature.',
+        bullets: ['Distinguish contradiction from missing data.', 'Link red overlaps to owners, packages, and gate relevance.', 'Use the model to improve the specificity of challenge and escalation.'],
+        buttons: [{label: 'What not to overclaim', topic: 'notMagic'}, {label: 'Director questions', topic: 'MondayQuestions'}]
+      }
+    ];
+
+    const SCENARIOS = {
+      coherent: {
+        name: 'Coherent baseline', readiness: 'Green', readinessClass: 'good', contradictions: 0, blocking: 0,
+        summary: 'All currently checked overlaps reconcile on the selected fields. This does not prove the slice is complete forever; it means the tested package views currently compose into one coherent baseline.',
+        decision: 'Proceed, while extending rule coverage cautiously.',
+        nodes: [
+          {id:'civils', label:'Civils', status:'good', x:70, y:85, w:210, h:94, body:'Holds corridor works, structures, access route, and temporary works assumptions.', facts:['Corridor release: 1 Oct 2027','Access route ready: 15 Jan 2028','Retaining wall ownership: Civils']},
+          {id:'utilities', label:'Utilities', status:'good', x:380, y:55, w:210, h:94, body:'Holds diversion sequence, outage windows, and third-party coordination dates.', facts:['Diversions complete: 1 Oct 2027','Third-party access secured: yes','Retained ducts referenced consistently']},
+          {id:'stations', label:'Stations / Structures', status:'good', x:120, y:320, w:250, h:94, body:'Holds rooms, structures, and internal handover sequence.', facts:['Equipment room ready: 1 Mar 2028','Retaining wall excluded: no','Drainage connection status: confirmed']},
+          {id:'systems', label:'Systems', status:'good', x:470, y:300, w:210, h:94, body:'Holds equipment install, test readiness, and power prerequisites.', facts:['Integrated test entry: 1 Jun 2028','Room readiness required: 1 Mar 2028','Power available by test entry: yes']},
+          {id:'consents', label:'Consents / External', status:'good', x:760, y:180, w:190, h:94, body:'Holds ecology, access conditions, and regulatory windows.', facts:['Tree works window: compatible','Access permit active: yes','Method constraints incorporated']}
+        ],
+        edges: [
+          {id:'e1', from:'civils', to:'utilities', status:'good', label:'corridor release', detail:'Both packages agree that the corridor is released for civils use on 1 Oct 2027 after utilities diversions complete.', facts:['Shared field: corridor release date','Local values: 1 Oct 2027 / 1 Oct 2027','Commercial relevance: enabling works package']},
+          {id:'e2', from:'civils', to:'stations', status:'good', label:'retaining wall + access', detail:'Boundary and access assumptions reconcile: Civils owns the retaining wall and access route readiness aligns to the station sequence.', facts:['Shared field: retaining wall ownership','Shared field: access route readiness','Status: coherent']},
+          {id:'e3', from:'stations', to:'systems', status:'good', label:'room readiness', detail:'Stations delivers equipment rooms by 1 Mar 2028, matching Systems readiness for integrated testing.', facts:['Shared field: room-ready date','Local values: 1 Mar 2028 / 1 Mar 2028','Status: coherent']},
+          {id:'e4', from:'utilities', to:'consents', status:'good', label:'permit + method', detail:'Utility method and permit conditions align on the checked fields.', facts:['Shared field: access permit','Shared field: method constraints','Status: coherent']},
+          {id:'e5', from:'civils', to:'consents', status:'good', label:'tree works window', detail:'Possession and ecology windows are compatible for the checked activities.', facts:['Shared field: tree works window','Shared field: possession window','Status: coherent']},
+          {id:'e6', from:'systems', to:'consents', status:'good', label:'external conditions', detail:'Systems external prerequisites are compatible with the checked permit conditions.', facts:['Shared field: external power condition','Shared field: permit compatibility','Status: coherent']}
+        ],
+        issues: [
+          {severity:'good', title:'No direct contradictions on the checked overlap fields', text:'This is the closest thing to a local global section: the slice currently tells one coherent story on the tested interfaces.'},
+          {severity:'warn', title:'Still extend the rule set carefully', text:'Green here means coherent on these fields, not universally complete. The next expansion should focus on cost-bearing assumptions.'}
+        ]
+      },
+      corridor: {
+        name: 'Corridor date clash', readiness: 'Red', readinessClass: 'bad', contradictions: 2, blocking: 2,
+        summary: 'The scope slice is not globally coherent because the corridor release story differs across packages and one consent window has not been reconciled with the delivery assumption.',
+        decision: 'Do not commit enabling-works spend until the overlap truth is reconciled.',
+        nodes: [
+          {id:'civils', label:'Civils', status:'bad', x:70, y:85, w:210, h:94, body:'Civils still assumes an October corridor release and an access route sequence keyed to that assumption.', facts:['Corridor release: 1 Oct 2027','Tree works in November','Access route sequence keyed to October release']},
+          {id:'utilities', label:'Utilities', status:'bad', x:380, y:55, w:210, h:94, body:'Utilities now shows diversion completion in mid-December because of third-party outage timing.', facts:['Diversions complete: 15 Dec 2027','Third-party outage delayed','Method statement revised']},
+          {id:'stations', label:'Stations / Structures', status:'good', x:120, y:320, w:250, h:94, body:'Stations is locally coherent but downstream exposure exists if corridor works slip.', facts:['Equipment room ready: 1 Mar 2028','Access dependency on civils completion']},
+          {id:'systems', label:'Systems', status:'good', x:470, y:300, w:210, h:94, body:'Systems is not yet directly contradictory on the checked fields, but downstream exposure rises.', facts:['Integrated test entry: 1 Jun 2028','Dependent on station readiness']},
+          {id:'consents', label:'Consents / External', status:'bad', x:760, y:180, w:190, h:94, body:'Ecology window and delivery assumptions are no longer comfortably aligned if the corridor slips into December.', facts:['Tree works restriction applies from Dec','November method still assumed in civils']}
+        ],
+        edges: [
+          {id:'e1', from:'civils', to:'utilities', status:'bad', label:'corridor release', detail:'Direct contradiction: Civils assumes corridor release on 1 Oct 2027; Utilities declares diversion completion on 15 Dec 2027.', facts:['Shared field: corridor release date','Local values: 1 Oct 2027 / 15 Dec 2027','Commercial relevance: enabling works and mobilisation']},
+          {id:'e2', from:'civils', to:'stations', status:'warn', label:'access route', detail:'No direct contradiction on the checked field yet, but the station access route logic depends on the unresolved corridor clash.', facts:['Shared field: access route readiness','Status: derived dependency exposed','Priority: watch']},
+          {id:'e3', from:'stations', to:'systems', status:'good', label:'room readiness', detail:'Room readiness remains coherent on the checked field.', facts:['Shared field: room-ready date','Status: coherent']},
+          {id:'e4', from:'utilities', to:'consents', status:'warn', label:'permit + method', detail:'Permit conditions are not contradicted directly, but the changed timing requires method revalidation.', facts:['Shared field: permit compatibility','Status: pending re-check']},
+          {id:'e5', from:'civils', to:'consents', status:'bad', label:'tree works window', detail:'Direct contradiction: Civils still assumes November tree works; the delayed corridor sequence pushes activity into a restricted December window.', facts:['Shared field: tree works window','Local values: November working assumption / December restriction','Commercial relevance: possession strategy']},
+          {id:'e6', from:'systems', to:'consents', status:'good', label:'external conditions', detail:'No direct issue on the checked fields.', facts:['Status: coherent']}
+        ],
+        issues: [
+          {severity:'bad', title:'Corridor release contradiction', text:'Two packages declare incompatible dates for the same shared interface truth. This is a direct scope incoherence, not merely a generic risk.'},
+          {severity:'bad', title:'Consent-window contradiction', text:'The delayed sequence now clashes with an external window that Civils is still assuming remains available.'},
+          {severity:'warn', title:'Downstream dependencies becoming exposed', text:'Stations and Systems are not yet red on the checked fields, but they are resting on an unresolved upstream overlap.'}
+        ]
+      },
+      readiness: {
+        name: 'Station / system readiness clash', readiness: 'Red', readinessClass: 'bad', contradictions: 2, blocking: 1,
+        summary: 'The slice contains a direct contradiction on room readiness and a secondary conflict on access route timing. The local stories do not yet compose into one testable baseline.',
+        decision: 'Stop short of locking integrated testing assumptions until readiness facts reconcile.',
+        nodes: [
+          {id:'civils', label:'Civils', status:'warn', x:70, y:85, w:210, h:94, body:'Civils now shows access route completion later than Stations has been using.', facts:['Access route ready: 1 Apr 2028','Temporary works sequence updated']},
+          {id:'utilities', label:'Utilities', status:'good', x:380, y:55, w:210, h:94, body:'Utilities is coherent on the checked fields in this scenario.', facts:['Diversions complete: 1 Oct 2027','No direct contradiction on selected overlaps']},
+          {id:'stations', label:'Stations / Structures', status:'bad', x:120, y:320, w:250, h:94, body:'Stations now declares equipment room handover on 15 May 2028.', facts:['Equipment room ready: 15 May 2028','Access route assumed by 15 Jan 2028']},
+          {id:'systems', label:'Systems', status:'bad', x:470, y:300, w:210, h:94, body:'Systems still requires room readiness by 1 Mar 2028 to protect integrated test entry.', facts:['Room readiness required: 1 Mar 2028','Integrated test entry: 1 Jun 2028']},
+          {id:'consents', label:'Consents / External', status:'good', x:760, y:180, w:190, h:94, body:'External conditions are coherent on the checked fields here.', facts:['Permit conditions: compatible']}
+        ],
+        edges: [
+          {id:'e1', from:'civils', to:'utilities', status:'good', label:'corridor release', detail:'No direct contradiction on the selected corridor field in this scenario.', facts:['Status: coherent']},
+          {id:'e2', from:'civils', to:'stations', status:'bad', label:'access route', detail:'Direct contradiction: Stations assumes access route availability from 15 Jan 2028; Civils now declares 1 Apr 2028 after sequence revision.', facts:['Shared field: access route readiness','Local values: 1 Apr 2028 / 15 Jan 2028','Commercial relevance: construction sequence and internal fit-out']},
+          {id:'e3', from:'stations', to:'systems', status:'bad', label:'room readiness', detail:'Direct contradiction: Stations declares equipment room readiness on 15 May 2028; Systems requires 1 Mar 2028 for integrated testing.', facts:['Shared field: room-ready date','Local values: 15 May 2028 / 1 Mar 2028','Commercial relevance: integrated testing and possession plan']},
+          {id:'e4', from:'utilities', to:'consents', status:'good', label:'permit + method', detail:'Coherent on the checked fields.', facts:['Status: coherent']},
+          {id:'e5', from:'civils', to:'consents', status:'good', label:'works window', detail:'No direct contradiction on the checked external window.', facts:['Status: coherent']},
+          {id:'e6', from:'systems', to:'consents', status:'warn', label:'external conditions', detail:'No direct contradiction, but the test sequence should be rechecked if readiness moves materially.', facts:['Status: watch']}
+        ],
+        issues: [
+          {severity:'bad', title:'Room readiness contradiction', text:'Stations and Systems tell incompatible stories about the same shared readiness fact. Integrated testing assumptions should not be treated as stable.'},
+          {severity:'bad', title:'Access route contradiction', text:'Stations and Civils rely on different access route dates, which undermines the current local sequence story.'},
+          {severity:'warn', title:'Recheck downstream external dependencies', text:'Once readiness moves, adjacent permit or method assumptions may also need review even if not yet directly contradictory.'}
+        ]
+      },
+      boundary: {
+        name: 'Boundary gap / orphan scope', readiness: 'Amber', readinessClass: 'warn', contradictions: 1, blocking: 1,
+        summary: 'The slice fails coherence because a shared asset has no consistent ownership across package boundaries. This is a classic hidden contradiction: not a clash of dates, but a gap in coverage.',
+        decision: 'Resolve ownership and cost basis before package commitment.',
+        nodes: [
+          {id:'civils', label:'Civils', status:'bad', x:70, y:85, w:210, h:94, body:'Civils boundary file now excludes the retaining wall because the station team was thought to carry it.', facts:['Retaining wall ownership: excluded','Access route ready: 15 Jan 2028']},
+          {id:'utilities', label:'Utilities', status:'good', x:380, y:55, w:210, h:94, body:'Utilities remains coherent on the checked fields.', facts:['Diversions complete: 1 Oct 2027']},
+          {id:'stations', label:'Stations / Structures', status:'bad', x:120, y:320, w:250, h:94, body:'Stations boundary note also excludes the retaining wall, assuming Civils retains it externally.', facts:['Retaining wall ownership: excluded','Equipment room ready: 1 Mar 2028']},
+          {id:'systems', label:'Systems', status:'good', x:470, y:300, w:210, h:94, body:'Systems is coherent on the checked fields.', facts:['Integrated test entry: 1 Jun 2028']},
+          {id:'consents', label:'Consents / External', status:'warn', x:760, y:180, w:190, h:94, body:'External conditions are not contradictory, but asset ownership ambiguity affects permit responsibilities.', facts:['Permit responsibility depends on retained asset ownership']}
+        ],
+        edges: [
+          {id:'e1', from:'civils', to:'utilities', status:'good', label:'corridor release', detail:'Coherent on the checked fields.', facts:['Status: coherent']},
+          {id:'e2', from:'civils', to:'stations', status:'bad', label:'retaining wall ownership', detail:'Direct contradiction by omission: both packages exclude the same shared retaining wall, so the slice has orphan scope with no consistent owner.', facts:['Shared field: retained asset ownership','Local values: excluded / excluded','Commercial relevance: package scope and estimate basis']},
+          {id:'e3', from:'stations', to:'systems', status:'good', label:'room readiness', detail:'Coherent on the checked fields.', facts:['Status: coherent']},
+          {id:'e4', from:'utilities', to:'consents', status:'good', label:'permit + method', detail:'Coherent on the checked fields.', facts:['Status: coherent']},
+          {id:'e5', from:'civils', to:'consents', status:'warn', label:'permit responsibility', detail:'Not a direct contradiction yet, but ownership ambiguity affects who should hold the relevant responsibilities.', facts:['Shared field: responsibility linkage','Status: ambiguous']},
+          {id:'e6', from:'systems', to:'consents', status:'good', label:'external conditions', detail:'Coherent on the checked fields.', facts:['Status: coherent']}
+        ],
+        issues: [
+          {severity:'bad', title:'Orphan retained asset', text:'Both packages exclude the same retaining wall, so there is no coherent owner in the current slice.'},
+          {severity:'warn', title:'Permit responsibility ambiguity', text:'External obligations linked to the retained asset are now also unclear.'}
+        ]
+      },
+      fixed: {
+        name: 'Reconciled after intervention', readiness: 'Green', readinessClass: 'good', contradictions: 0, blocking: 0,
+        summary: 'After a focused review, the slice becomes coherent again on the checked fields: the corridor date is aligned, readiness dates are reset, and retained asset ownership is explicit.',
+        decision: 'Proceed, but preserve the rule set so the coherence does not decay silently.',
+        nodes: [
+          {id:'civils', label:'Civils', status:'good', x:70, y:85, w:210, h:94, body:'Civils has adopted the agreed interface dates and explicit retained-asset ownership.', facts:['Corridor release: 15 Dec 2027','Access route ready: 1 Apr 2028','Retaining wall ownership: Civils']},
+          {id:'utilities', label:'Utilities', status:'good', x:380, y:55, w:210, h:94, body:'Utilities date now forms the agreed shared truth after escalation.', facts:['Diversions complete: 15 Dec 2027','Permit conditions reflected']},
+          {id:'stations', label:'Stations / Structures', status:'good', x:120, y:320, w:250, h:94, body:'Stations and Systems now share an agreed room-readiness sequence and boundary note.', facts:['Equipment room ready: 15 May 2028','Retaining wall ownership: Civils','Access route assumption reset: 1 Apr 2028']},
+          {id:'systems', label:'Systems', status:'good', x:470, y:300, w:210, h:94, body:'Systems integrated test entry is rephased to match the agreed readiness conditions.', facts:['Room readiness required: 15 May 2028','Integrated test entry reset: 15 Aug 2028']},
+          {id:'consents', label:'Consents / External', status:'good', x:760, y:180, w:190, h:94, body:'External windows and responsibilities are updated to the agreed plan.', facts:['Tree works plan revised and permitted','Permit responsibility aligned']}
+        ],
+        edges: [
+          {id:'e1', from:'civils', to:'utilities', status:'good', label:'corridor release', detail:'The shared corridor release date is now aligned at 15 Dec 2027 after escalation and replanning.', facts:['Shared field: corridor release date','Local values: 15 Dec 2027 / 15 Dec 2027','Status: coherent after intervention']},
+          {id:'e2', from:'civils', to:'stations', status:'good', label:'retaining wall + access', detail:'Boundary ownership and access route assumptions are now explicit and aligned.', facts:['Shared field: retained asset ownership = Civils','Shared field: access route = 1 Apr 2028','Status: coherent after intervention']},
+          {id:'e3', from:'stations', to:'systems', status:'good', label:'room readiness', detail:'Testing strategy and room-readiness sequence are reset to one agreed shared truth.', facts:['Shared field: room-ready date = 15 May 2028','Status: coherent after intervention']},
+          {id:'e4', from:'utilities', to:'consents', status:'good', label:'permit + method', detail:'Method and permit conditions are realigned to the revised timeline.', facts:['Status: coherent after intervention']},
+          {id:'e5', from:'civils', to:'consents', status:'good', label:'works window', detail:'The works plan now matches the allowed external window.', facts:['Status: coherent after intervention']},
+          {id:'e6', from:'systems', to:'consents', status:'good', label:'external conditions', detail:'No checked contradiction remains on the selected fields.', facts:['Status: coherent after intervention']}
+        ],
+        issues: [
+          {severity:'good', title:'Blocking contradictions removed', text:'The slice now tells one coherent story on the checked overlap fields.'},
+          {severity:'warn', title:'Preserve the rule set', text:'The important discipline is not only the intervention, but continued visibility of these overlap truths as the baseline evolves.'}
+        ]
+      }
+    };
+
+    const STATUS = {
+      good: {label:'Coherent', color:'#16a34a', fill:'#dcfce7', stroke:'#86efac', pill:'good'},
+      warn: {label:'Watch', color:'#d97706', fill:'#ffedd5', stroke:'#fdba74', pill:'warn'},
+      bad: {label:'Contradiction', color:'#dc2626', fill:'#fee2e2', stroke:'#fca5a5', pill:'bad'}
+    };
+
+    let currentScenario = 'coherent';
+    let currentStage = 'strategic';
+
+    const projectInput = document.getElementById('projectName');
+    const summaryText = document.getElementById('summaryText');
+    const metricsEl = document.getElementById('metrics');
+    const scenarioButtonsEl = document.getElementById('scenarioButtons');
+    const issuesEl = document.getElementById('issues');
+    const detailMetaEl = document.getElementById('detailMeta');
+    const detailTextEl = document.getElementById('detailText');
+    const lifecycleTabsEl = document.getElementById('lifecycleTabs');
+    const lifecyclePanelEl = document.getElementById('lifecyclePanel');
+
+    function pill(status, text) {
+      return `<span class="pill ${status}">${text}</span>`;
+    }
+
+    function boardSummary() {
+      const project = projectInput.value.trim() || 'this project';
+      const s = SCENARIOS[currentScenario];
+      const contradictions = s.contradictions === 0 ? 'no direct contradictions on the checked overlaps' : `${s.contradictions} contradiction${s.contradictions === 1 ? '' : 's'} on the checked overlaps`;
+      const blocking = s.blocking === 0 ? 'nothing currently blocks the next commitment on those fields' : `${s.blocking} issue${s.blocking === 1 ? '' : 's'} should be treated as blocking before the next commitment`;
+      return `For ${project}, the idea is simple: treat each work package as a local view of scope and test whether those views agree where they overlap. In the current scenario there ${s.contradictions === 1 ? 'is' : 'are'} ${contradictions}, and ${blocking}. The value is not another dashboard; it is earlier detection of scope incoherence before cost, schedule, or procurement decisions harden incompatible local assumptions into spend.`;
+    }
+
+    function renderSummary() {
+      summaryText.textContent = boardSummary();
+    }
+
+    function renderMetrics() {
+      const s = SCENARIOS[currentScenario];
+      metricsEl.innerHTML = `
+        <div class="metric"><div class="meta">Local views</div><div class="value">${s.nodes.length}</div><div class="sub">Packages carrying local scope data</div></div>
+        <div class="metric"><div class="meta">Overlaps</div><div class="value">${s.edges.length}</div><div class="sub">Interfaces checked in this slice</div></div>
+        <div class="metric ${s.contradictions === 0 ? 'good' : s.contradictions === 1 ? 'warn' : 'bad'}"><div class="meta">Contradictions</div><div class="value">${s.contradictions}</div><div class="sub">Direct incompatibilities on checked fields</div></div>
+        <div class="metric ${s.blocking === 0 ? 'good' : s.blocking === 1 ? 'warn' : 'bad'}"><div class="meta">Blocking issues</div><div class="value">${s.blocking}</div><div class="sub">Would this stop the next commitment?</div></div>
+        <div class="metric ${s.readinessClass}"><div class="meta">Readiness</div><div class="value">${s.readiness}</div><div class="sub">${s.decision}</div></div>
+      `;
+    }
+
+    function renderScenarioButtons() {
+      scenarioButtonsEl.innerHTML = '';
+      Object.entries(SCENARIOS).forEach(([key, value]) => {
+        const btn = document.createElement('button');
+        btn.className = `scenario ${key === currentScenario ? 'active' : ''}`;
+        btn.textContent = value.name;
+        btn.addEventListener('click', () => {
+          currentScenario = key;
+          renderScenarioButtons();
+          renderScenario();
+        });
+        scenarioButtonsEl.appendChild(btn);
+      });
+    }
+
+    function renderIssues() {
+      const s = SCENARIOS[currentScenario];
+      issuesEl.innerHTML = '';
+      s.issues.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'issue';
+        row.innerHTML = `
+          <div class="badge ${item.severity}">${item.severity === 'good' ? '✓' : item.severity === 'warn' ? '!' : '×'}</div>
+          <div><h5>${item.title}</h5><p>${item.text}</p></div>
+        `;
+        issuesEl.appendChild(row);
+      });
+    }
+
+    function nodeById(s, id) {
+      return s.nodes.find(n => n.id === id);
+    }
+
+    function showScenarioDetail() {
+      const s = SCENARIOS[currentScenario];
+      detailMetaEl.innerHTML = `${pill(s.readinessClass, STATUS[s.readinessClass].label)} ${pill(s.blocking > 0 ? 'bad' : 'good', s.blocking > 0 ? `${s.blocking} blocking` : 'No blocking issue')}`;
+      detailTextEl.textContent = s.summary;
+    }
+
+    function showNodeDetail(node) {
+      detailMetaEl.innerHTML = pill(node.status, STATUS[node.status].label);
+      detailTextEl.innerHTML = `<strong>${node.label}</strong><br><br>${node.body}<br><br><strong>Local facts</strong><br>${node.facts.map(x => `• ${x}`).join('<br>')}`;
+    }
+
+    function showEdgeDetail(edge) {
+      detailMetaEl.innerHTML = pill(edge.status, STATUS[edge.status].label);
+      detailTextEl.innerHTML = `<strong>${edge.label}</strong><br><br>${edge.detail}<br><br><strong>Shared facts checked</strong><br>${edge.facts.map(x => `• ${x}`).join('<br>')}`;
+    }
+
+    function renderGraph() {
+      const svg = document.getElementById('graph');
+      const s = SCENARIOS[currentScenario];
+      const ns = 'http://www.w3.org/2000/svg';
+      svg.innerHTML = '';
+      const labelPos = { e1:[330,112], e2:[225,254], e3:[445,360], e4:[700,118], e5:[550,168], e6:[760,320] };
+
+      s.edges.forEach(edge => {
+        const from = nodeById(s, edge.from);
+        const to = nodeById(s, edge.to);
+        const st = STATUS[edge.status];
+        const x1 = from.x + from.w / 2;
+        const y1 = from.y + from.h / 2;
+        const x2 = to.x + to.w / 2;
+        const y2 = to.y + to.h / 2;
+
+        const line = document.createElementNS(ns, 'line');
+        line.setAttribute('x1', x1); line.setAttribute('y1', y1); line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+        line.setAttribute('class', 'svg-edge-line'); line.setAttribute('stroke', st.color); svg.appendChild(line);
+
+        const hit = document.createElementNS(ns, 'line');
+        hit.setAttribute('x1', x1); hit.setAttribute('y1', y1); hit.setAttribute('x2', x2); hit.setAttribute('y2', y2);
+        hit.setAttribute('class', 'svg-edge-hit'); hit.addEventListener('click', () => showEdgeDetail(edge)); svg.appendChild(hit);
+
+        const [lx, ly] = labelPos[edge.id] || [(x1 + x2) / 2, (y1 + y2) / 2 - 8];
+        const text = document.createElementNS(ns, 'text');
+        text.setAttribute('x', lx); text.setAttribute('y', ly); text.setAttribute('text-anchor', 'middle'); text.setAttribute('class', 'svg-edge-label'); text.textContent = edge.label; svg.appendChild(text);
+      });
+
+      s.nodes.forEach(node => {
+        const st = STATUS[node.status];
+        const g = document.createElementNS(ns, 'g');
+
+        const rect = document.createElementNS(ns, 'rect');
+        rect.setAttribute('x', node.x); rect.setAttribute('y', node.y); rect.setAttribute('width', node.w); rect.setAttribute('height', node.h); rect.setAttribute('rx', 20); rect.setAttribute('ry', 20);
+        rect.setAttribute('fill', st.fill); rect.setAttribute('stroke', st.stroke); rect.setAttribute('class', 'svg-node-rect');
+        rect.addEventListener('click', () => showNodeDetail(node));
+        g.appendChild(rect);
+
+        const label = document.createElementNS(ns, 'text');
+        label.setAttribute('x', node.x + 16); label.setAttribute('y', node.y + 34); label.setAttribute('class', 'svg-label'); label.textContent = node.label; g.appendChild(label);
+        const sub = document.createElementNS(ns, 'text');
+        sub.setAttribute('x', node.x + 16); sub.setAttribute('y', node.y + 57); sub.setAttribute('class', 'svg-sub'); sub.textContent = STATUS[node.status].label; g.appendChild(sub);
+        const fact = document.createElementNS(ns, 'text');
+        fact.setAttribute('x', node.x + 16); fact.setAttribute('y', node.y + 76); fact.setAttribute('class', 'svg-sub'); fact.textContent = node.facts[0] || ''; g.appendChild(fact);
+
+        svg.appendChild(g);
+      });
+    }
+
+    function renderLifecycleTabs() {
+      lifecycleTabsEl.innerHTML = '';
+      STAGES.forEach(stage => {
+        const btn = document.createElement('button');
+        btn.className = `tab ${stage.id === currentStage ? 'active' : ''}`;
+        btn.textContent = stage.label;
+        btn.addEventListener('click', () => {
+          currentStage = stage.id;
+          renderLifecycleTabs();
+          renderLifecyclePanel();
+        });
+        lifecycleTabsEl.appendChild(btn);
+      });
+    }
+
+    function renderLifecyclePanel() {
+      const stage = STAGES.find(s => s.id === currentStage);
+      lifecyclePanelEl.innerHTML = `
+        <div>
+          <h4>${stage.title}</h4>
+          <p>${stage.text}</p>
+          <div class="button-row">${stage.buttons.map(b => `<button class="mini" data-topic="${b.topic}">${b.label}</button>`).join('')}</div>
+        </div>
+        <div class="bullet-list">${stage.bullets.map(b => `<div class="bullet">${b}</div>`).join('')}</div>
+      `;
+      attachTopicButtons(lifecyclePanelEl);
+    }
+
+    function renderScenario() {
+      renderSummary();
+      renderMetrics();
+      renderIssues();
+      renderGraph();
+      showScenarioDetail();
+    }
+
+    function openExplainer(key) {
+      const data = EXPLAINERS[key];
+      if (!data) return;
+      document.getElementById('expTopic').textContent = data.topic;
+      document.getElementById('expTitle').textContent = data.title;
+      document.getElementById('expText').textContent = data.text;
+      document.getElementById('expWhy').textContent = data.why;
+      document.getElementById('expExample').textContent = data.example;
+      document.getElementById('expQuestion').textContent = data.question;
+      const bullets = document.getElementById('expBullets');
+      bullets.innerHTML = '';
+      data.bullets.forEach(b => {
+        const li = document.createElement('li');
+        li.textContent = b;
+        bullets.appendChild(li);
+      });
+    }
+
+    function attachTopicButtons(scope = document) {
+      scope.querySelectorAll('[data-topic]').forEach(el => {
+        if (el.dataset.bound === '1') return;
+        el.dataset.bound = '1';
+        el.addEventListener('click', event => {
+          const key = event.currentTarget.dataset.topic;
+          if (key) openExplainer(key);
+        });
+      });
+    }
+
+    function copySummary() {
+      const text = boardSummary();
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copySummary');
+        const orig = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(() => { btn.textContent = orig; }, 1400);
+      }).catch(() => {
+        alert('Could not copy automatically. Please select and copy the summary manually.');
+      });
+    }
+
+    document.getElementById('copySummary').addEventListener('click', copySummary);
+    document.getElementById('printView').addEventListener('click', () => window.print());
+    projectInput.addEventListener('input', renderSummary);
+
+    attachTopicButtons(document);
+    renderScenarioButtons();
+    renderScenario();
+    renderLifecycleTabs();
+    renderLifecyclePanel();
+    openExplainer('problem');
+  </script>
+</body>
+</html>
