@@ -1,0 +1,107 @@
+:root {
+  --ltg-ink: #17211c;
+  --ltg-muted: #637068;
+  --ltg-paper: #f3efe3;
+  --ltg-paper-2: #fbf8ef;
+  --ltg-line: #d5cfbe;
+  --ltg-green: #205f50;
+  --ltg-green-soft: #dce9e3;
+  --ltg-amber: #b96b22;
+}
+
+.ltg-site-nav,
+.ltg-site-nav * { box-sizing: border-box; }
+
+.ltg-site-nav {
+  position: relative;
+  z-index: 1000;
+  color: var(--ltg-ink);
+  background: var(--ltg-paper-2);
+  border-bottom: 1px solid var(--ltg-line);
+  font: 500 13px/1.35 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.ltg-site-nav__inner {
+  width: min(1480px, 100%);
+  margin: 0 auto;
+  padding: 10px 18px 9px;
+}
+
+.ltg-site-nav__brand {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.ltg-site-nav__brand a {
+  color: var(--ltg-ink);
+  text-decoration: none;
+  font-weight: 800;
+  letter-spacing: .01em;
+}
+
+.ltg-site-nav__brand span { color: var(--ltg-muted); font-size: 12px; }
+
+.ltg-site-nav__tabs {
+  display: flex;
+  gap: 5px;
+  overflow-x: auto;
+  padding: 1px 0 3px;
+  scrollbar-width: thin;
+}
+
+.ltg-site-nav__tabs a {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--ltg-muted);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.ltg-site-nav__tabs a:hover,
+.ltg-site-nav__tabs a:focus-visible {
+  color: var(--ltg-ink);
+  border-color: var(--ltg-line);
+  outline: none;
+}
+
+.ltg-site-nav__tabs a[aria-current="page"] {
+  color: #fff;
+  background: var(--ltg-green);
+  border-color: var(--ltg-green);
+}
+
+.ltg-review-note {
+  margin: 0;
+  padding: 8px 18px;
+  color: var(--ltg-ink);
+  background: var(--ltg-green-soft);
+  border-bottom: 1px solid #bfd3ca;
+  font: 500 12px/1.45 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  text-align: center;
+}
+
+.ltg-review-note strong { font-weight: 800; }
+
+.ltg-site-nav a:focus-visible,
+.ltg-review-note a:focus-visible {
+  outline: 3px solid var(--ltg-amber);
+  outline-offset: 2px;
+}
+
+@media (max-width: 720px) {
+  .ltg-site-nav__inner { padding-inline: 12px; }
+  .ltg-site-nav__brand { align-items: flex-start; flex-direction: column; gap: 2px; }
+  .ltg-site-nav__brand span { font-size: 11px; }
+  .ltg-site-nav__tabs a { padding: 6px 9px; font-size: 12px; }
+  .ltg-review-note { padding-inline: 12px; text-align: left; }
+}
+
+@media print {
+  .ltg-site-nav,
+  .ltg-review-note { display: none !important; }
+}

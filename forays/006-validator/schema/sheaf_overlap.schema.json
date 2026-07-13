@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sheaf_overlap.schema.json",
+  "title": "Sheaf Overlap",
+  "type": "object",
+  "required": [
+    "id",
+    "left_patch",
+    "right_patch",
+    "left_key",
+    "right_key",
+    "rule_id",
+    "ruleset",
+    "expected_keys"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "left_patch": {
+      "type": "string"
+    },
+    "right_patch": {
+      "type": "string"
+    },
+    "expected_keys": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "left_key": {
+      "type": "string"
+    },
+    "right_key": {
+      "type": "string"
+    },
+    "rule_id": {
+      "type": "string",
+      "enum": [
+        "pump_power_rule",
+        "access_block_rule"
+      ]
+    },
+    "ruleset": {
+      "type": "object"
+    },
+    "resolved_conflicts_minutes": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    }
+  },
+  "additionalProperties": true
+}

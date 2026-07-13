@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="The Tangled Triangle: an interactive local-to-global project compatibility essay.">
+  <title>The Tangled Triangle · Local to Global</title>
+  <link rel="stylesheet" href="../assets/site.css?v=20260713">
+  <link rel="stylesheet" href="../assets/tangled-triangle.css?v=20260713">
+  <script defer src="../assets/site-nav.js?v=20260713"></script>
+  <script defer src="../assets/tangled-triangle.js?v=20260713"></script>
+</head>
+<body data-ltg-page="triangle">
+  <header class="triangle-hero">
+    <div>
+      <p class="eyebrow">Essay 03 · worked scenario</p>
+      <h1>The Tangled Triangle</h1>
+    </div>
+    <p class="hero-question">Five local constraint views describe the same difficult site. Do they leave any locations that can exist in the global project account—or do their overlaps reveal an obstruction?</p>
+  </header>
+
+  <main>
+    <section class="premise" aria-labelledby="premise-title">
+      <h2 id="premise-title">A different use of the original brief</h2>
+      <p>The source scenario asks for a project and system architecture for a regional signalling control centre on a triangular site: canal to the south, road to the west, railway on a viaduct, an overhead high-voltage line and an old mine passage below. Here the aim is narrower. Each specialist supplies one local exclusion rule. The checker asks whether those rules can be patched into a candidate global location.</p>
+      <p class="caveat"><strong>Model status:</strong> a finite, sheaf-shaped compatibility toy. It is not a full sheaf construction, site survey, design or safety assessment. Diagram units and clearances are illustrative.</p>
+    </section>
+
+    <section class="lab" aria-labelledby="lab-title">
+      <div class="lab-heading">
+        <div><p class="eyebrow">Compatibility lab</p><h2 id="lab-title">Move the local boundaries</h2></div>
+        <div class="preset-group" aria-label="Scenario presets">
+          <button type="button" data-preset="balanced" aria-pressed="true">Balanced</button>
+          <button type="button" data-preset="rail">Rail works</button>
+          <button type="button" data-preset="power">Power corridor</button>
+          <button type="button" data-preset="mine">Mine uncertainty</button>
+          <button type="button" data-preset="blocked">No global fit</button>
+        </div>
+      </div>
+
+      <div class="controls" aria-label="Local clearance rules">
+        <label>Road edge <span><output for="road-buffer" id="road-value">70</output> units</span><input id="road-buffer" type="range" min="20" max="170" step="5" value="70"></label>
+        <label>Canal edge <span><output for="canal-buffer" id="canal-value">50</output> units</span><input id="canal-buffer" type="range" min="20" max="130" step="5" value="50"></label>
+        <label>Rail edge <span><output for="rail-buffer" id="rail-value">40</output> units</span><input id="rail-buffer" type="range" min="15" max="130" step="5" value="40"></label>
+        <label>Power corridor <span><output for="power-buffer" id="power-value">70</output> units</span><input id="power-buffer" type="range" min="25" max="180" step="5" value="70"></label>
+        <label>Mine uncertainty <span><output for="mine-buffer" id="mine-value">50</output> units</span><input id="mine-buffer" type="range" min="20" max="130" step="5" value="50"></label>
+      </div>
+
+      <div class="metrics" aria-live="polite">
+        <div><span>Global candidates</span><strong id="viable-count">—</strong><small>sampled locations satisfying all five rules</small></div>
+        <div><span>Best minimum margin</span><strong id="best-margin">—</strong><small>the tightest rule at the strongest candidate</small></div>
+        <div><span>Selected location</span><strong id="selected-margin">—</strong><small id="selected-summary">Select a dot on the plan</small></div>
+      </div>
+
+      <div class="visual-layout">
+        <div class="plan-wrap">
+          <svg id="triangle-plan" viewBox="40 90 830 535" role="img" aria-labelledby="plan-title plan-desc">
+            <title id="plan-title">Tangled Triangle candidate compatibility plan</title>
+            <desc id="plan-desc">A triangular site with road, canal, railway, power line and mine constraints. Dots show sampled candidate locations; filled circles satisfy all local rules.</desc>
+            <defs>
+              <clipPath id="site-clip"><polygon points="100,200 100,550 800,550"></polygon></clipPath>
+              <pattern id="grid" width="25" height="25" patternUnits="userSpaceOnUse"><path d="M25 0H0V25" fill="none" stroke="#d6d0c0" stroke-width="1"></path></pattern>
+            </defs>
+            <polygon class="site-field" points="100,200 100,550 800,550"></polygon>
+            <polygon class="site-grid" points="100,200 100,550 800,550"></polygon>
+            <g clip-path="url(#site-clip)">
+              <rect id="road-zone" class="exclusion road-zone" x="100" y="160" width="70" height="430"></rect>
+              <rect id="canal-zone" class="exclusion canal-zone" x="70" y="500" width="760" height="50"></rect>
+              <polygon id="rail-zone" class="exclusion rail-zone" points="100,200 800,550 800,590 100,240"></polygon>
+              <rect id="power-zone" class="exclusion power-zone" x="380" y="150" width="140" height="440"></rect>
+              <rect id="mine-zone" class="exclusion mine-zone" x="70" y="300" width="760" height="100"></rect>
+            </g>
+            <g class="source-lines" aria-hidden="true">
+              <line class="road" x1="100" y1="150" x2="100" y2="585"></line>
+              <line class="canal" x1="65" y1="550" x2="835" y2="550"></line>
+              <line class="rail" x1="78" y1="189" x2="825" y2="562"></line>
+              <line class="power" x1="450" y1="135" x2="450" y2="580"></line>
+              <line class="mine" x1="70" y1="350" x2="825" y2="350"></line>
+            </g>
+            <g id="candidate-layer"></g>
+            <g class="feature-labels" aria-hidden="true">
+              <text x="72" y="175">ROAD</text><text x="715" y="585">CANAL</text>
+              <text x="675" y="485" transform="rotate(26.6 675 485)">ELEVATED RAILWAY</text>
+              <text x="462" y="170">HIGH-VOLTAGE LINE</text><text x="615" y="339">OLD MINE PASSAGE</text>
+            </g>
+          </svg>
+          <div class="legend" aria-label="Candidate legend"><span><i class="dot viable"></i>compatible</span><span><i class="dot near"></i>near obstruction</span><span><i class="dot blocked"></i>blocked</span><span><i class="line mine"></i>subsurface</span></div>
+        </div>
+
+        <aside class="selection" aria-labelledby="selection-title">
+          <p class="eyebrow">Selected local assignment</p>
+          <h3 id="selection-title">Choose a candidate</h3>
+          <p id="selection-lede">Each dot is one possible global location tested against the five independent local restrictions.</p>
+          <dl id="margin-list">
+            <div><dt>Road</dt><dd>—</dd></div><div><dt>Canal</dt><dd>—</dd></div><div><dt>Rail</dt><dd>—</dd></div><div><dt>Power</dt><dd>—</dd></div><div><dt>Mine</dt><dd>—</dd></div>
+          </dl>
+          <p class="metric-note"><strong>M(x)</strong> is the smallest of the five margins. Positive means every declared local rule agrees at this sampled point; negative locates at least one obstruction.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="overlaps" aria-labelledby="overlap-title">
+      <div class="section-intro"><p class="eyebrow">What is actually being patched?</p><h2 id="overlap-title">Local views and their overlaps</h2><p>The important modelling move is not to call a WBS a sheaf. It is to choose meaningful local views, say where they overlap, and define what agreement means there.</p></div>
+      <div class="overlap-grid">
+        <article><span>01 · Ground boundary</span><h3>Road × canal</h3><p>The western and southern boundaries meet at a fixed corner. Their local coordinate accounts already agree.</p><strong class="fixed">Fixed by brief</strong></article>
+        <article><span>02 · Transport structure</span><h3>Rail × road × canal</h3><p>The viaduct crosses both ground features. Its construction clearance is compared with their usable site envelope.</p><strong id="transport-status">Checking…</strong></article>
+        <article><span>03 · Airspace</span><h3>Site × power</h3><p>The overhead corridor restricts candidates on both sides of the line without changing the ground boundary.</p><strong id="power-status">Checking…</strong></article>
+        <article><span>04 · Subsurface</span><h3>Foundation × mine</h3><p>The mine account removes a band from the otherwise two-dimensional site view.</p><strong id="mine-status">Checking…</strong></article>
+        <article class="global-patch"><span>05 · Global section</span><h3>All five local views</h3><p>A candidate survives only when every restriction returns a non-negative margin at the same location.</p><strong id="global-status">Checking…</strong></article>
+      </div>
+    </section>
+
+    <section class="method" aria-labelledby="method-title">
+      <div><p class="eyebrow">Method boundary</p><h2 id="method-title">Let the model propose; let the checker judge</h2></div>
+      <ol>
+        <li><strong>Extract.</strong> A language model can propose local objects, boundaries, units and candidate overlaps from briefs and package records.</li>
+        <li><strong>Declare.</strong> A human makes the cover, translations, tolerances and authority explicit.</li>
+        <li><strong>Check.</strong> Deterministic code compares the declared local assignments on their overlaps.</li>
+        <li><strong>Investigate.</strong> A failed patch names the boundary to revisit; it is not silently “resolved” by fluent synthesis.</li>
+      </ol>
+    </section>
+  </main>
+  <footer>Adapted from the Tangled Triangle one-shot project and system architecture scenario. <a href="../SOURCES.md">Sources and limits</a>.</footer>
+</body>
+</html>

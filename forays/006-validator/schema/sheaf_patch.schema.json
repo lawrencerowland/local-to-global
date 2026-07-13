@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sheaf_patch.schema.json",
+  "title": "Sheaf Patch",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "owner",
+    "domain",
+    "schema",
+    "records"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "owner": {
+      "type": "string"
+    },
+    "domain": {
+      "type": "string"
+    },
+    "schema": {
+      "type": "object",
+      "required": [
+        "id_field",
+        "status_field",
+        "timestamp_field"
+      ],
+      "properties": {
+        "id_field": {
+          "type": "string"
+        },
+        "status_field": {
+          "type": "string"
+        },
+        "timestamp_field": {
+          "type": "string"
+        },
+        "location_fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "Must include at least the id/status/timestamp fields declared in 'schema'. Additional fields allowed."
+      }
+    }
+  },
+  "additionalProperties": true
+}

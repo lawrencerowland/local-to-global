@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>A director's primer · Local to Global</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#0f1930;
+      --text:#eaf2ff;
+      --muted:#b7c4df;
+      --accent:#7dd3fc;
+      --accent2:#a78bfa;
+      --good:#34d399;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+    }
+    body{
+      margin:0;
+      background:
+        radial-gradient(1200px 600px at 80% 0%, rgba(125,211,252,.18), transparent 65%),
+        radial-gradient(900px 700px at 0% 10%, rgba(167,139,250,.14), transparent 60%),
+        linear-gradient(180deg, #060917, #070c1d);
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      line-height:1.5;
+    }
+    header{
+      padding: 26px 18px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,0));
+      position: sticky;
+      top:0;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 10;
+    }
+    header h1{
+      margin:0;
+      font-size: 20px;
+      letter-spacing: 0.2px;
+    }
+    header p{ margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+    main{ max-width: 980px; margin: 0 auto; padding: 18px; }
+    .layout{
+      display: grid;
+      grid-template-columns: 1.3fr .7fr;
+      gap: 14px;
+    }
+    @media (max-width: 900px){
+      .layout{ grid-template-columns: 1fr; }
+    }
+    .card{
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    .card h2{
+      margin:0 0 10px;
+      font-size: 16px;
+    }
+    .card p{ color: var(--muted); margin: 0 0 12px; }
+    .grid-btns{
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .btn{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.20);
+      color: inherit;
+      cursor: pointer;
+      transition: transform .07s ease, background .2s ease, border-color .2s ease;
+    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(0,0,0,.28); border-color: rgba(255,255,255,.18); }
+    .btn:active{ transform: translateY(0px); }
+    .btn small{ color: var(--muted); }
+    .btn .dot{
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.25);
+      box-shadow: 0 0 0 4px rgba(255,255,255,.05);
+      flex: 0 0 auto;
+    }
+    .btn[data-status="good"] .dot{ background: var(--good); box-shadow: 0 0 0 4px rgba(52,211,153,.12); }
+    .btn[data-status="warn"] .dot{ background: var(--warn); box-shadow: 0 0 0 4px rgba(251,191,36,.12); }
+    .btn[data-status="bad"] .dot{ background: var(--bad); box-shadow: 0 0 0 4px rgba(251,113,133,.12); }
+    .panel{
+      display: none;
+      margin: 12px 0 0;
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.02);
+      border: 1px solid rgba(255,255,255,.09);
+    }
+    .panel.open{ display: block; }
+    .panel h3{ margin: 0 0 8px; font-size: 14px; }
+    .panel ul{ margin: 8px 0 0 18px; color: var(--muted); }
+    .panel li{ margin: 6px 0; }
+    .pill{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.02);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .pill b{ color: var(--text); font-weight: 650; }
+    .tour{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items:center;
+    }
+    .tour .btn-inline{
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.10);
+      cursor: pointer;
+      color: var(--text);
+    }
+    .tour .btn-inline:hover{ background: rgba(255,255,255,.05); }
+    .mini-table{
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(0,0,0,.18);
+      margin-top: 12px;
+    }
+    .mini-table td, .mini-table th{
+      padding: 8px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .mini-table th{ color: var(--text); background: rgba(255,255,255,.04); }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.02);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .badge span{ width:8px; height:8px; border-radius:50%; background: rgba(255,255,255,.22);}
+    .badge.good span{ background: var(--good);}
+    .badge.warn span{ background: var(--warn);}
+    .badge.bad span{ background: var(--bad);}
+    details{
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.09);
+      background: rgba(255,255,255,.01);
+      padding: 10px 14px;
+    }
+    summary{
+      cursor:pointer;
+      color: var(--text);
+    }
+    summary::marker{ color: rgba(255,255,255,.5); }
+    footer{
+      margin-top: 20px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      color: var(--muted);
+      font-size: 12px;
+    }
+  </style>
+  <link rel="stylesheet" href="../assets/site.css?v=20260713">
+  <script defer src="../assets/site-nav.js?v=20260713"></script>
+</head>
+<body data-ltg-page="primer">
+
+<header>
+  <h1>Sheaf Models Unify Local Data Into Global Scope</h1>
+  <p>A director’s dashboard with “tap-for-meaning” buttons; the aim is to spot scope incoherence early—before it becomes cost.</p>
+</header>
+
+<main>
+  <div class="layout">
+    <!-- Left column -->
+    <section class="card">
+      <h2>What to press</h2>
+      <p class="pill"><b>Guidance</b>: Each button is a “local view”—press to see how it constrains the whole project narrative.</p>
+
+      <div class="grid-btns" id="btnGrid">
+        <button class="btn explain" data-target="problem" data-status="warn">
+          Problem <small>hidden contradictions</small>
+          <span class="dot"></span>
+        </button>
+        <button class="btn explain" data-target="method" data-status="good">
+          Method <small>sheaf over graph</small>
+          <span class="dot"></span>
+        </button>
+        <button class="btn explain" data-target="mechanism" data-status="good">
+          Mechanism <small>overlap consistency</small>
+          <span class="dot"></span>
+        </button>
+        <button class="btn explain" data-target="result" data-status="bad">
+          Result <small>detect incoherence</small>
+          <span class="dot"></span>
+        </button>
+        <button class="btn explain" data-target="nextstep" data-status="warn">
+          Next step <small>prototype with PMO</small>
+          <span class="dot"></span>
+        </button>
+        <button class="btn explain" data-target="projectgraph" data-status="good">
+          Project graph <small>who overlaps whom</small>
+          <span class="dot"></span>
+        </button>
+        <button class="btn explain" data-target="sheafintuition" data-status="warn">
+          Intuition <small>gluing local stories</small>
+          <span class="dot"></span>
+        </button>
+        <button class="btn explain" data-target="benefits" data-status="good">
+          Benefits <small>over traditional WBS</small>
+          <span class="dot"></span>
+        </button>
+        <button class="btn explain" data-target="governance" data-status="warn">
+          Governance <small>minimum policies</small>
+          <span class="dot"></span>
+        </button>
+        <button class="btn explain" data-target="prototypeplan" data-status="good">
+          Prototype plan <small>week-by-week</small>
+          <span class="dot"></span>
+        </button>
+        <button class="btn explain" data-target="engagement" data-status="warn">
+          Engagement <small>how to sell it</small>
+          <span class="dot"></span>
+        </button>
+        <button class="btn explain" data-target="faq" data-status="good">
+          FAQ <small>board-friendly answers</small>
+          <span class="dot"></span>
+        </button>
+      </div>
+
+      <!-- Panels -->
+      <div id="problem" class="panel">
+        <h3>Problem: Fragmented WBS views create hidden contradictions</h3>
+        <p>Different work-package managers carry “local truths” that cannot be simultaneously true when you stitch them into one programme-wide scope narrative. Contradictions hide in interfaces: dates, assumptions, inventory baselines, MEWP access, utility availability, temporary works ownership, and what counts as “done”.</p>
+        <ul>
+          <li><b>Symptom</b>: risk register grows faster than scope certainty.</li>
+          <li><b>Director red flag</b>: the word “interface” appears often but has no measurable constraints attached.</li>
+          <li><b>Why it costs</b>: incoherence forces scope rework or dispute resolution after commitment, when changes are most expensive.</li>
+        </ul>
+      </div>
+
+      <div id="method" class="panel">
+        <h3>Method: Model scope as a sheaf over the project graph</h3>
+        <p>A sheaf encodes local data on nodes and enforces “agreement” on overlap edges. The project graph is the map of overlaps: packages sharing assets, locations, milestones, or authority.</p>
+        <ul>
+          <li><b>Nodes</b>: WBS packages (Civils, Systems, Utilities, Traffic Management, etc.)</li>
+          <li><b>Edges</b>: overlaps/interfaces (shared corridor, shared crane, shared safety boundary)</li>
+          <li><b>Stalks</b> (sheaf-speak): the structured data each node carries (scope items, dates, quantities, constraints, ownership).</li>
+        </ul>
+      </div>
+
+      <div id="mechanism" class="panel">
+        <h3>Mechanism: Enforce consistency across overlapping work packages</h3>
+        <p>Each overlap edge restricts both sides to a common “view” (boundary conditions). If two packages disagree on any overlap attribute, the sheaf consistency check flags it as incoherent.</p>
+        <details>
+          <summary>Example overlap check (toy)</summary>
+          <table class="mini-table">
+            <tr><th>Overlap attribute</th><th>Pkg A says</th><th>Pkg B says</th><th>Status</th></tr>
+            <tr><td>Possession window</td><td>Fri 22:00–Sun 05:00</td><td>Fri 20:00–Sun 04:00</td><td><span class="badge bad"><span></span>Disagree</span></td></tr>
+            <tr><td>Utility diversion complete</td><td>Included</td><td>Assume already done</td><td><span class="badge warn"><span></span>Ambiguous</span></td></tr>
+            <tr><td>Temporary works owner</td><td>Pkg A</td><td>Pkg A</td><td><span class="badge good"><span></span>Consistent</span></td></tr>
+          </table>
+        </details>
+      </div>
+
+      <div id="result" class="panel">
+        <h3>Result: Detect incoherence before cost commitment</h3>
+        <p>Directors get an earlier, more objective signal than “gut feel” or “someone thought of it.” Incoherence becomes visible as a graph: you can rank which overlaps generate most contradictions and commission targeted integration work.</p>
+        <ul>
+          <li><b>Outputs</b>: incoherence list, heatmap by interface, and “who owns resolution”.</li>
+          <li><b>Near-miss capture</b>: turns “we’ll sort it out later” into a quantified scope risk.</li>
+        </ul>
+      </div>
+
+      <div id="nextstep" class="panel">
+        <h3>Next step: Prototype on live PMO data</h3>
+        <p>Start small with a single corridor or station section; the goal is not perfection but a proof that the method finds contradictions that humans miss. If it finds nothing, great—if it finds something, you’ve bought programme resilience cheaply.</p>
+        <div class="tour">
+          <button class="btn-inline" id="tourStep">Start guided tour</button>
+          <span class="pill"><b>Tip</b>: do this before a procurement gate.</span>
+        </div>
+      </div>
+
+      <div id="projectgraph" class="panel">
+        <h3>Project graph: the constraint map</h3>
+        <p>The graph is your interface register made precise: edges are the “gluing conditions” (shared constraints). Many issues on large UK programmes are basically graph topology problems: too many edges per node without a single owner.</p>
+        <ul>
+          <li><b>Good topology</b>: limited overlap degree, explicit ownership.</li>
+          <li><b>Bad topology</b>: one node overlapped by many, vague constraints (“as required”), no reconciliation mechanism.</li>
+        </ul>
+      </div>
+
+      <div id="sheafintuition" class="panel">
+        <h3>Sheaf intuition: gluing local stories into one coherent narrative</h3>
+        <p>Think of each package as an “essay” about the project and overlaps as the footnotes they must share. If two essays share footnotes that disagree, they can’t be combined into a single publication.</p>
+        <p>A sheaf is the rulebook that says: the global story exists if and only if all shared footnotes match.</p>
+      </div>
+
+      <div id="benefits" class="panel">
+        <h3>Benefits vs. traditional WBS</h3>
+        <p>WBS is great for accountability but poor at constraints because interfaces live in unstructured documents. Sheaf modelling upgrades interfaces to first-class, checkable objects.</p>
+        <ul>
+          <li><b>Less reliance on hero integration managers</b> and more on machine-checkable consistency.</li>
+          <li><b>Supports assurance</b>: repeatable checks, audit trails, “why this was flagged”.</li>
+        </ul>
+      </div>
+
+      <div id="governance" class="panel">
+        <h3>Governance: minimum policies you need</h3>
+        <p>Directors don’t need to become category theorists; you need policy about what constitutes an overlap and who provides/approves the boundary data.</p>
+        <ul>
+          <li><b>Rule 1</b>: Every overlap has a declared owner (even if it’s shared).</li>
+          <li><b>Rule 2</b>: Overlap data is structured (not paragraphs in a PDF).</li>
+          <li><b>Rule 3</b>: Each gate includes an incoherence check: “Can we glue these packages?”</li>
+        </ul>
+      </div>
+
+      <div id="prototypeplan" class="panel">
+        <h3>Prototype plan: week-by-week</h3>
+        <table class="mini-table">
+          <tr><th>Week</th><th>Director-level activity</th><th>Deliverable</th></tr>
+          <tr><td>1</td><td>Pick one corridor + top 10 overlaps</td><td>Scope-graph “slice”</td></tr>
+          <tr><td>2</td><td>Structure overlap attributes</td><td>Overlap schema (dates, owners, quantities)</td></tr>
+          <tr><td>3</td><td>Run checks; escalate contradictions</td><td>Ranked incoherence list</td></tr>
+          <tr><td>4</td><td>Package a management narrative</td><td>“What we found + what we fixed”</td></tr>
+        </table>
+      </div>
+
+      <div id="engagement" class="panel">
+        <h3>Engagement: how to sell it to a project director</h3>
+        <p>Frame it as assurance + decision quality: a way to stop surprises, not an academic exercise. The language to use is “interface discipline” and “early detection”, not “category theory”.</p>
+      </div>
+
+      <div id="faq" class="panel">
+        <h3>FAQ (director-ready)</h3>
+        <details>
+          <summary>Is this “AI”? No, it’s better for governance.</summary>
+          <p>It’s structural inference: a consistency check across overlaps. You can layer AI later for data extraction, but the value is in enforcing a coherent global scope definition.</p>
+        </details>
+        <details>
+          <summary>What do I need to fund?</summary>
+          <p>Minimal: one integration lead (part time), access to existing PMO data, and someone who can build a small check engine. The expensive bit is not software—it's agreeing the overlap schema.</p>
+        </details>
+        <details>
+          <summary>What could go wrong?</summary>
+          <p>If you model overlaps vaguely, everything is “coherent” because you aren’t checking anything; or you get false alarms because attributes are unstructured. The cure is clear schema design.</p>
+        </details>
+      </div>
+
+      <footer>
+        Coda: If you model “safety constraints” as overlaps too, the sheaf consistency check becomes a lightweight safety case sanity-check before you even touch engineering.
+      </footer>
+    </section>
+
+    <!-- Right column -->
+    <aside class="card">
+      <h2>Explainer stack (you can tell your board)</h2>
+      <p>Each “node” is a team view; each overlap is an interface. Sheaf checks are the maths-equivalent of making sure everyone’s interface contract has the same numbers.</p>
+
+      <details open>
+        <summary><b>Mini-glossary</b></summary>
+        <ul>
+          <li><b>Sheaf</b>: a rule that says local pieces must agree on overlaps to form a global solution.</li>
+          <li><b>Restriction</b>: the part of a package’s data that is relevant to an overlap.</li>
+          <li><b>Global section</b>: the consistent project-wide scope story that glues all overlaps.</li>
+        </ul>
+      </details>
+
+      <h3 style="margin-top: 14px;">Interactive toy-check</h3>
+      <p style="margin-top: 0;">Pick a contradiction and see how “local disagreement” blocks global coherence.</p>
+
+      <div class="grid-btns" style="grid-template-columns: 1fr;">
+        <button class="btn toy" data-id="poss">Possession window mismatch <small>time overlap</small><span class="dot"></span></button>
+        <button class="btn toy" data-id="scope">Scope boundary mismatch <small>scope overlap</small><span class="dot"></span></button>
+        <button class="btn toy" data-id="owner">Ownership mismatch <small>authority overlap</small><span class="dot"></span></button>
+      </div>
+
+      <div class="panel open" id="toyPanel" aria-live="polite">
+        <h3 id="toyTitle">Press a toy check</h3>
+        <p id="toyBody">This panel will explain what the sheaf consistency check would flag, and what decision it supports (stop/go, target assurance, or procurement condition).</p>
+      </div>
+
+      <details style="margin-top: 12px;">
+        <summary><b>Director take-away</b></summary>
+        <p>If overlaps are consistently defined and structured, you can run coherence checks quickly and repeatedly—as a gate, as a weekly integration discipline, or as an audit surface.</p>
+      </details>
+    </aside>
+  </div>
+</main>
+
+<script>
+(function(){
+  function closeAll(){ document.querySelectorAll('.panel').forEach(p => p.classList.remove('open')); }
+
+  // explainer buttons open panels
+  document.querySelectorAll('.btn.explain').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const target = btn.dataset.target;
+      const panel = document.getElementById(target);
+      const open = panel.classList.contains('open');
+      closeAll();
+      if(!open) panel.classList.add('open');
+      panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+    });
+  });
+
+  // toy checks
+  const toyTitle = document.getElementById('toyTitle');
+  const toyBody = document.getElementById('toyBody');
+  const toyPanel = document.getElementById('toyPanel');
+
+  const toyMap = {
+    poss: {
+      title: 'Time overlap inconsistency (possessions / isolations)',
+      body: 'Two packages share a closure window; if their stated windows differ, neither schedule can be “true” in the same physical world. The sheaf check blocks a false “green” schedule and forces an agreement before you commit labour/cost.'
+    },
+    scope: {
+      title: 'Scope boundary inconsistency (what is included)',
+      body: 'If Package A says it will deliver “Utility diversion to manhole X” but Package B assumes “utilities already diverted”, the overlap can’t glue. The director decision is: enforce an overlap definition and assign ownership before procurement—or your contract will price ambiguity as contingency.'
+    },
+    owner: {
+      title: 'Ownership inconsistency (authority and temporary works)',
+      body: 'Where two packages overlap on ownership (e.g., temporary works, acceptance criteria, permit authority), disagreement means escalation structure is undefined. The sheaf check turns “a governance guess” into a visible incoherence that must be resolved before gate approval.'
+    }
+  };
+
+  document.querySelectorAll('.btn.toy').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.dataset.id;
+      const t = toyMap[id];
+      toyTitle.textContent = t.title;
+      toyBody.textContent = t.body;
+      toyPanel.classList.add('open');
+      toyPanel.scrollIntoView({behavior:'smooth', block:'nearest'});
+    });
+  });
+
+  // guided tour: opens panels sequentially
+  const tourOrder = ['problem','projectgraph','method','mechanism','result','nextstep','prototypeplan','governance','benefits','faq'];
+  let tourIdx = 0;
+  const tourBtn = document.getElementById('tourStep');
+
+  function advanceTour(){
+    closeAll();
+    const target = tourOrder[tourIdx % tourOrder.length];
+    document.getElementById(target).classList.add('open');
+    document.getElementById(target).scrollIntoView({behavior:'smooth', block:'nearest'});
+    tourBtn.textContent = 'Next (' + (tourIdx+1) + '/' + tourOrder.length + ')';
+    tourIdx++;
+  }
+
+  if(tourBtn){
+    tourBtn.addEventListener('click', advanceTour);
+  }
+
+})();
+</script>
+
+</body>
+</html>

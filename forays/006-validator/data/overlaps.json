@@ -1,0 +1,134 @@
+{
+  "overlaps": [
+    {
+      "id": "EA\u00d7DNO-PumpPower",
+      "left_patch": "EA-Severn-Cell",
+      "right_patch": "DNO-West-Glos",
+      "expected_keys": [
+        "P-001",
+        "P-002",
+        "P-003",
+        "P-004",
+        "P-005",
+        "P-006",
+        "P-007"
+      ],
+      "left_key": "pump_id",
+      "right_key": "asset_id",
+      "rule_id": "pump_power_rule",
+      "ruleset": {
+        "contradict_pairs": [
+          [
+            "OPERATIONAL",
+            "POWER_LOSS"
+          ]
+        ],
+        "allowed_pairs": [
+          [
+            "OPERATIONAL",
+            "POWERED"
+          ],
+          [
+            "OFFLINE",
+            "POWER_LOSS"
+          ],
+          [
+            "OFFLINE",
+            "POWERED"
+          ],
+          [
+            "UNKNOWN",
+            "POWERED"
+          ],
+          [
+            "UNKNOWN",
+            "POWER_LOSS"
+          ],
+          [
+            "UNKNOWN",
+            "UNKNOWN"
+          ]
+        ],
+        "status_fields": {
+          "left": "status",
+          "right": "power_status"
+        },
+        "timestamp_fields": {
+          "left": "updated_at",
+          "right": "updated_at"
+        },
+        "max_skew_minutes": 30
+      },
+      "resolved_conflicts_minutes": [
+        45,
+        30,
+        75
+      ]
+    },
+    {
+      "id": "EA\u00d7Highways-Access",
+      "left_patch": "EA-Severn-Cell",
+      "right_patch": "Highways-Glos",
+      "expected_keys": [
+        "R-101",
+        "R-102",
+        "R-103",
+        "R-104",
+        "R-105",
+        "R-106",
+        "R-107"
+      ],
+      "left_key": "access_road_id",
+      "right_key": "road_id",
+      "rule_id": "access_block_rule",
+      "ruleset": {
+        "visit_field": "visit_required",
+        "road_status_field": "segment_status",
+        "closed_values": [
+          "CLOSED"
+        ],
+        "timestamp_fields": {
+          "left": "updated_at",
+          "right": "updated_at"
+        }
+      },
+      "resolved_conflicts_minutes": [
+        20,
+        15
+      ]
+    },
+    {
+      "id": "DNO\u00d7Highways-Access",
+      "left_patch": "DNO-West-Glos",
+      "right_patch": "Highways-Glos",
+      "expected_keys": [
+        "R-101",
+        "R-102",
+        "R-103",
+        "R-104",
+        "R-105",
+        "R-106",
+        "R-107"
+      ],
+      "left_key": "substation_access_road_id",
+      "right_key": "road_id",
+      "rule_id": "access_block_rule",
+      "ruleset": {
+        "visit_field": "crew_required",
+        "road_status_field": "segment_status",
+        "closed_values": [
+          "CLOSED"
+        ],
+        "timestamp_fields": {
+          "left": "updated_at",
+          "right": "updated_at"
+        }
+      },
+      "resolved_conflicts_minutes": [
+        40,
+        55,
+        35
+      ]
+    }
+  ]
+}

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sheaf Models for Scope Coherence</title>
+  <title>Project director view · Local to Global</title>
   <style>
     :root {
       --bg-dark: #0f172a;
@@ -841,8 +841,10 @@
       .step::before { display: none; }
     }
   </style>
+  <link rel="stylesheet" href="../assets/site.css?v=20260713">
+  <script defer src="../assets/site-nav.js?v=20260713"></script>
 </head>
-<body>
+<body data-ltg-page="director">
   <div class="page">
     <header class="topbar">
       <div class="brand">
@@ -855,7 +857,7 @@
       <div class="top-actions">
         <label class="pill-input">
           <span>Project name</span>
-          <input id="projectName" type="text" value="Movar public-sector pilot" aria-label="Project name" />
+          <input id="projectName" type="text" value="Illustrative public-sector pilot" aria-label="Project name" />
         </label>
         <button class="action" id="copySummary">Copy 90-second summary</button>
         <button class="action secondary" id="printView">Print clean view</button>

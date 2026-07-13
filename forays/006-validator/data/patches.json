@@ -1,0 +1,196 @@
+{
+  "patches": [
+    {
+      "id": "EA-Severn-Cell",
+      "name": "EA Severn Cell",
+      "owner": "Environment Agency",
+      "domain": "flood_pumps",
+      "schema": {
+        "id_field": "pump_id",
+        "status_field": "status",
+        "timestamp_field": "updated_at",
+        "location_fields": [
+          "lat",
+          "lon"
+        ]
+      },
+      "records": [
+        {
+          "pump_id": "P-001",
+          "lat": 51.86,
+          "lon": -2.24,
+          "status": "OPERATIONAL",
+          "updated_at": "2025-10-04T10:20:00Z",
+          "confidence": 0.92,
+          "access_road_id": "R-101",
+          "visit_required": false
+        },
+        {
+          "pump_id": "P-002",
+          "lat": 51.88,
+          "lon": -2.21,
+          "status": "OFFLINE",
+          "updated_at": "2025-10-04T10:15:00Z",
+          "confidence": 0.9,
+          "access_road_id": "R-102",
+          "visit_required": true
+        },
+        {
+          "pump_id": "P-003",
+          "lat": 51.84,
+          "lon": -2.2,
+          "status": "UNKNOWN",
+          "updated_at": "2025-10-04T09:50:00Z",
+          "confidence": 0.6,
+          "access_road_id": "R-103",
+          "visit_required": true
+        },
+        {
+          "pump_id": "P-004",
+          "lat": 51.83,
+          "lon": -2.27,
+          "status": "OPERATIONAL",
+          "updated_at": "2025-10-04T10:18:00Z",
+          "confidence": 0.95,
+          "access_road_id": "R-104",
+          "visit_required": false
+        },
+        {
+          "pump_id": "P-005",
+          "lat": 51.87,
+          "lon": -2.25,
+          "status": "OFFLINE",
+          "updated_at": "2025-10-04T10:05:00Z",
+          "confidence": 0.85,
+          "access_road_id": "R-105",
+          "visit_required": true
+        },
+        {
+          "pump_id": "P-006",
+          "lat": 51.89,
+          "lon": -2.23,
+          "status": "OPERATIONAL",
+          "updated_at": "2025-10-04T10:29:00Z",
+          "confidence": 0.96,
+          "access_road_id": "R-106",
+          "visit_required": false
+        }
+      ]
+    },
+    {
+      "id": "DNO-West-Glos",
+      "name": "DNO West Gloucester",
+      "owner": "Distribution Network Operator West",
+      "domain": "grid",
+      "schema": {
+        "id_field": "asset_id",
+        "status_field": "power_status",
+        "timestamp_field": "updated_at",
+        "location_fields": [
+          "lat",
+          "lon"
+        ]
+      },
+      "records": [
+        {
+          "asset_id": "P-001",
+          "lat": 51.86,
+          "lon": -2.24,
+          "power_status": "POWERED",
+          "updated_at": "2025-10-04T10:22:00Z",
+          "crew_required": false,
+          "substation_access_road_id": "R-101"
+        },
+        {
+          "asset_id": "P-002",
+          "lat": 51.88,
+          "lon": -2.21,
+          "power_status": "POWERED",
+          "updated_at": "2025-10-04T10:16:00Z",
+          "crew_required": false,
+          "substation_access_road_id": "R-102"
+        },
+        {
+          "asset_id": "P-003",
+          "lat": 51.84,
+          "lon": -2.2,
+          "power_status": "POWER_LOSS",
+          "updated_at": "2025-10-04T10:00:00Z",
+          "crew_required": true,
+          "substation_access_road_id": "R-103"
+        },
+        {
+          "asset_id": "P-004",
+          "lat": 51.83,
+          "lon": -2.27,
+          "power_status": "POWER_LOSS",
+          "updated_at": "2025-10-04T10:17:00Z",
+          "crew_required": true,
+          "substation_access_road_id": "R-104"
+        },
+        {
+          "asset_id": "P-005",
+          "lat": 51.87,
+          "lon": -2.25,
+          "power_status": "POWER_LOSS",
+          "updated_at": "2025-10-04T10:04:00Z",
+          "crew_required": true,
+          "substation_access_road_id": "R-105"
+        },
+        {
+          "asset_id": "P-006",
+          "lat": 51.89,
+          "lon": -2.23,
+          "power_status": "POWERED",
+          "updated_at": "2025-10-04T10:28:00Z",
+          "crew_required": false,
+          "substation_access_road_id": "R-106"
+        }
+      ]
+    },
+    {
+      "id": "Highways-Glos",
+      "name": "County Highways Gloucester",
+      "owner": "County Highways",
+      "domain": "roads",
+      "schema": {
+        "id_field": "road_id",
+        "status_field": "segment_status",
+        "timestamp_field": "updated_at",
+        "location_fields": []
+      },
+      "records": [
+        {
+          "road_id": "R-101",
+          "segment_status": "OPEN",
+          "updated_at": "2025-10-04T10:05:00Z"
+        },
+        {
+          "road_id": "R-102",
+          "segment_status": "CLOSED",
+          "updated_at": "2025-10-04T10:12:00Z"
+        },
+        {
+          "road_id": "R-103",
+          "segment_status": "OPEN",
+          "updated_at": "2025-10-04T10:00:00Z"
+        },
+        {
+          "road_id": "R-104",
+          "segment_status": "OPEN",
+          "updated_at": "2025-10-04T10:08:00Z"
+        },
+        {
+          "road_id": "R-105",
+          "segment_status": "CLOSED",
+          "updated_at": "2025-10-04T10:09:00Z"
+        },
+        {
+          "road_id": "R-106",
+          "segment_status": "OPEN",
+          "updated_at": "2025-10-04T10:07:00Z"
+        }
+      ]
+    }
+  ]
+}
