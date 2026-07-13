@@ -2,6 +2,8 @@
 
 This is the public workbench for Portfolio Wave **Foray 140**.
 
+Plan-layer handshake: `FORAY-LOCAL-TO-GLOBAL` · `PW-LDGW-001` · local receipt `R-006`.
+
 The central question is whether project scope, WBS, state, schedule or risk can be represented so that a coherent global view is patched from useful local accounts—without hiding the disagreements at their interfaces.
 
 The site deliberately contains several separate essays rather than one integrated model:
