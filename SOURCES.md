@@ -27,6 +27,8 @@ The useful formal pattern is:
 
 Choosing the cover—the parts, interfaces and levels on which this test is performed—is a substantive modelling decision. A WBS hierarchy alone is not automatically a sheaf, and adding mathematical vocabulary does not make an arbitrary dashboard rigorous.
 
+Essay 001 now makes that boundary executable: six explicit equality/capacity rules compare fictional projected fields, with missing information reported separately. Its compatible tuple is a result of those finite constraints. The stronger sheaf condition requires unique gluing of compatible local sections; see the [Mathlib formulation and proof](https://leanprover-community.github.io/mathlib_docs/topology/sheaves/sheaf_condition/unique_gluing.html). The example does not establish those axioms for project data.
+
 ## Images
 
 The two picture essays use generated mnemonic images supplied with the foray. They are aids to thought, not mathematical diagrams, evidence or proofs.

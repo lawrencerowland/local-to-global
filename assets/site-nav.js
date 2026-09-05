@@ -9,7 +9,6 @@
     ['director', 'Director view', 'forays/002-project-director.html'],
     ['triangle', 'Tangled Triangle', 'forays/003-tangled-triangle.html'],
     ['primer', 'Director primer', 'forays/004-director-primer.html'],
-    ['pmo', 'Infrastructure PMO', 'forays/005-infrastructure-pmo.html'],
     ['validator', 'Patch validator', 'forays/006-validator/index.html'],
     ['blueprint', 'Blueprint picture', 'forays/007-blueprint-picture.html'],
     ['navigation', 'Navigation picture', 'forays/008-navigation-picture.html']
@@ -17,11 +16,10 @@
 
   const reviewNotes = {
     home: 'A public workbench of separate essays. The pages are deliberately not collapsed into one final model.',
-    scope: 'Reviewed prototype. Package names, values and impacts are fictional; the checker demonstrates compatibility logic, not validated savings.',
+    scope: 'Worked prototype. Inspect declared interface rules and compare fictional scenarios; compatibility is limited to these six interfaces and does not validate project outcomes.',
     director: 'Reviewed prototype. It checks declared local facts on selected overlaps; it does not certify a whole project or remove judgement.',
     triangle: 'New worked essay. Geometry and clearance values are illustrative; the exercise is local-to-global compatibility, not engineering design.',
     primer: 'Reviewed teaching prototype. “Local truth” means a declared package fact in the toy model, not an independently verified fact.',
-    pmo: 'Reviewed early concept. Commercial values, dates, benefits and detection rates are illustrative and carry no empirical claim.',
     validator: 'Reviewed code demo. Sample data and red/amber/green thresholds are illustrative; exported reports describe only this toy dataset.',
     blueprint: 'Picture essay. The generated image is a mnemonic, not a mathematical diagram or proof.',
     navigation: 'Picture essay. The generated image is a prompt for thinking about scale, not a formal local-to-global model.'

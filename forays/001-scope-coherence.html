@@ -204,9 +204,29 @@
     #toast { left:16px; right:16px; bottom:16px; max-width:none; }
   }
 
+  button:focus-visible, a:focus-visible, select:focus-visible { outline:3px solid var(--cyan); outline-offset:4px; }
+  .wbs-header, .pkg-item { width:100%; color:var(--text); font:inherit; text-align:left; }
+  .wbs-header { border:0; cursor:pointer; }
+  .scope-claim.unchecked { border-left:3px solid var(--muted); background:var(--surface2); }
+  .scenario-bar { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin-bottom:16px; }
+  .scenario-bar select { padding:11px; max-width:100%; background:var(--surface2); color:var(--text); border:1px solid var(--border); border-radius:4px; font:inherit; }
+  .model-result { margin:0 0 20px; }
+  .model-result strong { display:block; margin-bottom:5px; }
+  .interface-button { border:0; background:none; color:var(--cyan); font:inherit; cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
+  .reading-note { margin-top:14px; color:var(--muted); font-size:13px; line-height:1.65; }
+  .reading-note a { color:var(--cyan); }
+  .rule-facts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:14px 0; }
+  .rule-facts div { padding:12px; border:1px solid var(--border); }
+  .rule-facts dt { color:var(--muted); font-size:12px; margin-bottom:6px; }
+  .rule-facts dd { margin:0; overflow-wrap:anywhere; }
+  .pmo-steps { padding-left:22px; line-height:1.7; }
+  .pmo-steps li { margin:0 0 12px; }
+  @media(max-width:560px) { .rule-facts { grid-template-columns:1fr; } .card { padding:18px; } }
+  @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *, *::before, *::after { animation:none !important; transition:none !important; } }
+
 </style>
 <link rel="stylesheet" href="../assets/site.css?v=20260713">
-<script defer src="../assets/site-nav.js?v=20260713"></script>
+<script defer src="../assets/site-nav.js?v=20260906"></script>
 </head>
 <body data-ltg-page="scope">
 
@@ -221,7 +241,7 @@
       <div>
         <div class="header-badge">Essay 01 · Formal Inspiration Applied</div>
         <h1>Scope <span>coherence</span><br>from local claims to a global view</h1>
-        <p class="subtitle">A fictional worked example showing how declared work-package scope registers can be compared on selected interfaces, patched where they agree, or rejected where they do not.</p>
+        <p class="subtitle">Four teams can each have a plausible scope register and still disagree about the same work. Explore the fictional Pennine Viaduct Renewal Programme: inspect the interface rules, resolve a drainage dispute, and see what still prevents a coherent global view.</p>
         <div class="hero-actions">
           <button class="btn btn-amber" onclick="jumpToSection('checker')">Open checker</button>
           <button class="btn btn-cyan" onclick="jumpToSection('concept')">See the model</button>
@@ -234,7 +254,7 @@
         <div class="flow">
           <div class="flow-step"><strong>Local</strong><span>Work package claims</span></div>
           <div class="flow-step"><strong>Interface</strong><span>Restriction maps</span></div>
-          <div class="flow-step"><strong>Global</strong><span>Coherent programme scope</span></div>
+          <div class="flow-step"><strong>Global</strong><span>A compatible declared slice</span></div>
         </div>
       </aside>
     </div>
@@ -257,6 +277,8 @@
   </div>
 </nav>
 
+<div class="container"><p class="reading-note">Interactive teaching example · fictional UK infrastructure programme. Choices change this page only and reset on reload; no project record, approval or file is created. Start with the problem, inspect a rule in the checker, then compare the resolved examples.</p></div>
+
 
 <!-- ============================================================
      SECTION 1: THE PROBLEM
@@ -271,8 +293,8 @@
 
     <div class="grid-3" style="margin-bottom:20px">
       <div class="card stat"><div class="stat-val amber">4</div><div class="stat-label">Work Packages</div></div>
-      <div class="card stat"><div id="conflict-count" class="stat-val red">?</div><div class="stat-label">Scope Conflicts</div></div>
-      <div class="card stat"><div id="risk-val" class="stat-val amber">?</div><div class="stat-label">Est. Cost at Risk</div></div>
+      <div class="card stat"><div id="conflict-count" class="stat-val red">?</div><div class="stat-label">Conflicting interfaces</div></div>
+      <div class="card stat"><div id="risk-val" class="stat-val amber">?</div><div class="stat-label">Interfaces needing clarification</div></div>
     </div>
 
     <div class="controls">
@@ -288,8 +310,8 @@
       <div class="annotation">
         <span class="icon">⚠️</span>
         <div>
-          <strong>Sheaf Incoherence Detected.</strong> The WBS contains overlapping scope claims with contradictory values across package boundaries. Without a sheaf consistency model, these contradictions remain invisible until cost commitment — typically at contract award or construction start.
-          <br><br>Click <strong>02 · Sheaf Concept</strong> to understand the mathematical framework that catches these automatically.
+          <strong id="problem-result">Declared interface check complete.</strong> Counts refer to interfaces, not highlighted rows: one disagreement can appear in two package registers. Missing information is kept separate from a contradiction. Reviewers may find the same issues by other methods; this example makes the selected comparisons repeatable.
+          <br><br><button class="interface-button" onclick="jumpToSection('checker')">Inspect the values and rules in the checker →</button>
         </div>
       </div>
     </div>
@@ -309,7 +331,7 @@
     <div class="grid-2" style="margin-bottom:20px">
       <div class="concept-box">
         <h3>The Project Graph</h3>
-        <p>Model the programme as a directed graph. Each node is a work package. Each edge represents an <strong>interface</strong> — shared physical space, shared deliverables, or shared resource claims between packages.</p>
+        <p>Use a graph of work packages and shared <strong>interfaces</strong>: physical space, deliverables or resources. The comparison maps run from each package to its interface; the line between two packages does not imply one controls the other.</p>
         <div class="math-block">
           G = (V, E)<br>
           V = {WP1, WP2, WP3, WP4}<br>
@@ -321,9 +343,9 @@
         <h3>Local Sections</h3>
         <p>Each work package carries <strong>local data</strong>: its own view of scope items, quantities, cost, and responsibility. This is the "local section" over that node.</p>
         <div class="math-block">
-          F(WP2) = {deck_concrete: 2400m³,<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bearings: "WP2 supply",<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;drainage: "WP2 install"}
+          x<sub>WP2</sub> ∈ F(WP2)<br>
+          x<sub>WP2</sub> = {drainage_installer: "WP2",<br>
+          &nbsp;&nbsp;containment_width_mm: 150}
         </div>
         <p>Here, “local sections” are the package facts declared for the overlapping zone. Their independent truth is not established by the checker.</p>
       </div>
@@ -350,13 +372,19 @@
       </div>
       <div class="concept-box">
         <h3>Gluing: Building Global Scope</h3>
-        <p>If the chosen local sections are compatible on every declared overlap, the model admits a <strong>candidate global section</strong> for that bounded slice. Uniqueness is not demonstrated here.</p>
+        <p>Collect the four local accounts into one tuple. This finite model calls that tuple a <strong>compatible candidate</strong> only when all six selected interface rules pass. A missing value keeps the result undecided.</p>
         <div class="math-block">
-          candidate s ∈ F(G) such that<br>
-          ρ<sub>V→e</sub>(s) = s<sub>e</sub> ∀ edges e
+          x = (x<sub>WP1</sub>, x<sub>WP2</sub>, x<sub>WP3</sub>, x<sub>WP4</sub>)<br>
+          test ρ<sub>v→e</sub>(x<sub>v</sub>) ~<sub>e</sub> ρ<sub>w→e</sub>(x<sub>w</sub>) for every e = {v,w}
         </div>
         <p>If gluing fails, these selected accounts cannot form one coherent view until the mismatch is investigated. Other unmodelled project facts remain outside the result.</p>
       </div>
+    </div>
+    <div class="card" style="margin-top:20px">
+      <div class="card-label">A restriction map in ordinary language</div>
+      <p class="reading-note">Keep the whole package register locally. For the drainage overlap, extract just the field <strong>installation owner</strong>. WP1 says WP1; WP2 says WP2. Those values fail the same-owner rule. The £420k and £380k estimates explain why the dispute matters, but unequal estimates alone do not establish duplicate scope.</p>
+      <p class="reading-note">The containment rule asks a different question: is the provided width at least the required width? The symbol ~<sub>e</sub> means the declared rule for that interface. Inequalities and missing-data states here are an applied compatibility model; they are not a proof of the existence or uniqueness axioms of a sheaf.</p>
+      <p class="reading-note"><strong>The cover is a choice.</strong> These four packages and six overlaps leave out other suppliers, time periods and constraints. Green means this declared slice agrees. It cannot establish completeness, engineering adequacy or whole-project approval.</p>
     </div>
   </div>
 </section>
@@ -368,9 +396,18 @@
   <div class="container">
     <div class="section-title">SHEAF CONSISTENCY CHECKER</div>
     <p class="section-desc">
-      Select a work package to inspect its interfaces. The checker applies restriction maps and tests coherence across every overlap.
-      Green = consistent. Amber = ambiguous. Red = incoherent — scope must be resolved before contract award.
+      Select a work package, then an interface to inspect the two projected values and their comparison rule. Green = passes the selected rule. Amber = information missing. Red = fails the selected rule.
     </p>
+
+    <div class="scenario-bar">
+      <label for="scenario-select">Compare a declared state</label>
+      <select id="scenario-select" onchange="setScenario(this.value)">
+        <option value="original">Original package accounts</option>
+        <option value="drainage">Drainage ownership agreed</option>
+        <option value="reconciled">All six interfaces reconciled</option>
+      </select>
+    </div>
+    <div class="annotation model-result" id="model-result" role="status" aria-live="polite"></div>
 
     <div class="checker-grid">
       <div>
@@ -406,13 +443,13 @@
   <div class="container">
     <div class="section-title">RESOLVING INCOHERENCE</div>
     <p class="section-desc">
-      When sheaf incoherence is detected, it triggers a structured resolution workflow.
-      This is <em>before</em> cost commitment — saving both time and budget.
+      Walk through an illustrative drainage decision. Advancing the example changes the declared owner in this browser and rechecks the interfaces. Resolving one dispute does not resolve every overlap.
     </p>
+    <p class="reading-note" id="resolution-state" role="status" aria-live="polite" style="margin-bottom:20px">Original accounts. No simulated ownership decision has been applied.</p>
 
     <div class="grid-2" style="margin-bottom:20px">
       <div class="card">
-        <div class="card-label">Conflict: Deck Drainage Ownership</div>
+        <div class="card-label">Starting conflict: Deck Drainage Ownership</div>
         <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px">
           <div class="scope-claim conflict">WP1 (Civils): drainage installation = £420k "in scope"</div>
           <div style="text-align:center;color:var(--muted);font-family:var(--mono);font-size:12px">≠ INCOHERENT</div>
@@ -420,7 +457,7 @@
         </div>
         <div class="annotation">
           <span class="icon">💷</span>
-          <div>Both packages have priced drainage installation. <strong>Potential double-count: £380–420k.</strong> If undetected, this represents either double payment or a gap when neither team actually delivers.</div>
+          <div>Both fictional packages claim the same installation work. The example estimates are £420k and £380k; the checker does not calculate a loss or saving. Package leads must agree the boundary, responsible party and any commercial adjustment.</div>
         </div>
       </div>
 
@@ -429,27 +466,27 @@
         <div class="timeline">
           <div class="timeline-item done">
             <div class="timeline-label">Step 01 · Detected</div>
-            <div class="timeline-title">Sheaf Incoherence Flagged</div>
+            <div class="timeline-title">Two installation owners found</div>
             <div class="timeline-text">Automated checker identifies restriction map mismatch on WP1 ∩ WP2 interface.</div>
           </div>
           <div class="timeline-item active" id="res-step2">
             <div class="timeline-label">Step 02 · In Progress</div>
             <div class="timeline-title">Interface Meeting Called</div>
-            <div class="timeline-text">Package leads for WP1 and WP2 convened within 48hrs of flag. Design authority chairs.</div>
+            <div class="timeline-text">Illustrative response: package leads compare their scope definitions with the design authority. No actual meeting or approval is recorded by this demo.</div>
           </div>
           <div class="timeline-item" id="res-step3">
             <div class="timeline-label">Step 03 · Pending</div>
-            <div class="timeline-title">Canonical Section Assigned</div>
-            <div class="timeline-text">Single responsible party assigned. WBS updated. Restriction maps re-run to verify coherence.</div>
+            <div class="timeline-title">Agree WP1 as installation owner</div>
+            <div class="timeline-text">Both toy accounts now name WP1 for deck installation. WP2 retains outfall connections; real scope and commercial changes would need their normal authority.</div>
           </div>
           <div class="timeline-item" id="res-step4">
             <div class="timeline-label">Step 04 · Pending</div>
-            <div class="timeline-title">Global Gluing Re-attempted</div>
-            <div class="timeline-text">The declared interface set is re-checked. If all selected fields agree, the toy model reports a coherent candidate view.</div>
+            <div class="timeline-title">Recheck all six interfaces</div>
+            <div class="timeline-text" id="resolution-outcome">After a drainage-only agreement, containment still fails and two interfaces still need information. The overall slice remains unresolved.</div>
           </div>
         </div>
         <div style="margin-top:16px; display:flex; gap:10px">
-          <button class="btn btn-green" onclick="advanceResolution()">▶ Advance Resolution</button>
+          <button class="btn btn-green" id="advance-resolution" onclick="advanceResolution()">▶ Apply the example agreement</button>
           <button class="btn btn-amber" onclick="resetResolution()">↺ Reset</button>
         </div>
       </div>
@@ -464,7 +501,6 @@
           <div class="info-row"><span class="info-key">Cost evidence</span><span class="info-val" style="color:var(--red)">Not measured in this prototype</span></div>
           <div class="info-row"><span class="info-key">Schedule evidence</span><span class="info-val" style="color:var(--red)">Not measured in this prototype</span></div>
           <div class="info-row"><span class="info-key">Traceability</span><span class="info-val" style="color:var(--red)">Often narrative and dispersed</span></div>
-          <div class="progress-bar"><div class="progress-fill fill-red" style="width:85%"></div></div>
         </div>
         <div>
           <div style="font-family:var(--mono);font-size:11px;color:var(--green);letter-spacing:1px;margin-bottom:10px">WITH DECLARED OVERLAP RULES</div>
@@ -472,7 +508,6 @@
           <div class="info-row"><span class="info-key">Cost evidence</span><span class="info-val" style="color:var(--green)">Requires a retrospective test</span></div>
           <div class="info-row"><span class="info-key">Schedule evidence</span><span class="info-val" style="color:var(--green)">Requires a retrospective test</span></div>
           <div class="info-row"><span class="info-key">Traceability</span><span class="info-val" style="color:var(--green)">Mismatch tied to interface and field</span></div>
-          <div class="progress-bar"><div class="progress-fill fill-green" style="width:18%"></div></div>
         </div>
       </div>
     </div>
@@ -511,9 +546,9 @@
           <div class="timeline-item done">
             <div class="timeline-label">Phase 01 · Toy</div>
             <div class="timeline-title">Concept & Toy Example</div>
-            <div class="timeline-text">Demonstrate sheaf consistency checking on worked Pennine Viaduct scenario. Leadership alignment.</div>
+            <div class="timeline-text">Demonstrate selected compatibility rules on the fictional Pennine Viaduct scenario. No leadership acceptance or field trial is implied.</div>
           </div>
-          <div class="timeline-item active">
+          <div class="timeline-item">
             <div class="timeline-label">Phase 02 · Retrospective</div>
             <div class="timeline-title">Test on a closed data slice</div>
             <div class="timeline-text">Model a bounded WBS and interface register, then compare checker findings with known historical issues.</div>
@@ -542,6 +577,18 @@
       </div>
     </div>
 
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-label">How a PMO could use the result</div>
+      <ol class="pmo-steps">
+        <li><strong>Define one review slice.</strong> Agree which packages, revision dates and shared interfaces are in scope. Record important omissions.</li>
+        <li><strong>Agree the data contract.</strong> Name each field, its units, source revision and responsible owner. Declare equality, capacity or tolerance rules before judging the result.</li>
+        <li><strong>Review at an existing cadence.</strong> Run comparisons before the interface meeting and after an approved package change. Missing information goes back to its owner; contradictions go to the relevant package leads.</li>
+        <li><strong>Resolve through existing authority.</strong> A checker locates disagreement. Design and commercial authorities decide whether to change a package, clarify a mapping or revise a rule.</li>
+        <li><strong>Recheck and retain the evidence.</strong> In a pilot, keep the before/after values, rule version, decision owner and residual issues with the normal interface register. This teaching page creates none of those project records.</li>
+        <li><strong>Evaluate the extra work.</strong> Compare missed issues, false alarms and reviewer effort against the existing process before expanding its use. A passing slice adds evidence to a gate; it does not approve the gate.</li>
+      </ol>
+    </div>
+
     <div class="annotation">
       <span class="icon">🎯</span>
       <div>
@@ -551,7 +598,7 @@
   </div>
 </section>
 
-<div id="toast">⚡ Conflict detected in restriction map</div>
+<div id="toast" role="status" aria-live="polite"></div>
 
 <script>
 // ============================================================
@@ -560,7 +607,7 @@
 const packages = [
   {
     id:'WP1', code:'WP-CIV-001', name:'Civil & Structural Works',
-    color:'#f5bc42', lead:'Laing O\'Rourke', value:'£48M',
+    color:'#f5bc42', lead:'Fictional civils team', value:'£48M',
     scope:[
       {id:'c1', text:'Viaduct pier reconstruction (spans 1-8)', status:'ok'},
       {id:'c2', text:'Deck concrete — full deck slab pour 2400m³', status:'ok'},
@@ -571,7 +618,7 @@ const packages = [
   },
   {
     id:'WP2', code:'WP-MEP-002', name:'Mechanical & Electrical Systems',
-    color:'#39c7b6', lead:'Amey', value:'£22M',
+    color:'#39c7b6', lead:'Fictional M&E team', value:'£22M',
     scope:[
       {id:'m1', text:'Bridge management system hardware install', status:'ok'},
       {id:'m2', text:'Deck drainage installation & outfall connections', status:'conflict', note:'Also claimed by WP1 at £420k'},
@@ -581,7 +628,7 @@ const packages = [
   },
   {
     id:'WP3', code:'WP-SFT-003', name:'Safety & Environmental Compliance',
-    color:'#9d86ff', lead:'WSP', value:'£8M',
+    color:'#9d86ff', lead:'Fictional safety team', value:'£8M',
     scope:[
       {id:'s1', text:'Safety barrier installation to parapet', status:'ok'},
       {id:'s2', text:'Membrane inspection & sign-off (pre-surfacing)', status:'hidden-conflict', note:'WP1 has not included hold-point in their programme'},
@@ -591,7 +638,7 @@ const packages = [
   },
   {
     id:'WP4', code:'WP-DIG-004', name:'Digital & Connectivity Infrastructure',
-    color:'#f47aa3', lead:'Telent', value:'£6M',
+    color:'#f47aa3', lead:'Fictional digital team', value:'£6M',
     scope:[
       {id:'d1', text:'Fibre network — primary backbone installation', status:'ok'},
       {id:'d2', text:'Cable containment via WP2 primary routes', status:'hidden-conflict', note:'WP2 has not sized containment for telecoms cables'},
@@ -602,25 +649,63 @@ const packages = [
 ];
 
 const interfaces = [
-  { id:'I1', a:'WP1', b:'WP2', topic:'Deck Drainage', status:'incoherent',
-    details:'WP1 prices drainage installation at £420k. WP2 prices same work at £380k. Both in scope. Restriction map: ρ(WP1→I1) ≠ ρ(WP2→I1). Incoherent.',
-    risk:'£380–420k double-count or gap' },
-  { id:'I2', a:'WP1', b:'WP3', topic:'Waterproof Membrane Hold-Point', status:'warn',
-    details:'WP3 requires hold-point inspection before WP1 proceeds to surfacing. WP1 programme has no hold-point. Ambiguous — may cause unplanned stop.',
-    risk:'2–4 week programme delay' },
-  { id:'I3', a:'WP2', b:'WP4', topic:'Cable Containment Sizing', status:'incoherent',
-    details:'WP2 specifies 150mm containment. WP4 requires minimum 200mm for telecoms backbone. Restriction map mismatch on containment spec. Incoherent.',
-    risk:'£85k re-work + 3 week delay' },
-  { id:'I4', a:'WP1', b:'WP4', topic:'Sensor Fixing to Piers', status:'coherent',
-    details:'WP1 has included fixings schedule for sensor mounting. WP4 confirms positions match. Local sections consistent on this interface.',
-    risk:'None identified' },
-  { id:'I5', a:'WP2', b:'WP3', topic:'M&E Safety Sign-off', status:'coherent',
-    details:'WP2 and WP3 have aligned on IEC 61439 verification. Restriction maps agree on inspection protocol.',
-    risk:'None identified' },
-  { id:'I6', a:'WP3', b:'WP4', topic:'Environmental Sensor Network', status:'warn',
-    details:'WP3 environmental monitoring and WP4 sensor network use overlapping positions. Currently managed by email coordination only — not formally modelled.',
-    risk:'Coordination risk — not yet quantified' },
+  {id:'I1', a:'WP1', b:'WP2', topic:'Deck Drainage', label:'Drainage', field:'Installation owner', rule:'Both accounts must name the same installation owner.', kind:'equal', original:['WP1','WP2'], resolved:['WP1','WP1'], claims:['c3','m2'], consequence:'Potential duplicate scope; commercial effect not quantified.'},
+  {id:'I2', a:'WP1', b:'WP3', topic:'Waterproof Membrane Hold-Point', label:'Membrane', field:'Inspection milestone', rule:'Both accounts must name the same pre-surfacing hold-point.', kind:'equal', original:[null,'HP-07 before surfacing'], resolved:['HP-07 before surfacing','HP-07 before surfacing'], claims:['c5','s2'], consequence:'Unplanned stop possible; timing effect not measured.'},
+  {id:'I3', a:'WP2', b:'WP4', topic:'Cable Containment Sizing', label:'Containment', field:'Provided / required width (mm)', rule:'Provided width must be at least the required width: WP2 ≥ WP4.', kind:'capacity', original:[150,200], resolved:[200,200], claims:['m4','d2'], consequence:'Containment redesign may be needed; cost not measured.'},
+  {id:'I4', a:'WP1', b:'WP4', topic:'Sensor Fixing to Piers', label:'Sensors', field:'Fixing schedule revision', rule:'Both accounts must use the same fixing schedule revision.', kind:'equal', original:['FX-12 rev B','FX-12 rev B'], resolved:['FX-12 rev B','FX-12 rev B'], claims:[], consequence:'No mismatch on this selected field.'},
+  {id:'I5', a:'WP2', b:'WP3', topic:'M&E Safety Sign-off', label:'Safety', field:'Inspection protocol revision', rule:'Both accounts must name the same inspection protocol revision.', kind:'equal', original:['IP-04 rev A','IP-04 rev A'], resolved:['IP-04 rev A','IP-04 rev A'], claims:[], consequence:'Matching protocol names do not establish safety compliance.'},
+  {id:'I6', a:'WP3', b:'WP4', topic:'Environmental Sensor Network', label:'Env. Net', field:'Sensor location schedule', rule:'Both accounts must name the same sensor location schedule.', kind:'equal', original:['ENV-03 rev A',null], resolved:['ENV-03 rev A','ENV-03 rev A'], claims:['s3','d3'], consequence:'Location coordination remains unconfirmed.'}
 ];
+const originalScopes = packages.map(p => p.scope.map(s => ({...s})));
+const scenarioNames = {original:'Original package accounts', drainage:'Drainage ownership agreed', reconciled:'All six interfaces reconciled'};
+let currentScenario = 'original';
+let selectedPackage = 'WP1';
+let selectedInterface = 'I1';
+
+function evaluateInterface(i, values) {
+  if (values.some(v => v === null || v === undefined || v === '')) return 'warn';
+  if (i.kind === 'capacity') return values[0] >= values[1] ? 'coherent' : 'incoherent';
+  return values[0] === values[1] ? 'coherent' : 'incoherent';
+}
+function displayValue(value) { return value === null ? 'Not declared' : String(value); }
+function refreshModel() {
+  interfaces.forEach(i => {
+    i.values = [...(currentScenario === 'reconciled' || (currentScenario === 'drainage' && i.id === 'I1') ? i.resolved : i.original)];
+    i.status = evaluateInterface(i, i.values);
+    i.details = `${i.field}: ${i.a} declares ${displayValue(i.values[0])}; ${i.b} declares ${displayValue(i.values[1])}. ${i.rule}`;
+    i.risk = i.status === 'coherent' ? 'Selected rule passes; wider review still required.' : i.consequence;
+  });
+  packages.forEach((p, n) => {
+    p.scope = originalScopes[n].map(s => ({...s, status:'ok', note:''}));
+    p.scope.forEach(s => {
+      const i = interfaces.find(x => x.claims.includes(s.id));
+      if (i) { s.status = i.status === 'incoherent' ? 'conflict' : i.status === 'warn' ? 'hidden-conflict' : 'ok'; s.note = `${i.id}: ${i.status === 'coherent' ? 'selected rule passes' : i.status === 'warn' ? 'information missing' : 'rule fails'}`; }
+      if (currentScenario !== 'original' && s.id === 'c3') s.text = 'Deck drainage installation — agreed owner WP1';
+      if (currentScenario !== 'original' && s.id === 'm2') s.text = 'WP1 installs deck drainage; WP2 retains outfall connections';
+      if (currentScenario === 'reconciled' && s.id === 'c5') s.text = 'Waterproofing membrane; HP-07 inspection before surfacing';
+      if (currentScenario === 'reconciled' && s.id === 'm4') s.text = 'Primary cable containment — 200mm provision including telecoms';
+      if (currentScenario === 'reconciled' && s.id === 'd2') s.text = 'Telecoms containment requirement — 200mm minimum';
+    });
+  });
+}
+function modelSummary() {
+  const bad = interfaces.filter(i => i.status === 'incoherent').length;
+  const missing = interfaces.filter(i => i.status === 'warn').length;
+  return `${6-bad-missing} pass · ${bad} conflict${bad===1?'':'s'} · ${missing} need clarification. ${bad || missing ? 'The declared slice is unresolved.' : 'The declared slice is compatible on all six rules.'}`;
+}
+function setScenario(name) {
+  if (!Object.prototype.hasOwnProperty.call(scenarioNames, name)) return;
+  currentScenario = name;
+  refreshModel();
+  conflictsRevealed = true;
+  buildWBS();
+  revealFindings();
+  buildChecker();
+  drawSheafCanvas();
+  document.getElementById('canvas-info').textContent = `${scenarioNames[name]}. ${modelSummary()} Select an interface in the checker for its values.`;
+  resStep = name === 'original' ? 2 : name === 'drainage' ? 3 : 4;
+  updateResolution();
+}
 
 // ============================================================
 // SECTION 1: WBS BUILDER
@@ -633,7 +718,7 @@ function buildWBS() {
     div.className = 'wbs-pkg';
     div.id = 'wbs-' + pkg.id;
     div.innerHTML = `
-      <div class="wbs-header" onclick="togglePkg('${pkg.id}')">
+      <button class="wbs-header" type="button" aria-expanded="false" aria-controls="body-${pkg.id}" onclick="togglePkg('${pkg.id}')">
         <div>
           <div class="wbs-name" style="color:${pkg.color}">${pkg.name}</div>
           <div class="wbs-code">${pkg.code} · ${pkg.lead} · ${pkg.value}</div>
@@ -642,10 +727,10 @@ function buildWBS() {
           <div class="conflict-badge" id="badge-${pkg.id}" style="display:none">⚠ CONFLICTS HIDDEN</div>
           <div style="color:var(--muted);font-size:18px" id="arrow-${pkg.id}">›</div>
         </div>
-      </div>
-      <div class="wbs-body">
+      </button>
+      <div class="wbs-body" id="body-${pkg.id}">
         ${pkg.scope.map(s => `
-          <div class="scope-claim ok" id="claim-${s.id}" data-status="${s.status}">
+          <div class="scope-claim unchecked" id="claim-${s.id}" data-status="${s.status}">
             <span style="flex:1">${s.text}</span>
             <span id="note-${s.id}"></span>
           </div>
@@ -659,6 +744,7 @@ function buildWBS() {
 function togglePkg(id) {
   const el = document.getElementById('wbs-' + id);
   el.classList.toggle('expanded');
+  el.querySelector('.wbs-header').setAttribute('aria-expanded', el.classList.contains('expanded'));
   const arrow = document.getElementById('arrow-' + id);
   arrow.textContent = el.classList.contains('expanded') ? '⌄' : '›';
 }
@@ -667,47 +753,46 @@ function expandAll() {
   packages.forEach(p => {
     const el = document.getElementById('wbs-' + p.id);
     el.classList.add('expanded');
+    el.querySelector('.wbs-header').setAttribute('aria-expanded', 'true');
     document.getElementById('arrow-' + p.id).textContent = '⌄';
   });
 }
 
 let conflictsRevealed = false;
 function runConflictDetect() {
-  if (conflictsRevealed) return;
+  const btn = document.getElementById('detect-btn');
+  btn.disabled = true;
+  btn.textContent = 'Checking six interfaces…';
+  document.getElementById('wbs-list').setAttribute('aria-busy','true');
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    refreshModel();
+    conflictsRevealed = true;
+    revealFindings();
+    document.getElementById('wbs-list').setAttribute('aria-busy','false');
+  }));
+}
+
+function revealFindings() {
   conflictsRevealed = true;
   expandAll();
-
-  let count = 0;
   packages.forEach(pkg => {
-    let hasPkg = false;
     pkg.scope.forEach(s => {
-      if (s.status !== 'ok') {
-        const el = document.getElementById('claim-' + s.id);
-        const note = document.getElementById('note-' + s.id);
-        setTimeout(() => {
-          el.className = 'scope-claim ' + s.status;
-          if (s.note) note.innerHTML = `<span class="conflict-badge">⚠ ${s.note}</span>`;
-          showToast('⚠ Conflict: ' + s.text.substring(0,40) + '...');
-        }, count * 600);
-        hasPkg = true;
-        count++;
-      }
+      const el = document.getElementById('claim-' + s.id);
+      el.className = 'scope-claim ' + (s.note ? s.status : 'unchecked');
+      document.getElementById('note-' + s.id).textContent = s.note || 'Not compared on a selected overlap';
     });
-    if (hasPkg) {
-      setTimeout(() => {
-        document.getElementById('badge-' + pkg.id).style.display = 'inline-flex';
-        document.getElementById('badge-' + pkg.id).textContent = '⚠ CONFLICTS FOUND';
-      }, 100);
-    }
+    const issues = interfaces.filter(i => (i.a === pkg.id || i.b === pkg.id) && i.status !== 'coherent').length;
+    const badge = document.getElementById('badge-' + pkg.id);
+    badge.style.display = issues ? 'inline-flex' : 'none';
+    badge.textContent = `${issues} OPEN INTERFACE${issues === 1 ? '' : 'S'}`;
   });
-
-  setTimeout(() => {
-    document.getElementById('conflict-count').textContent = '5';
-    document.getElementById('risk-val').textContent = '£1.2M';
-    document.getElementById('conflict-banner').style.display = 'block';
-    document.getElementById('detect-btn').className = 'btn btn-red';
-    document.getElementById('detect-btn').textContent = '✓ Analysis Complete';
-  }, count * 600 + 400);
+  document.getElementById('conflict-count').textContent = interfaces.filter(i => i.status === 'incoherent').length;
+  document.getElementById('risk-val').textContent = interfaces.filter(i => i.status === 'warn').length;
+  document.getElementById('conflict-banner').style.display = 'block';
+  document.getElementById('problem-result').textContent = modelSummary();
+  const btn = document.getElementById('detect-btn');
+  btn.textContent = '✓ Checked — run again';
+  btn.disabled = false;
 }
 
 // ============================================================
@@ -718,6 +803,7 @@ function drawSheafCanvas() {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const W = canvas.offsetWidth;
+  if (!W) return;
   const H = 420;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   canvas.width = Math.round(W * dpr);
@@ -735,14 +821,8 @@ function drawSheafCanvas() {
     WP4: { x: W*0.65, y: H*0.72, label: 'WP4\nDIGITAL', color: '#f47aa3' },
   };
 
-  const edges = [
-    {a:'WP1',b:'WP2',status:'incoherent',label:'Drainage'},
-    {a:'WP1',b:'WP3',status:'warn',label:'Membrane'},
-    {a:'WP2',b:'WP4',status:'incoherent',label:'Containment'},
-    {a:'WP1',b:'WP4',status:'coherent',label:'Sensors'},
-    {a:'WP2',b:'WP3',status:'coherent',label:'Safety'},
-    {a:'WP3',b:'WP4',status:'warn',label:'Env. Net'},
-  ];
+  const edges = interfaces.map(i => ({id:i.id, a:i.a, b:i.b, status:i.status, label:i.label, offset:i.id === 'I4' ? -24 : i.id === 'I5' ? 24 : 0}));
+  canvas.setAttribute('aria-label', `Four fictional work packages joined by six interfaces. ${modelSummary()} Equivalent controls are in the checker.`);
 
   const statusColor = { incoherent:'#ff6b57', coherent:'#64d27a', warn:'#f5bc42' };
 
@@ -752,6 +832,9 @@ function drawSheafCanvas() {
   edges.forEach(e => {
     const a = nodes[e.a], b = nodes[e.b];
     const mx = (a.x+b.x)/2, my = (a.y+b.y)/2;
+    const labelY = my + e.offset;
+    e.labelX = mx;
+    e.labelY = labelY;
     ctx.beginPath();
     ctx.moveTo(a.x, a.y);
     ctx.lineTo(b.x, b.y);
@@ -769,9 +852,9 @@ function drawSheafCanvas() {
     // Background
     const tw = ctx.measureText(e.label).width;
     ctx.fillStyle = '#0a0d0b';
-    ctx.fillRect(mx - tw/2 - 5, my - 9, tw + 10, 18);
+    ctx.fillRect(mx - tw/2 - 5, labelY - 9, tw + 10, 18);
     ctx.fillStyle = statusColor[e.status];
-    ctx.fillText(e.label, mx, my);
+    ctx.fillText(e.label, mx, labelY);
   });
 
   // Draw nodes
@@ -848,9 +931,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Check edge midpoints
       if (!hit && canvas._edges) {
         canvas._edges.forEach(ed => {
-          const a = canvas._nodes[ed.a], b = canvas._nodes[ed.b];
-          const emx = (a.x+b.x)/2, emy = (a.y+b.y)/2;
-          if (Math.sqrt((cx-emx)**2+(cy-emy)**2) < 28) hit = {type:'edge', edge:ed};
+          if (Math.abs(cx-ed.labelX) < 45 && Math.abs(cy-ed.labelY) < 16) hit = {type:'edge', edge:ed};
         });
       }
 
@@ -884,6 +965,10 @@ function buildChecker() {
   document.getElementById('stat-ok').textContent = okC;
   document.getElementById('stat-bad').textContent = badC;
   document.getElementById('stat-warn').textContent = warnC;
+  document.getElementById('stat-interfaces').textContent = interfaces.length;
+  document.getElementById('scenario-select').value = currentScenario;
+  const changes = currentScenario === 'original' ? 'Both installation owners are claimed; the hold-point and sensor mapping are incomplete; 150mm containment is below the 200mm requirement.' : currentScenario === 'drainage' ? 'Only I1 changes: both accounts name WP1 as installer. I2, I3 and I6 are still open.' : 'I1 names WP1; I2 shares HP-07; I3 provides 200mm; I6 shares ENV-03 rev A. I4 and I5 were already aligned.';
+  document.getElementById('model-result').innerHTML = `<div><strong>${scenarioNames[currentScenario]} — ${modelSummary()}</strong>${changes}<br>Temporary teaching state. Reload restores the original accounts; no project record or file is saved.</div>`;
 
   packages.forEach(pkg => {
     const myInterfaces = interfaces.filter(i => i.a===pkg.id || i.b===pkg.id);
@@ -891,23 +976,29 @@ function buildChecker() {
     const hasWarn = myInterfaces.some(i=>i.status==='warn');
     const statusCls = hasErr ? 'err' : hasWarn ? 'warn' : 'ok';
 
-    const div = document.createElement('div');
+    const div = document.createElement('button');
+    div.type = 'button';
+    div.dataset.package = pkg.id;
     div.className = 'pkg-item';
+    div.setAttribute('aria-pressed', pkg.id === selectedPackage);
     div.innerHTML = `
       <div>
         <div class="pkg-name" style="color:${pkg.color}">${pkg.name}</div>
         <div style="font-family:var(--mono);font-size:11px;color:var(--muted)">${pkg.code}</div>
       </div>
-      <div class="pkg-status ${statusCls}"></div>
+      <span class="pkg-status ${statusCls}" aria-hidden="true"></span><span style="font-size:11px">${hasErr ? 'Conflict' : hasWarn ? 'Missing data' : 'Pass'}</span>
     `;
     div.onclick = () => selectPackage(pkg.id, div);
     list.appendChild(div);
   });
+  selectPackage(selectedPackage, list.querySelector(`[data-package="${selectedPackage}"]`));
 }
 
 function selectPackage(pkgId, el) {
-  document.querySelectorAll('.pkg-item').forEach(e => e.classList.remove('selected'));
+  selectedPackage = pkgId;
+  document.querySelectorAll('.pkg-item').forEach(e => { e.classList.remove('selected'); e.setAttribute('aria-pressed','false'); });
   el.classList.add('selected');
+  el.setAttribute('aria-pressed','true');
 
   const pkg = packages.find(p=>p.id===pkgId);
   const myInterfaces = interfaces.filter(i=>i.a===pkgId||i.b===pkgId);
@@ -926,8 +1017,8 @@ function selectPackage(pkgId, el) {
           <th>Interface</th>
           <th>Other Package</th>
           <th>Topic</th>
-          <th>Sheaf Status</th>
-          <th>Risk</th>
+          <th>Rule result</th>
+          <th>Interpretation</th>
         </tr>
       </thead>
       <tbody>
@@ -935,31 +1026,35 @@ function selectPackage(pkgId, el) {
           const other = i.a===pkgId ? i.b : i.a;
           const otherPkg = packages.find(p=>p.id===other);
           return `
-          <tr style="cursor:pointer" onclick="showInterfaceDetail('${i.id}')">
-            <td><span style="font-family:var(--mono);color:var(--muted)">${i.id}</span></td>
+          <tr>
+            <td><button class="interface-button" onclick="showInterfaceDetail('${i.id}')" aria-label="Inspect ${i.id}: ${i.topic}">${i.id}</button></td>
             <td><span style="color:${otherPkg.color}">${other}</span> <span style="color:var(--muted);font-size:11px">${otherPkg.name}</span></td>
             <td>${i.topic}</td>
-            <td><span class="status-pill ${i.status === 'incoherent' ? 'incoherent' : i.status === 'coherent' ? 'coherent' : 'warn'}">${i.status}</span></td>
+            <td><span class="status-pill ${i.status}">${i.status === 'warn' ? 'Missing data' : i.status === 'coherent' ? 'Pass' : 'Conflict'}</span></td>
             <td style="color:var(--muted);font-size:12px">${i.risk}</td>
           </tr>`;
         }).join('')}
       </tbody>
     </table>
-    <div id="iface-detail" style="margin-top:14px"></div>
-    <div style="margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--muted)">↑ Click a row to see restriction map detail</div>
+    <div id="iface-detail" style="margin-top:14px" aria-live="polite"></div>
+    <div style="margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--muted)">Choose an interface number to inspect its projected values and rule.</div>
   `;
+  if (!myInterfaces.some(i => i.id === selectedInterface)) selectedInterface = myInterfaces[0].id;
+  showInterfaceDetail(selectedInterface);
 }
 
 function showInterfaceDetail(id) {
+  selectedInterface = id;
   const i = interfaces.find(x=>x.id===id);
   const col = {incoherent:'var(--red)',coherent:'var(--green)',warn:'var(--amber)'}[i.status];
   document.getElementById('iface-detail').innerHTML = `
     <div class="annotation" style="border-left-color:${col}">
       <span class="icon">${i.status==='incoherent'?'❌':i.status==='coherent'?'✅':'⚠️'}</span>
       <div>
-        <strong>Restriction Map Analysis — ${i.id}: ${i.topic}</strong><br>
-        ${i.details}<br><br>
-        <strong>Risk Quantification:</strong> ${i.risk}
+        <strong>Projected field — ${i.id}: ${i.field}</strong>
+        <dl class="rule-facts"><div><dt>${i.a} declares</dt><dd>${displayValue(i.values[0])}</dd></div><div><dt>${i.b} declares</dt><dd>${displayValue(i.values[1])}</dd></div></dl>
+        <strong>Rule:</strong> ${i.rule}<br><strong>Result:</strong> ${i.status === 'warn' ? 'Undecided: a required value is missing.' : i.status === 'coherent' ? 'The declared values pass.' : 'The declared values conflict.'}<br><br>
+        <strong>Interpretation:</strong> ${i.risk}
       </div>
     </div>
   `;
@@ -970,27 +1065,26 @@ function showInterfaceDetail(id) {
 // ============================================================
 let resStep = 2;
 function advanceResolution() {
-  resStep++;
-  if (resStep > 4) { resStep = 4; return; }
-  const el = document.getElementById('res-step' + resStep);
-  if (el) {
-    el.className = 'timeline-item active';
-    const prev = document.getElementById('res-step' + (resStep-1));
-    if (prev) prev.className = 'timeline-item done';
-  }
-  if (resStep === 4) {
-    showToast('✓ The selected overlap fields are coherent in this toy model');
-  }
+  if (resStep === 2) setScenario('drainage');
+  else if (resStep === 3) { resStep = 4; buildChecker(); updateResolution(); }
 }
 
 function resetResolution() {
-  resStep = 2;
+  setScenario('original');
+}
+
+function updateResolution() {
   [2,3,4].forEach(n => {
     const el = document.getElementById('res-step'+n);
-    if(el) el.className = n===2 ? 'timeline-item active' : 'timeline-item';
-    const lbl = el ? el.querySelector('.timeline-label') : null;
-    if(lbl && n>2) lbl.textContent = 'Step 0'+n+' · Pending';
+    el.className = n < resStep || resStep === 4 ? 'timeline-item done' : n === resStep ? 'timeline-item active' : 'timeline-item';
+    el.querySelector('.timeline-label').textContent = `Step 0${n} · ${n < resStep || resStep === 4 ? 'Example complete' : n === resStep ? 'Current' : 'Pending'}`;
   });
+  const text = currentScenario === 'original' ? 'Original accounts. No simulated ownership decision has been applied.' : currentScenario === 'drainage' ? `Example agreement applied: WP1 is the installation owner in both accounts. ${modelSummary()}` : `The separate fully reconciled example is selected. ${modelSummary()} Reset to walk through drainage alone.`;
+  document.getElementById('resolution-state').textContent = text;
+  document.getElementById('resolution-outcome').textContent = currentScenario === 'reconciled' ? 'In this separate fully reconciled example, all six declared rules pass. Wider project facts and approval remain outside the result.' : 'After a drainage-only agreement, containment still fails and two interfaces still need information. The overall slice remains unresolved.';
+  const btn = document.getElementById('advance-resolution');
+  btn.textContent = resStep === 2 ? '▶ Apply the example agreement' : resStep === 3 ? '▶ Recheck the whole slice' : '✓ Recheck complete';
+  btn.disabled = resStep === 4;
 }
 
 // ============================================================
@@ -1004,11 +1098,13 @@ function jumpToSection(name) {
 }
 
 function showSection(name, btn) {
+  if (!document.getElementById('section-'+name)) return;
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b=>{ b.classList.remove('active'); b.removeAttribute('aria-current'); });
   const section = document.getElementById('section-'+name);
   if (section) section.classList.add('active');
-  if (btn) btn.classList.add('active');
+  if (btn) { btn.classList.add('active'); btn.setAttribute('aria-current','step'); }
+  history.replaceState(null, '', '#section-' + name);
   if (name === 'concept') setTimeout(drawSheafCanvas, 50);
   if (name === 'checker') buildChecker();
 }
@@ -1028,7 +1124,12 @@ function showToast(msg) {
 // ============================================================
 // INIT
 // ============================================================
+refreshModel();
 buildWBS();
+buildChecker();
+const requestedSection = location.hash.replace('#section-','');
+const initialSection = ['problem','concept','checker','resolution','value'].includes(requestedSection) ? requestedSection : 'problem';
+showSection(initialSection, document.querySelector(`[data-section="${initialSection}"]`));
 </script>
 </body>
 </html>
