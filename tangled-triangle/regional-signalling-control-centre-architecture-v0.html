@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regional Signalling Control Centre – Concept &amp; Architecture (v0)</title>
+
+<!-- ■■■ CRITICAL CSS ■■■ -->
+<style>
+html,body{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#fafafa;color:#111;}
+h1{font-size:clamp(1.6rem,2.5vw,2.2rem);margin:0.5rem 0;text-align:center;}
+#app{display:flex;flex-direction:column;align-items:center;gap:1rem;min-height:64vh;padding:1rem;}
+.tab-buttons{display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;}
+button{padding:0.45rem 0.9rem;font-size:1rem;border:none;border-radius:0.3rem;background:#e0e0e0;cursor:pointer;transition:background .17s;}
+button[aria-selected="true"]{background:#1565c0;color:#fff;}
+svg{width:100%;height:auto;max-width:960px;border:1px solid #ddd;background:#fff;}
+article{max-width:880px;margin-inline:auto;padding:0 1rem;line-height:1.55;}
+h2{margin:.4rem 0 .2rem;font-size:1.25rem;color:#1565c0;border-bottom:2px solid #e0e0e0;}
+h3{margin:.6rem 0 .25rem;font-size:1.1rem;color:#333;}
+ul{margin:.15rem 0 .6rem 1.2rem;padding:0;}
+/* legend */
+.legend{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-top:.5rem;font-size:.9rem;}
+.swatch{display:inline-block;width:1.2rem;height:1.2rem;border:1px solid #666;margin-right:.25rem;}
+/* toast */
+.toast{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);background:#323232;color:#fff;padding:.75rem 1rem;border-radius:.5rem;opacity:0;transition:opacity .3s;}
+.toast.show{opacity:1;}
+/* reserve svg height to avoid CLS */
+svg[data-view="plan"]{min-height:24rem;}
+svg[data-view="section"]{min-height:20rem;}
+/* table for interfaces */
+table{border-collapse:collapse;width:100%;margin:.4rem 0 1rem;}
+th,td{border:1px solid #ccc;padding:0.35rem 0.4rem;font-size:.95rem;}
+th{background:#e0e0e0;text-align:left;}
+</style>
+<noscript>Please enable JavaScript to use the interactive tabs.</noscript>
+  <link rel="stylesheet" href="../assets/site.css?v=20260917">
+  <link rel="stylesheet" href="../assets/tangled-triangle-enquiry.css?v=20260917">
+  <script defer src="../assets/site-nav.js?v=20260917"></script>
+</head>
+<body data-ltg-page="triangle-ai-6" data-ltg-enquiry="ai">
+  <div class="ltg-enquiry-context" aria-label="Tangled Triangle enquiry context">
+    <p><strong>Early enquiry · AI interpretation · Architecture v0 and interface register</strong></p>
+    <p>How well can AI make sense of interfaces, topology and system architecture? This variant makes one interpretation of the shared fictional brief available for inspection. Inspect a candidate system boundary and a register of nine open interface questions.</p>
+    <p class="ltg-enquiry-context__links"><a href="index.html">← All six Tangled Triangle variants</a><a href="../forays/003-tangled-triangle.html">Later enquiry: local-to-global compatibility →</a></p>
+  </div>
+<div id="app" data-timeout="3000">
+
+  <h1>Regional Signalling Control Centre – Concept, Architecture v0 &amp; Interfaces</h1>
+  <p style="max-width:80ch;line-height:1.5;text-align:center"><strong>Fictional concept study.</strong> These alternatives organise questions about a constrained site. No survey, engineering design, asset-owner agreement or approval is supplied. Drawing levels are illustrative; the pages do not test structural, electrical or operational feasibility.</p>
+  <p><a href="index.html">Back to Tangled Triangle</a></p>
+
+  <!-- TAB CONTROLS -->
+  <div class="tab-buttons" role="tablist">
+    <button role="tab" id="tab-plan" data-target="panel-plan" aria-controls="panel-plan" aria-selected="true">Plan View</button>
+    <button role="tab" id="tab-section" data-target="panel-section" aria-controls="panel-section" aria-selected="false">Section View</button>
+    <button role="tab" id="tab-app1" data-target="panel-app1" aria-controls="panel-app1" aria-selected="false">Approach 1</button>
+    <button role="tab" id="tab-app2" data-target="panel-app2" aria-controls="panel-app2" aria-selected="false">Approach 2</button>
+    <button role="tab" id="tab-app3" data-target="panel-app3" aria-controls="panel-app3" aria-selected="false">Approach 3</button>
+    <button role="tab" id="tab-archv0" data-target="panel-archv0" aria-controls="panel-archv0" aria-selected="false">Architecture v0</button>
+    <button role="tab" id="tab-intf" data-target="panel-intf" aria-controls="panel-intf" aria-selected="false">Interface List v0</button>
+  </div>
+
+  <!-- ■■■ ORIGINAL PLAN ■■■ -->
+  <div id="panel-plan" role="tabpanel">
+    <svg viewBox="0 0 1000 600" data-view="plan">
+      <!-- Canal -->
+      <rect x="0" y="520" width="1000" height="80" fill="#4FC3F7" data-info="Canal – ground level waterway (southern boundary)" />
+      <!-- Road -->
+      <rect x="0" y="0" width="90" height="600" fill="#8D6E63" data-info="Road – western boundary, crosses canal on bridge" />
+      <!-- Road bridge across canal -->
+      <rect x="0" y="520" width="90" height="20" fill="#6D4C41" />
+      <!-- Railway -->
+      <polygon points="0,100 1000,600 1000,540 0,40" fill="#9E9E9E" data-info="Railway viaduct – NW to SE alignment flying over road &amp; canal" />
+      <!-- Transmission line -->
+      <line x1="500" y1="0" x2="500" y2="600" stroke="#F44336" stroke-width="6" stroke-dasharray="20 10" data-info="High-voltage transmission line (overhead)" />
+      <!-- Site outline -->
+      <rect x="1" y="1" width="998" height="598" fill="none" stroke="#bbb" stroke-dasharray="4 4"/>
+      <!-- Labels -->
+      <text x="500" y="570" font-size="24" text-anchor="middle" fill="#fff">Canal</text>
+      <text x="45" y="300" font-size="18" text-anchor="middle" transform="rotate(-90 45 300)" fill="#fff">Road</text>
+      <text x="750" y="350" font-size="18" text-anchor="middle" fill="#212121" transform="rotate(-30 750 350)">Railway Viaduct</text>
+      <text x="515" y="200" font-size="14" fill="#D32F2F">HV Line</text>
+    </svg>
+  </div>
+
+  <!-- ■■■ ORIGINAL SECTION ■■■ -->
+  <div id="panel-section" role="tabpanel" hidden>
+    <svg viewBox="0 0 1000 500" data-view="section">
+      <!-- Ground -->
+      <rect x="0" y="300" width="1000" height="200" fill="#A1887F" data-info="Ground level" />
+      <!-- Canal cut -->
+      <rect x="300" y="300" width="150" height="50" fill="#4FC3F7" data-info="Canal water at ground level" />
+      <!-- Road bridge -->
+      <rect x="290" y="260" width="170" height="20" fill="#6D4C41" data-info="Road deck crossing canal" />
+      <!-- Railway viaduct -->
+      <rect x="250" y="170" width="500" height="30" fill="#9E9E9E" data-info="Railway viaduct (elevated)" />
+      <rect x="260" y="200" width="20" height="100" fill="#757575"/>
+      <rect x="710" y="200" width="20" height="100" fill="#757575"/>
+      <!-- Mining passage -->
+      <rect x="200" y="380" width="600" height="20" fill="#5D4037" data-info="Old mining passage – illustrative depth only; not surveyed" />
+      <!-- HV line towers -->
+      <line x1="500" y1="0" x2="500" y2="120" stroke="#D32F2F" stroke-width="6" />
+      <polygon points="490,120 510,120 530,150 470,150" fill="#D32F2F"/>
+      <text x="515" y="160" font-size="14" fill="#D32F2F">HV Line</text>
+      <!-- Height labels -->
+      <text x="850" y="315" font-size="12">Illustrative datum</text>
+      <text x="850" y="185" font-size="12">Rail: illustrative level</text>
+      <text x="850" y="395" font-size="12">Mine: illustrative depth</text>
+    </svg>
+  </div>
+
+  <!-- ■■■ APPROACH PANELS ■■■ -->
+  <div id="panel-app1" role="tabpanel" hidden>
+    <article>
+      <h2>Approach 1 – Integrated Podium Deck</h2>
+      <h3>Concept to investigate</h3>
+      <ul>
+        <li>Explore a shared podium supporting the control centre and its services. Spanning the canal or mining passage is a hypothesis; the sketch establishes neither a feasible span nor a suitable foundation location.</li>
+        <li>Compare possible occupied-floor and service-deck levels against surveyed rail, road, canal and electrical envelopes. No floor elevation has been selected.</li>
+        <li>Study access, vehicle impact protection and emergency routes along the road edge. Their layout and performance requirements remain open.</li>
+        <li>Assess vibration transmission and structural independence. A connection to viaduct piers or the use of isolation bearings would require evidence of feasibility and asset-owner acceptance.</li>
+      </ul>
+      <h3>Interface questions</h3>
+      <ul>
+        <li><em>Rail</em> – identify the asset owner, required protection/approval process, inspection access, loading and movement limits. No agreement or use of existing structures is assumed.</li>
+        <li><em>Canal &amp; road</em> – establish navigation, flood, maintenance, highway and construction-access requirements with the responsible parties. Clearances and permitted loads are not yet known.</li>
+        <li><em>Overhead line</em> – obtain the operator’s asset information and assess electrical, construction and maintenance constraints. No safe offset or earthing arrangement has been demonstrated.</li>
+        <li><em>Mining</em> – investigate the workings and ground response before defining foundation exclusions or treatment options. Rights, consents and any grouting proposal remain to be established.</li>
+      </ul>
+      <h3>Potential benefits and trade-offs to test</h3>
+      <ul>
+        <li>A shared deck might concentrate civil works and services, but could also concentrate structural dependencies and create difficult canal or ground interfaces.</li>
+        <li>Future extension or rooftop plant would need an explicit capacity allowance; the concept reserves no verified capacity.</li>
+        <li>A common package may simplify some coordination while concentrating delivery risk. Compare procurement and interface responsibilities before selecting it.</li>
+      </ul>
+    </article>
+  </div>
+
+  <div id="panel-app2" role="tabpanel" hidden>
+    <article>
+      <h2>Approach 2 – Distributed Modular Clusters</h2>
+      <h3>Concept to investigate</h3>
+      <ul>
+        <li>Explore three modules for operations, resilience and staff welfare in candidate spaces between corridors. The drawing does not identify low-risk or buildable ground.</li>
+        <li>Investigate links between modules, including whether any crossing of the road or canal is necessary and feasible. Route, level and support locations are undecided.</li>
+        <li>Compare foundation and plant-location options for each module using ground, loading, vibration and access evidence. Independent foundations do not by themselves avoid mining risk.</li>
+        <li>Compare surface, elevated and underground service routes. A micro-tunnel is one option; no depth, material or separation from existing assets has been validated.</li>
+      </ul>
+      <h3>Interface questions</h3>
+      <ul>
+        <li><em>Rail</em> – establish structural and operational envelopes, access needs and acceptable vibration performance before choosing clearances or mitigation.</li>
+        <li><em>Road</em> – establish the crossing’s geometry, loading, protection and legal/approval requirements with the road owner. No licence or inspection arrangement is in place.</li>
+        <li><em>Canal</em> – investigate bank stability, navigation, flood behaviour and maintenance access before locating supports or defining a crossing.</li>
+        <li><em>Overhead line</em> – obtain operator-specific constraints for buildings, plant and construction equipment. This concept supplies no generic safety cone or verified electrical clearance.</li>
+      </ul>
+      <h3>Potential benefits and trade-offs to test</h3>
+      <ul>
+        <li>Off-site manufacture could reduce some on-site work, but transport, lifting, access windows and interfaces may offset the programme benefit.</li>
+        <li>Separate modules could support resilience only if their power, communications, access and other shared dependencies are designed and checked accordingly.</li>
+        <li>Staged procurement could spread commitments, while adding contracts and integration work. Compare those effects against the delivery and funding constraints.</li>
+      </ul>
+    </article>
+  </div>
+
+  <div id="panel-app3" role="tabpanel" hidden>
+    <article>
+      <h2>Approach 3 – Lightweight Frame Suspended from Viaduct Pier Caps</h2>
+      <h3>Concept to investigate</h3>
+      <ul>
+        <li>Consider suspension from existing pier caps as a speculative alternative. It depends on structural capacity, rail operations and owner acceptance that this sketch has not established.</li>
+        <li>Compare support arrangements, floor positions and façade envelopes against surveyed assets and the applicable requirements. No track offset proves compliance here.</li>
+        <li>Explore equipment modules between piers while checking navigation, inspection, escape and maintenance access. Keeping the canal open has not been demonstrated.</li>
+        <li>Use a coordinated spatial model to examine clashes alongside structural and electrical assessments. A clash-free drawing alone would not verify safety or an earthing design.</li>
+      </ul>
+      <h3>Interface questions</h3>
+      <ul>
+        <li><em>Rail</em> – determine whether the owner would consider additional loads or attachments, and assess capacity, fatigue, movements, construction and inspection access. No right to use pier caps is assumed.</li>
+        <li><em>Canal</em> – agree the scope of navigation, flood, access and environmental assessment with the relevant parties, including construction effects. Review is not limited to drip protection.</li>
+        <li><em>Road</em> – assess temporary and permanent effects, falling-object protection, access and lifting arrangements. The absence of a ground-level support does not remove this interface.</li>
+        <li><em>Mining</em> – trace changed loads through the existing foundations and consider ground response and construction effects. Mining risk remains open until assessed; it is not closed by this concept.</li>
+      </ul>
+      <h3>Potential benefits and trade-offs to test</h3>
+      <ul>
+        <li>The scheme might reduce new ground supports, but it could require strengthening or other works. Compare total construction effort, carbon and ground effects.</li>
+        <li>The architectural form may attract different responses from users, neighbours and asset owners; no acceptance benefit is assumed.</li>
+        <li>A rail-led package would depend on owner willingness and a workable allocation of design, operational and long-term liabilities.</li>
+      </ul>
+    </article>
+  </div>
+
+  <!-- ■■■ ARCHITECTURE V0 PANEL ■■■ -->
+  <div id="panel-archv0" role="tabpanel" hidden>
+    <article>
+      <h2>Version 0 – Non-Signalling Infrastructure System Architecture<br><small>(Approach 2 · Distributed Modular Clusters)</small></h2>
+
+      <svg viewBox="0 0 1000 600" data-view="arch-plan">
+        <rect x="1" y="1" width="998" height="598" fill="none" stroke="#bbb" stroke-dasharray="4 4"/>
+        <rect x="0" y="520" width="1000" height="80" fill="#4FC3F7" opacity=".55"/>
+        <rect x="0" y="0" width="90" height="600" fill="#8D6E63" opacity=".55"/>
+        <polygon points="0,100 1000,600 1000,540 0,40" fill="#9E9E9E" opacity=".45"/>
+        <line x1="500" y1="0" x2="500" y2="600" stroke="#F44336" stroke-width="6" stroke-dasharray="20 12" opacity=".6"/>
+
+        <rect x="130" y="200" width="150" height="180" fill="#FFD54F" stroke="#555"/>
+        <text x="205" y="295" text-anchor="middle" font-size="14">Staff Welfare Module</text>
+
+        <rect x="370" y="140" width="200" height="220" fill="#4DB6AC" stroke="#555"/>
+        <text x="470" y="255" text-anchor="middle" font-size="14" fill="#004D40">Operations Module</text>
+
+        <rect x="650" y="260" width="180" height="200" fill="#90CAF9" stroke="#555"/>
+        <text x="740" y="355" text-anchor="middle" font-size="14" fill="#0D47A1">Resilience Module</text>
+
+        <line x1="280" y1="280" x2="370" y2="250" stroke="#6D4C41" stroke-width="8"/>
+        <line x1="570" y1="250" x2="650" y2="320" stroke="#6D4C41" stroke-width="8"/>
+        <text x="325" y="240" font-size="12" text-anchor="middle" fill="#4E342E">Staff ↔ Ops: candidate link</text>
+        <text x="610" y="235" font-size="12" text-anchor="middle" fill="#4E342E">Ops ↔ Resilience Bridge</text>
+
+        <line x1="150" y1="470" x2="850" y2="470" stroke="#FF5722" stroke-width="4" stroke-dasharray="10 6"/>
+        <text x="500" y="460" font-size="12" text-anchor="middle" fill="#BF360C">Candidate service route (depth undecided)</text>
+      </svg>
+
+      <p>This is a candidate arrangement for Approach 2, not a selected or verified design. Module and link positions show relationships only; crossings and available space must be checked against real geometry.</p>
+      <h3>Boundary assumptions and questions (v0)</h3>
+      <ul>
+        <li><strong>Rail corridor:</strong> the scenario places a viaduct along the diagonal boundary. Survey its structure and establish operational, inspection and protection envelopes; the drawing sets no compliant track or soffit clearance.</li>
+        <li><strong>South:</strong> the scenario places a canal here. Establish water levels, flood conditions, navigation and maintenance access before defining any development boundary.</li>
+        <li><strong>West:</strong> the road is a boundary and possible access route. Establish ownership, crossing needs, permitted geometry and any rights or approvals required.</li>
+        <li><strong>Overhead:</strong> the assumed north–south electrical line crosses the site. Its operator’s information and site-specific assessment are needed; no fixed cone or roof-height limit is supplied.</li>
+        <li><strong>Below ground:</strong> the scenario includes old workings at an illustrative depth. Their extent, condition and influence on existing and proposed foundations remain unknown; no exclusion radius or safe service depth is established.</li>
+      </ul>
+      <h3>Candidate system elements</h3>
+      <ul>
+        <li>Three <em>modules</em> for operations, resilience and welfare; frame, foundation and loading arrangements remain to be selected.</li>
+        <li>Inter-module <em>links</em>; route, crossing type, structural form and access requirements remain to be assessed.</li>
+        <li>A shared <em>services spine</em> for candidate power, communications and cooling connections; route, capacity, protection and ownership remain open.</li>
+        <li><em>Plant areas</em> for each module or a shared location; compare noise, vibration, maintenance access and common-cause failures before selecting the arrangement.</li>
+      </ul>
+    </article>
+  </div>
+
+  <!-- ■■■ INTERFACE DEFINITION PANEL ■■■ -->
+  <div id="panel-intf" role="tabpanel" hidden>
+    <article>
+      <h2>Interface Questions Register – Version 0</h2>
+      <p>These nine entries retain the proposed interface structure. Parties are roles to identify, and evidence is work to obtain—not an agreed specification, issued permit or completed deliverable. Every entry is open.</p>
+      <table>
+        <thead><tr><th>ID</th><th>Interface</th><th>Candidate parties / assets</th><th>Question to resolve</th><th>Evidence / agreement needed</th></tr></thead>
+        <tbody>
+          <tr><td>I-01</td><td>Viaduct structural and operational clearance</td><td>Control-centre modules ↔ rail asset owner / viaduct</td><td>What surveyed geometry, movements, operational envelope and maintenance access constrain the proposal?</td><td>Survey, engineering assessment and an agreed asset-protection/approval route.</td></tr>
+          <tr><td>I-02</td><td>Rail-borne vibration</td><td>Modules, occupants and equipment ↔ rail vibration source</td><td>What exposure and equipment sensitivity must be assessed, and would mitigation be needed?</td><td>Measurement or justified model, agreed performance criteria and a checked mitigation proposal.</td></tr>
+          <tr><td>I-03</td><td>Canal navigation and flood interface</td><td>Candidate crossings ↔ canal owner / relevant waterway authorities</td><td>What span, level, support locations and temporary works would preserve required navigation, flood performance and access?</td><td>Survey, hydraulic and structural assessments, and the relevant permissions identified with responsible parties.</td></tr>
+          <tr><td>I-04</td><td>Road crossing and access</td><td>Candidate links ↔ road owner / highway authority</td><td>What crossing geometry, loading, vehicle protection, access and construction arrangements are acceptable?</td><td>Assessed crossing/access proposal and confirmation of applicable rights and approvals; no specific legal instrument is assumed.</td></tr>
+          <tr><td>I-05</td><td>Foundations near canal banks</td><td>Candidate foundations ↔ ground / canal bank</td><td>How would loads and construction affect bank stability, water and maintenance access?</td><td>Ground investigation, foundation and temporary-works assessment, and agreed monitoring/acceptance criteria.</td></tr>
+          <tr><td>I-06</td><td>Overhead electrical line</td><td>Buildings, plant and construction equipment ↔ line operator</td><td>What operating and construction envelopes, electrical effects and access requirements apply to this asset?</td><td>Operator asset data, site-specific electrical and construction assessment, and the necessary operator agreement.</td></tr>
+          <tr><td>I-07</td><td>Historic mine workings</td><td>Existing and proposed foundations / utilities ↔ workings and ground</td><td>Where are the workings, what is their condition, and how might loads, excavation or treatment affect stability?</td><td>Records and investigation, ground-risk assessment, justified exclusions/treatment and identification of required rights or consents.</td></tr>
+          <tr><td>I-08</td><td>Utility services corridor</td><td>Non-signalling infrastructure ↔ utility owners / operators</td><td>Which services, capacities, separations, routes and access arrangements are required?</td><td>Service requirements, coordinated route study, engineering design and ownership/interface agreements.</td></tr>
+          <tr><td>I-09</td><td>Non-signalling ↔ signalling systems</td><td>Infrastructure services ↔ signalling equipment and system owner</td><td>What power, communications, environmental, electromagnetic compatibility and resilience requirements cross the boundary?</td><td>Jointly developed interface requirements, allocated responsibilities and a verification plan.</td></tr>
+        </tbody>
+      </table>
+      <p><em>Next step:</em> identify accountable parties, sources and decisions for each entry. Replace an assumption only when supporting evidence and its acceptance are recorded. This sketch does not close any interface or risk.</p>
+    </article>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <span><span class="swatch" style="background:#4FC3F7"></span>Canal</span>
+    <span><span class="swatch" style="background:#8D6E63"></span>Road</span>
+    <span><span class="swatch" style="background:#9E9E9E"></span>Railway Viaduct</span>
+    <span><span class="swatch" style="background:#F44336"></span>HV Line</span>
+    <span><span class="swatch" style="background:#FFD54F"></span>Staff Welfare</span>
+    <span><span class="swatch" style="background:#4DB6AC"></span>Operations</span>
+    <span><span class="swatch" style="background:#90CAF9"></span>Resilience</span>
+  </div>
+
+  <p style="max-width:60ch;text-align:center;font-size:.95rem">
+    Use the tabs to inspect the candidate v0 arrangement and its open interface questions.
+  </p>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ■■■ JAVASCRIPT ■■■ -->
+<script>
+(function(){
+  const container=document.getElementById('app');
+  const toast=document.getElementById('toast');
+
+  const tabs=[...document.querySelectorAll('[role="tab"]')];
+  const panels=[...document.querySelectorAll('[role="tabpanel"]')];
+
+  function selectTab(tab){
+    const target=tab.dataset.target;
+    tabs.forEach(t=>t.setAttribute('aria-selected',t===tab));
+    panels.forEach(p=>p.hidden=(p.id!==target));
+  }
+  tabs.forEach(t=>t.addEventListener('click',()=>selectTab(t)));
+
+  function showToast(msg,dur=2500){
+    toast.textContent=msg;
+    toast.classList.add('show');
+    setTimeout(()=>toast.classList.remove('show'),dur);
+  }
+
+  [...document.querySelectorAll('svg [data-info]')].forEach(el=>{
+    el.addEventListener('click',e=>{
+      e.stopPropagation();
+      showToast(el.dataset.info||'');
+    });
+  });
+
+  setTimeout(()=>{container.dataset.ready='1';},50);
+})();
+</script>
+</body>
+</html>

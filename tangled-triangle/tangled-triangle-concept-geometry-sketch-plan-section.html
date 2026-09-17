@@ -1,0 +1,1005 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tangled Triangle — Concept Geometry Sketch (Plan + Section)</title>
+  <style>
+    :root{
+      --bg: #0b0f14;
+      --panel: #101826;
+      --panel2:#0f1724;
+      --text:#e8eef7;
+      --muted:#a8b3c4;
+      --line:#2a3953;
+      --focus:#ffffff;
+      --accent:#79c0ff;
+      --warn:#ffd479;
+      --ok:#9be9a8;
+      --danger:#ff8a8a;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 14px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family: var(--sans);
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(121,192,255,.18), transparent 60%),
+                  radial-gradient(900px 500px at 100% 10%, rgba(155,233,168,.12), transparent 60%),
+                  var(--bg);
+      color: var(--text);
+    }
+
+    .app{
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 18px 14px 22px;
+      box-sizing: border-box;
+    }
+
+    header{
+      display:flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .titleblock h1{
+      font-size: 18px;
+      margin:0 0 6px;
+      letter-spacing: .2px;
+      font-weight: 700;
+    }
+    .titleblock p{
+      margin:0;
+      color: var(--muted);
+      font-size: 12.5px;
+      max-width: 78ch;
+      line-height: 1.35;
+    }
+
+    .pill{
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      padding: 8px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns: 290px 1fr 320px;
+      gap: 12px;
+      align-items: start;
+    }
+
+    @media (max-width: 1100px){
+      .layout{grid-template-columns: 1fr; }
+      .pill{display:none;}
+    }
+
+    .panel{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .panel .inner{ padding: 12px; }
+
+    .controls h2,
+    .info h2{
+      font-size: 12px;
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .controls .group{
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding-top: 10px;
+      margin-top: 10px;
+    }
+    .controls .row{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 8px 0;
+    }
+    .controls label{
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text);
+      cursor:pointer;
+      user-select:none;
+    }
+    .controls input[type="checkbox"]{ transform: translateY(1px); }
+
+    .controls .small{
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35;
+      margin-top: 6px;
+    }
+
+    .btnrow{display:flex; gap:10px; margin-top: 10px;}
+    button{
+      appearance:none;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 9px 10px;
+      font-size: 13px;
+      cursor:pointer;
+    }
+    button:hover{ background: rgba(255,255,255,.06); }
+    button:active{ transform: translateY(1px); }
+    button.primary{
+      border-color: rgba(121,192,255,.55);
+      background: rgba(121,192,255,.12);
+    }
+
+    .tabs{
+      display:flex;
+      gap:8px;
+      margin-top: 10px;
+    }
+    .tabbtn{
+      flex:1;
+      font-weight: 650;
+      padding: 10px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+    }
+    .tabbtn.active{
+      border-color: rgba(121,192,255,.55);
+      background: rgba(121,192,255,.12);
+      color: var(--text);
+    }
+
+    .viz{
+      min-height: 680px;
+    }
+    .viz .inner{ padding: 10px; }
+
+    .tab{
+      display:none;
+    }
+    .tab.active{
+      display:block;
+    }
+
+    .svgwrap{
+      background: rgba(0,0,0,.15);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px;
+      overflow:hidden;
+    }
+
+    .caption{
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .caption strong{ color: var(--text); }
+
+    .info .title{
+      font-size: 16px;
+      margin: 0 0 8px;
+      font-weight: 750;
+      letter-spacing: .2px;
+    }
+    .info .body{
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.45;
+      white-space: pre-line;
+    }
+    .info .meta{
+      margin-top: 10px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      line-height: 1.45;
+    }
+
+    /* SVG styling */
+    svg{ width:100%; height:auto; display:block; background: transparent; }
+    .label{ font: 12px/1.1 var(--sans); fill: var(--text); opacity: .92; }
+    .label.muted{ fill: var(--muted); opacity: .95; }
+    .label.mono{ font: 11px/1.1 var(--mono); fill: var(--muted); }
+
+    .feature{
+      cursor: pointer;
+      transition: opacity .12s ease, filter .12s ease, stroke-width .12s ease;
+    }
+    .feature.dim{ opacity: .22; }
+    .feature.active{ filter: drop-shadow(0 0 10px rgba(121,192,255,.35)); }
+
+    .stroke-site{ stroke: rgba(255,255,255,.55); stroke-width: 2.2; fill: rgba(121,192,255,.06); }
+    .stroke-canal{ stroke: rgba(121,192,255,.85); stroke-width: 7; }
+    .stroke-road{ stroke: rgba(255,255,255,.72); stroke-width: 7; }
+    .stroke-rail{ stroke: rgba(255,212,121,.9); stroke-width: 7; }
+    .stroke-hv{ stroke: rgba(155,233,168,.9); stroke-width: 5; stroke-dasharray: 10 8; }
+    .stroke-mine{ stroke: rgba(255,138,138,.9); stroke-width: 4; stroke-dasharray: 8 7; }
+
+    .buffer{
+      pointer-events:none;
+      opacity: .14;
+    }
+    .buffer.canal{ stroke: rgba(121,192,255,.9); stroke-width: 22; }
+    .buffer.road{ stroke: rgba(255,255,255,.9); stroke-width: 22; }
+    .buffer.rail{ stroke: rgba(255,212,121,.9); stroke-width: 26; }
+    .buffer.hv{ stroke: rgba(155,233,168,.9); stroke-width: 26; stroke-dasharray: 6 10; }
+    .buffer.mine{ stroke: rgba(255,138,138,.9); stroke-width: 18; stroke-dasharray: 6 8; }
+
+    .node{
+      fill: rgba(255,255,255,.12);
+      stroke: rgba(255,255,255,.75);
+      stroke-width: 2;
+    }
+    .node.active{ fill: rgba(121,192,255,.22); stroke: rgba(121,192,255,.95); }
+
+    .callout{
+      fill: rgba(0,0,0,.35);
+      stroke: rgba(255,255,255,.18);
+      stroke-width: 1;
+    }
+
+    /* Tooltip */
+    #tooltip{
+      position: fixed;
+      inset: auto auto 0 0;
+      transform: translate(-9999px,-9999px);
+      max-width: 360px;
+      background: rgba(16,24,38,.96);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 12px;
+      padding: 10px 10px;
+      box-shadow: var(--shadow);
+      pointer-events:none;
+      z-index: 9999;
+    }
+    #tooltip .t{font-weight:750; margin-bottom: 3px; font-size: 12.5px;}
+    #tooltip .d{color: var(--muted); font-size: 12px; line-height: 1.35;}
+  </style>
+  <link rel="stylesheet" href="../assets/site.css?v=20260917">
+  <link rel="stylesheet" href="../assets/tangled-triangle-enquiry.css?v=20260917">
+  <script defer src="../assets/site-nav.js?v=20260917"></script>
+</head>
+
+<body data-ltg-page="triangle-ai-2" data-ltg-enquiry="ai">
+  <div class="ltg-enquiry-context" aria-label="Tangled Triangle enquiry context">
+    <p><strong>Early enquiry · AI interpretation · Concept geometry sketch</strong></p>
+    <p>How well can AI make sense of interfaces, topology and system architecture? This variant makes one interpretation of the shared fictional brief available for inspection. Inspect boundary features, toggle illustrative bands, and compare plan and section interpretations.</p>
+    <p class="ltg-enquiry-context__links"><a href="index.html">← All six Tangled Triangle variants</a><a href="../forays/003-tangled-triangle.html">Later enquiry: local-to-global compatibility →</a></p>
+  </div>
+  <div class="app">
+    <header>
+      <div class="titleblock">
+        <h1>Tangled Triangle — conceptual boundary geometry (interactive plan + section)</h1>
+        <p>
+          Click or hover any feature to see what it represents and how it constrains the site.
+          This is a <strong>concept-stage</strong> sketch of the topology you described: canal (south, ground level), road (west, bridging the canal),
+          railway (NW–SE on a viaduct crossing road + canal), mining passage (~10&nbsp;m below, W–E), and HV line (N–S overhead).
+        </p>
+      </div>
+      <div class="pill">Conceptual • not to scale • interface/topology focus</div>
+    </header>
+
+    <div class="layout">
+      <!-- CONTROLS -->
+      <aside class="panel controls">
+        <div class="inner">
+          <h2>Layers</h2>
+
+          <div class="row">
+            <label><input type="checkbox" data-layer="site" checked> Site footprint</label>
+            <span class="pill" style="padding:6px 10px;">Primary</span>
+          </div>
+
+          <div class="row">
+            <label><input type="checkbox" data-layer="canal" checked> Canal (south)</label>
+            <span class="pill" style="padding:6px 10px;">Ground</span>
+          </div>
+
+          <div class="row">
+            <label><input type="checkbox" data-layer="road" checked> Road (west)</label>
+            <span class="pill" style="padding:6px 10px;">Bridge</span>
+          </div>
+
+          <div class="row">
+            <label><input type="checkbox" data-layer="rail" checked> Railway (NW–SE)</label>
+            <span class="pill" style="padding:6px 10px;">Viaduct</span>
+          </div>
+
+          <div class="row">
+            <label><input type="checkbox" data-layer="hv" checked> HV line (N–S)</label>
+            <span class="pill" style="padding:6px 10px;">Overhead</span>
+          </div>
+
+          <div class="row">
+            <label><input type="checkbox" data-layer="mine" checked> Mining passage (W–E)</label>
+            <span class="pill" style="padding:6px 10px;">Below</span>
+          </div>
+
+          <div class="row">
+            <label><input type="checkbox" data-layer="interfaces" checked> Interface nodes</label>
+            <span class="pill" style="padding:6px 10px;">Hotspots</span>
+          </div>
+
+          <div class="group">
+            <h2>Safeguarding</h2>
+            <div class="row">
+              <label><input type="checkbox" id="toggleBuffers" checked> Show indicative bands</label>
+              <span class="pill" style="padding:6px 10px;">Concept</span>
+            </div>
+            <div class="small">
+              These translucent “bands” are <strong>not real distances</strong>—they’re there only to help visualise that each corridor
+              brings a working envelope / exclusion zone / consent boundary.
+            </div>
+          </div>
+
+          <div class="group">
+            <h2>View</h2>
+            <div class="tabs" role="tablist" aria-label="View tabs">
+              <button class="tabbtn active" data-tab="plan" role="tab" aria-selected="true">Plan</button>
+              <button class="tabbtn" data-tab="section" role="tab" aria-selected="false">Section A–A</button>
+            </div>
+
+            <div class="btnrow">
+              <button class="primary" id="resetBtn">Reset</button>
+              <button id="clearBtn">Clear selection</button>
+            </div>
+
+            <div class="small" style="margin-top:10px;">
+              <strong>Section A–A</strong> is a conceptual longitudinal section along the road corridor:
+              you encounter the <em>rail viaduct over road</em> and the <em>road bridge over canal</em>; the mine is shown beneath and the HV line above.
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- VISUALS -->
+      <main class="panel viz">
+        <div class="inner">
+          <!-- PLAN -->
+          <div class="tab active" id="tab-plan">
+            <div class="svgwrap">
+              <svg id="planSvg" viewBox="0 0 1000 620" aria-label="Plan view">
+                <defs>
+                  <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                    <path d="M0,0 L9,3 L0,6 Z" fill="rgba(255,255,255,.7)"></path>
+                  </marker>
+                </defs>
+
+                <!-- Background grid (subtle) -->
+                <g opacity=".18">
+                  <path d="M0 60 H1000 M0 120 H1000 M0 180 H1000 M0 240 H1000 M0 300 H1000 M0 360 H1000 M0 420 H1000 M0 480 H1000 M0 540 H1000"
+                        stroke="rgba(255,255,255,.12)" stroke-width="1"/>
+                  <path d="M80 0 V620 M160 0 V620 M240 0 V620 M320 0 V620 M400 0 V620 M480 0 V620 M560 0 V620 M640 0 V620 M720 0 V620 M800 0 V620 M880 0 V620"
+                        stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+                </g>
+
+                <!-- Indicative safeguarding bands (buffers) -->
+                <g id="planBuffers">
+                  <line class="buffer canal" x1="80" y1="500" x2="960" y2="500"></line>
+                  <line class="buffer road" x1="200" y1="60" x2="200" y2="600"></line>
+                  <line class="buffer rail" x1="50" y1="177" x2="950" y2="555"></line>
+                  <line class="buffer hv" x1="460" y1="55" x2="460" y2="600"></line>
+                  <line class="buffer mine" x1="90" y1="360" x2="930" y2="360"></line>
+                </g>
+
+                <!-- Canal (south boundary) -->
+                <g data-feature="canal" class="feature">
+                  <line class="stroke-canal" x1="80" y1="500" x2="960" y2="500"></line>
+                  <!-- Towpath/edge -->
+                  <line x1="80" y1="490" x2="960" y2="490" stroke="rgba(121,192,255,.35)" stroke-width="2"></line>
+                  <text class="label" x="650" y="535">Canal (south boundary, ground level)</text>
+                </g>
+
+                <!-- Road (west boundary) -->
+                <g data-feature="road" class="feature">
+                  <line class="stroke-road" x1="200" y1="60" x2="200" y2="600"></line>
+                  <!-- Bridge cue across canal -->
+                  <rect x="186" y="468" width="28" height="64" fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.28)" stroke-width="1.5"></rect>
+                  <text class="label" x="220" y="120">Road (west boundary)</text>
+                  <text class="label muted" x="220" y="140">crosses canal on bridge</text>
+                </g>
+
+                <!-- Railway (NW–SE boundary, on viaduct) -->
+                <g data-feature="rail" class="feature">
+                  <line class="stroke-rail" x1="50" y1="177" x2="950" y2="555"></line>
+                  <!-- “Double track” hint -->
+                  <line x1="55" y1="165" x2="955" y2="543" stroke="rgba(255,212,121,.35)" stroke-width="2"></line>
+
+                  <!-- Overpass cues at crossings -->
+                  <!-- Rail over road (at x=200,y=240) -->
+                  <g>
+                    <rect x="170" y="226" width="60" height="28" fill="rgba(255,212,121,.18)" stroke="rgba(255,212,121,.55)" stroke-width="1.5" transform="rotate(22 200 240)"></rect>
+                    <text class="label muted" x="240" y="210">Rail viaduct over road</text>
+                  </g>
+
+                  <!-- Rail over canal (at x=820,y=500) -->
+                  <g>
+                    <rect x="790" y="486" width="60" height="28" fill="rgba(255,212,121,.18)" stroke="rgba(255,212,121,.55)" stroke-width="1.5" transform="rotate(22 820 500)"></rect>
+                    <text class="label muted" x="720" y="465">Rail viaduct over canal</text>
+                  </g>
+
+                  <text class="label" x="560" y="210">Railway boundary (NW–SE)</text>
+                </g>
+
+                <!-- HV transmission line (N–S overhead) -->
+                <g data-feature="hv" class="feature">
+                  <line class="stroke-hv" x1="460" y1="55" x2="460" y2="600"></line>
+                  <!-- Pylons (schematic) -->
+                  <path d="M460 70 l-18 36 h36 z" fill="rgba(155,233,168,.14)" stroke="rgba(155,233,168,.55)" stroke-width="1.5"></path>
+                  <path d="M460 585 l-18 -36 h36 z" fill="rgba(155,233,168,.14)" stroke="rgba(155,233,168,.55)" stroke-width="1.5"></path>
+                  <text class="label" x="480" y="95">HV line (N–S, overhead)</text>
+                </g>
+
+                <!-- Mining passage (W–E, ~10m below) -->
+                <g data-feature="mine" class="feature">
+                  <line class="stroke-mine" x1="90" y1="360" x2="930" y2="360"></line>
+                  <text class="label" x="560" y="345">Old mining passage (W–E)</text>
+                  <text class="label muted" x="560" y="365">~10 m below ground (indicative)</text>
+                </g>
+
+                <!-- Site footprint (triangle bounded by canal+road+rail) -->
+                <g data-feature="site" class="feature">
+                  <!-- Triangle vertices:
+                       SW: road∩canal (200,500)
+                       NW: road∩rail  (200,240)
+                       SE: rail∩canal (820,500)
+                  -->
+                  <polygon class="stroke-site" points="200,500 200,240 820,500"></polygon>
+                  <text class="label" x="310" y="335">Indicative developable wedge</text>
+                  <text class="label muted" x="310" y="355">(bounded by existing corridors)</text>
+                </g>
+
+                <!-- Interface nodes (hotspots) -->
+                <g data-feature="interfaces" class="feature">
+                  <circle class="node" cx="200" cy="500" r="10"></circle>
+                  <text class="label mono" x="215" y="505">I1</text>
+
+                  <circle class="node" cx="200" cy="240" r="10"></circle>
+                  <text class="label mono" x="215" y="245">I2</text>
+
+                  <circle class="node" cx="820" cy="500" r="10"></circle>
+                  <text class="label mono" x="835" y="505">I3</text>
+
+                  <text class="label muted" x="70" y="585">I1 Road↔Canal  •  I2 Rail↔Road  •  I3 Rail↔Canal</text>
+                </g>
+
+                <!-- Section line A–A (conceptual, along road) -->
+                <g data-feature="section" class="feature">
+                  <line x1="200" y1="520" x2="200" y2="210"
+                        stroke="rgba(255,255,255,.65)" stroke-width="2.2"
+                        marker-end="url(#arrow)"></line>
+                  <text class="label mono" x="214" y="520">A</text>
+                  <text class="label mono" x="214" y="225">A</text>
+                  <text class="label muted" x="230" y="260">Section A–A (along road)</text>
+                </g>
+
+                <!-- North arrow -->
+                <g opacity=".92">
+                  <path d="M935 85 l0 -38 l-12 18 h24 z" fill="rgba(255,255,255,.14)" stroke="rgba(255,255,255,.55)" stroke-width="1.5"></path>
+                  <text class="label mono" x="928" y="100">N</text>
+                </g>
+
+                <!-- Legend -->
+                <g transform="translate(30,20)">
+                  <rect class="callout" x="0" y="0" width="390" height="96" rx="12"></rect>
+                  <text class="label" x="14" y="24">Legend (click items in the drawing)</text>
+                  <g transform="translate(14,34)" class="label muted">
+                    <line x1="0" y1="10" x2="30" y2="10" class="stroke-canal"></line>
+                    <text x="42" y="14">Canal edge</text>
+
+                    <line x1="140" y1="10" x2="170" y2="10" class="stroke-road"></line>
+                    <text x="182" y="14">Road corridor</text>
+
+                    <line x1="0" y1="34" x2="30" y2="34" class="stroke-rail"></line>
+                    <text x="42" y="38">Rail corridor (viaduct)</text>
+
+                    <line x1="140" y1="34" x2="170" y2="34" class="stroke-hv"></line>
+                    <text x="182" y="38">HV overhead</text>
+
+                    <line x1="0" y1="58" x2="30" y2="58" class="stroke-mine"></line>
+                    <text x="42" y="62">Mine passage below</text>
+
+                    <circle cx="155" cy="58" r="7" class="node"></circle>
+                    <text x="182" y="62">Interface node</text>
+                  </g>
+                </g>
+              </svg>
+            </div>
+
+            <div class="caption">
+              <strong>Plan:</strong> triangle of constraints formed by the intersections of (a) the canal, (b) the road, and (c) the railway line.
+              The rail is shown as an elevated viaduct crossing both road and canal; the mine is below; the HV line is overhead.
+            </div>
+          </div>
+
+          <!-- SECTION -->
+          <div class="tab" id="tab-section">
+            <div class="svgwrap">
+              <svg id="sectionSvg" viewBox="0 0 1000 520" aria-label="Section view A–A">
+                <defs>
+                  <marker id="arrow2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                    <path d="M0,0 L9,3 L0,6 Z" fill="rgba(255,255,255,.7)"></path>
+                  </marker>
+                </defs>
+
+                <!-- Axis (levels) -->
+                <g opacity=".95">
+                  <line x1="60" y1="40" x2="60" y2="470" stroke="rgba(255,255,255,.20)" stroke-width="2"></line>
+                  <!-- ticks and labels (0 m at y=320) -->
+                  <g class="label mono">
+                    <line x1="52" y1="320" x2="68" y2="320" stroke="rgba(255,255,255,.35)" stroke-width="2"></line>
+                    <text x="10" y="324">0 m</text>
+
+                    <line x1="52" y1="220" x2="68" y2="220" stroke="rgba(255,255,255,.25)" stroke-width="2"></line>
+                    <text x="10" y="224">+10 m</text>
+
+                    <line x1="52" y1="120" x2="68" y2="120" stroke="rgba(255,255,255,.25)" stroke-width="2"></line>
+                    <text x="10" y="124">+20 m</text>
+
+                    <line x1="52" y1="40" x2="68" y2="40" stroke="rgba(255,255,255,.25)" stroke-width="2"></line>
+                    <text x="10" y="44">+28 m</text>
+
+                    <line x1="52" y1="420" x2="68" y2="420" stroke="rgba(255,255,255,.25)" stroke-width="2"></line>
+                    <text x="10" y="424">-10 m</text>
+                  </g>
+                  <text class="label muted" x="18" y="495">Indicative levels</text>
+                </g>
+
+                <!-- Ground reference -->
+                <line x1="80" y1="320" x2="970" y2="320" stroke="rgba(255,255,255,.18)" stroke-width="2"></line>
+
+                <!-- Buffers (conceptual) -->
+                <g id="sectionBuffers">
+                  <path class="buffer road" d="M100 300 L320 300 L620 300 L700 270 L800 270 L880 300 L920 300"
+                        fill="none"></path>
+                  <line class="buffer rail" x1="305" y1="220" x2="395" y2="220"></line>
+                  <path class="buffer hv" d="M100 120 C 360 70, 640 70, 920 130" fill="none"></path>
+                  <ellipse class="buffer mine" cx="520" cy="420" rx="55" ry="22"></ellipse>
+                </g>
+
+                <!-- Road (section along road corridor) -->
+                <g data-feature="road" class="feature">
+                  <!-- road profile with bridge bump -->
+                  <path d="M100 300 L320 300 L620 300 L700 270 L800 270 L880 300 L920 300"
+                        fill="none" class="stroke-road"></path>
+
+                  <text class="label" x="120" y="282">Road corridor (A–A section line)</text>
+                </g>
+
+                <!-- Canal crossing (at the bridge location) -->
+                <g data-feature="canal" class="feature">
+                  <!-- canal cut -->
+                  <path d="M728 320 L728 370 L772 370 L772 320"
+                        fill="rgba(121,192,255,.14)" stroke="rgba(121,192,255,.55)" stroke-width="2"></path>
+                  <rect x="728" y="320" width="44" height="38" fill="rgba(121,192,255,.18)"></rect>
+                  <text class="label" x="690" y="392">Canal at ground level</text>
+                  <text class="label muted" x="690" y="412">Road crosses on bridge (shown above)</text>
+                </g>
+
+                <!-- Rail viaduct over the road (schematic) -->
+                <g data-feature="rail" class="feature">
+                  <line x1="305" y1="220" x2="395" y2="220" class="stroke-rail"></line>
+                  <!-- piers -->
+                  <line x1="330" y1="220" x2="330" y2="300" stroke="rgba(255,212,121,.55)" stroke-width="5"></line>
+                  <line x1="370" y1="220" x2="370" y2="300" stroke="rgba(255,212,121,.55)" stroke-width="5"></line>
+                  <text class="label" x="250" y="205">Rail viaduct over road</text>
+                  <text class="label muted" x="250" y="225">(railway boundary in plan)</text>
+                </g>
+
+                <!-- HV line overhead -->
+                <g data-feature="hv" class="feature">
+                  <path d="M100 120 C 360 70, 640 70, 920 130"
+                        fill="none" class="stroke-hv"></path>
+                  <text class="label" x="580" y="92">HV transmission line overhead</text>
+                  <text class="label muted" x="580" y="112">height/clearance + crane constraints</text>
+                </g>
+
+                <!-- Mining passage ~10m below -->
+                <g data-feature="mine" class="feature">
+                  <ellipse cx="520" cy="420" rx="45" ry="18" fill="rgba(255,138,138,.12)"
+                           stroke="rgba(255,138,138,.75)" stroke-width="3"></ellipse>
+                  <line x1="475" y1="420" x2="565" y2="420" class="stroke-mine"></line>
+                  <text class="label" x="575" y="428">Old mining passage</text>
+                  <text class="label muted" x="575" y="448">~10 m below (indicative)</text>
+                </g>
+
+                <!-- Site (section annotation) -->
+                <g data-feature="site" class="feature">
+                  <rect x="415" y="260" width="220" height="78" rx="12"
+                        fill="rgba(121,192,255,.06)" stroke="rgba(255,255,255,.22)" stroke-width="2"></rect>
+                  <text class="label" x="430" y="288">Site influence zone</text>
+                  <text class="label muted" x="430" y="308">between crossings + constraints</text>
+                </g>
+
+                <!-- Interface nodes in section -->
+                <g data-feature="interfaces" class="feature">
+                  <circle class="node" cx="350" cy="300" r="10"></circle>
+                  <text class="label mono" x="365" y="305">I2</text>
+
+                  <circle class="node" cx="750" cy="270" r="10"></circle>
+                  <text class="label mono" x="765" y="275">I1</text>
+
+                  <text class="label muted" x="120" y="468">I2 Rail↔Road  •  I1 Road↔Canal  (I3 Rail↔Canal exists in plan at SE vertex)</text>
+                </g>
+
+                <!-- Direction -->
+                <g opacity=".9">
+                  <line x1="100" y1="490" x2="920" y2="490" stroke="rgba(255,255,255,.18)" stroke-width="2" marker-end="url(#arrow2)"></line>
+                  <text class="label mono" x="100" y="510">North → South (along road)</text>
+                </g>
+
+                <!-- Callout -->
+                <g transform="translate(96,18)">
+                  <rect class="callout" x="0" y="0" width="808" height="66" rx="12"></rect>
+                  <text class="label" x="14" y="24">Section A–A (conceptual): vertical stacking of constraints along the road corridor</text>
+                  <text class="label muted" x="14" y="46">Assumed for illustration: mine ≈ -10 m, road bridge ≈ +4 m above canal, rail deck ≈ +12 m, HV ≈ +25 m</text>
+                </g>
+              </svg>
+            </div>
+
+            <div class="caption">
+              <strong>Section A–A:</strong> schematic “constraint stack” along the road.
+              The two principal hard interfaces shown are <em>rail over road</em> and <em>road over canal</em>, with <em>HV overhead</em> and <em>mine below</em>.
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- INFO -->
+      <aside class="panel info">
+        <div class="inner">
+          <h2>Selection</h2>
+          <div class="title" id="infoTitle">Click a feature in plan or section</div>
+          <div class="body" id="infoBody">
+Hover to preview; click to “lock” selection.
+
+Use the Layers panel to hide/show constraints.
+          </div>
+          <div class="meta" id="infoMeta">
+No selection yet.
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <div id="tooltip" aria-hidden="true">
+    <div class="t" id="ttTitle"></div>
+    <div class="d" id="ttDesc"></div>
+  </div>
+
+  <script>
+    const FEATURES = {
+      site: {
+        name: "Site footprint (developable wedge)",
+        desc:
+`The indicative construction/development space bounded by:
+• Canal (south, ground level)
+• Road (west, bridged over canal)
+• Railway (NW–SE, viaduct)
+
+This is the “leftover” geometric wedge created by three intersecting corridors.`,
+        meta:
+`Topology: triangular wedge bounded by three existing transport corridors.
+Use: bounding shape for interface definitions + permissions + staging.`
+      },
+      canal: {
+        name: "Canal (south boundary, at ground level)",
+        desc:
+`The canal forms the southern hard boundary at (approximately) ground level.
+
+Key implications (concept-stage):
+• Water-edge constraints (setback, erosion, flood levels)
+• Towpath/access requirements for canal authority
+• Construction near water: environmental controls, temporary works, dewatering considerations`,
+        meta:
+`Interface family: External (canal authority).
+Nature: ground-level water corridor + maintained banks/edges.`
+      },
+      road: {
+        name: "Road (west boundary) + bridge over canal",
+        desc:
+`The road forms the western boundary and crosses the canal on a bridge.
+
+Key implications (concept-stage):
+• Working space is limited by live traffic and bridge structure
+• Construction logistics need traffic management
+• Vibration, noise, and buried utilities in verge are likely constraints`,
+        meta:
+`Interface family: External (road/highway authority).
+Nature: live highway corridor + bridge asset at canal crossing.`
+      },
+      rail: {
+        name: "Railway (NW–SE) on viaduct crossing road + canal",
+        desc:
+`The railway corridor forms the longest boundary. It is shown as an elevated viaduct,
+crossing the road (I2) and the canal (I3).
+
+Key implications (concept-stage):
+• Network Rail asset protection and clearances
+• Staging/possessions constraints for any adjacent works
+• Structural limitations under/near viaduct piers and abutments
+• Vibration/EMI considerations for a control centre nearby`,
+        meta:
+`Interface family: Internal (railway) / heavily regulated.
+Nature: elevated corridor (viaduct) with clearances + access + protection zones.`
+      },
+      hv: {
+        name: "High-voltage transmission line (N–S, overhead)",
+        desc:
+`An overhead HV line crosses (or runs adjacent to) the site corridor north–south.
+
+Key implications (concept-stage):
+• Minimum electrical clearances (especially for cranes + lifting ops)
+• Height limits for buildings/plant (and temporary works)
+• Earthing/EMI interface with signalling/control centre equipment`,
+        meta:
+`Interface family: External (power authority / DNO / National Grid etc).
+Nature: overhead corridor + operational clearance envelopes.`
+      },
+      mine: {
+        name: "Old mining passage (W–E) ~10 m below ground",
+        desc:
+`A legacy mining passage runs west–east beneath the area at ~10 m depth (indicative).
+
+Key implications (concept-stage):
+• Ground investigation must confirm location/condition
+• Possible piling exclusions, grouting, or foundation redesign
+• Subsidence risk management + monitoring during construction`,
+        meta:
+`Interface family: External (mining authority / legacy owner / regulator).
+Nature: subsurface void/structure impacting foundations + settlement.`
+      },
+      interfaces: {
+        name: "Interface nodes (hotspots) — I1 / I2 / I3",
+        desc:
+`These are the three “hotspots” where existing corridors interact and permissions/constraints concentrate:
+
+I1: Road ↔ Canal (bridge over water)
+I2: Rail ↔ Road (viaduct over highway)
+I3: Rail ↔ Canal (viaduct over water)
+
+In system-engineering terms: these are likely to become key interface control points (ICPs).`,
+        meta:
+`Use: candidate “Interface Control Points” for contracts, consents, staging, monitoring.`
+      },
+      section: {
+        name: "Section A–A reference",
+        desc:
+`The section is drawn along the road corridor (A–A) to show vertical stacking:
+• Road crosses canal on bridge
+• Rail viaduct crosses above the road
+• HV line overhead
+• Mine below
+
+This is schematic; exact elevations and positions require survey + asset data.`,
+        meta:
+`Purpose: communicate relative vertical relationships early, before detailed survey.`
+      }
+    };
+
+    const state = {
+      activeTab: "plan",
+      activeKey: null,
+      buffers: true,
+      visibility: {
+        site: true,
+        canal: true,
+        road: true,
+        rail: true,
+        hv: true,
+        mine: true,
+        interfaces: true,
+        section: true
+      }
+    };
+
+    const tooltip = document.getElementById("tooltip");
+    const ttTitle = document.getElementById("ttTitle");
+    const ttDesc = document.getElementById("ttDesc");
+
+    const infoTitle = document.getElementById("infoTitle");
+    const infoBody = document.getElementById("infoBody");
+    const infoMeta = document.getElementById("infoMeta");
+
+    function qsa(sel){ return Array.from(document.querySelectorAll(sel)); }
+
+    function setTooltip(key, x, y){
+      const f = FEATURES[key];
+      if(!f) return;
+      ttTitle.textContent = f.name;
+      ttDesc.textContent = f.desc.split("\n").slice(0,3).join(" ");
+      tooltip.style.transform = `translate(${x+12}px, ${y+12}px)`;
+    }
+    function showTooltip(key, evt){
+      tooltip.style.display = "block";
+      setTooltip(key, evt.clientX, evt.clientY);
+    }
+    function moveTooltip(evt){
+      if(tooltip.style.display !== "block") return;
+      tooltip.style.transform = `translate(${evt.clientX+12}px, ${evt.clientY+12}px)`;
+    }
+    function hideTooltip(){
+      tooltip.style.display = "none";
+      tooltip.style.transform = "translate(-9999px,-9999px)";
+    }
+
+    function setInfo(key){
+      const f = FEATURES[key];
+      if(!f) return;
+      infoTitle.textContent = f.name;
+      infoBody.textContent = f.desc;
+      infoMeta.textContent = f.meta;
+    }
+
+    function clearSelection(){
+      state.activeKey = null;
+      qsa(".feature").forEach(el => el.classList.remove("active"));
+      qsa(".node").forEach(el => el.classList.remove("active"));
+      infoTitle.textContent = "Click a feature in plan or section";
+      infoBody.textContent = "Hover to preview; click to “lock” selection.\n\nUse the Layers panel to hide/show constraints.";
+      infoMeta.textContent = "No selection yet.";
+      applyDimming(null);
+    }
+
+    function applyDimming(activeKey){
+      const keys = Object.keys(FEATURES);
+      if(!activeKey){
+        qsa(".feature").forEach(el => el.classList.remove("dim"));
+        return;
+      }
+      keys.forEach(k => {
+        qsa(`[data-feature="${k}"]`).forEach(el => {
+          if(k === activeKey) el.classList.remove("dim");
+          else el.classList.add("dim");
+        });
+      });
+    }
+
+    function setActive(key){
+      if(!FEATURES[key]) return;
+      state.activeKey = key;
+
+      // remove previous
+      qsa(".feature").forEach(el => el.classList.remove("active"));
+      qsa(".node").forEach(el => el.classList.remove("active"));
+
+      // add current
+      qsa(`[data-feature="${key}"]`).forEach(el => el.classList.add("active"));
+
+      // nodes are circles inside interfaces group; also add active to nodes for better visibility
+      if(key === "interfaces"){
+        qsa(`[data-feature="interfaces"] .node`).forEach(el => el.classList.add("active"));
+      }
+
+      setInfo(key);
+      applyDimming(key);
+    }
+
+    function setLayerVisibility(key, visible){
+      state.visibility[key] = visible;
+      qsa(`[data-feature="${key}"]`).forEach(el => el.style.display = visible ? "" : "none");
+      // If we hide the active feature, clear selection to avoid “phantom” state
+      if(state.activeKey === key && !visible) clearSelection();
+    }
+
+    function setBuffersVisible(visible){
+      state.buffers = visible;
+      document.getElementById("planBuffers").style.display = visible ? "" : "none";
+      document.getElementById("sectionBuffers").style.display = visible ? "" : "none";
+    }
+
+    function bindFeatureEvents(){
+      Object.keys(FEATURES).forEach(key => {
+        qsa(`[data-feature="${key}"]`).forEach(el => {
+          el.addEventListener("mouseenter", (evt) => {
+            if(state.activeKey) return; // if locked selection, don't override with hover
+            showTooltip(key, evt);
+            applyDimming(key);
+          });
+          el.addEventListener("mousemove", moveTooltip);
+          el.addEventListener("mouseleave", () => {
+            if(state.activeKey) return;
+            hideTooltip();
+            applyDimming(null);
+          });
+          el.addEventListener("click", (evt) => {
+            evt.stopPropagation();
+            hideTooltip();
+            setActive(key);
+          });
+        });
+      });
+
+      // Click empty space clears selection
+      document.addEventListener("click", () => {
+        hideTooltip();
+        clearSelection();
+      });
+    }
+
+    function bindControls(){
+      qsa('input[type="checkbox"][data-layer]').forEach(cb => {
+        cb.addEventListener("change", () => {
+          const key = cb.getAttribute("data-layer");
+          setLayerVisibility(key, cb.checked);
+        });
+      });
+
+      document.getElementById("toggleBuffers").addEventListener("change", (e) => {
+        setBuffersVisible(e.target.checked);
+      });
+
+      document.getElementById("resetBtn").addEventListener("click", (e) => {
+        e.stopPropagation();
+        // reset visibility
+        qsa('input[type="checkbox"][data-layer]').forEach(cb => cb.checked = true);
+        Object.keys(state.visibility).forEach(k => setLayerVisibility(k, true));
+
+        // reset buffers
+        document.getElementById("toggleBuffers").checked = true;
+        setBuffersVisible(true);
+
+        // reset tab
+        switchTab("plan");
+
+        clearSelection();
+      });
+
+      document.getElementById("clearBtn").addEventListener("click", (e) => {
+        e.stopPropagation();
+        clearSelection();
+      });
+
+      qsa(".tabbtn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          switchTab(btn.getAttribute("data-tab"));
+        });
+      });
+    }
+
+    function switchTab(tab){
+      state.activeTab = tab;
+      qsa(".tabbtn").forEach(b => {
+        const on = b.getAttribute("data-tab") === tab;
+        b.classList.toggle("active", on);
+        b.setAttribute("aria-selected", on ? "true" : "false");
+      });
+      document.getElementById("tab-plan").classList.toggle("active", tab === "plan");
+      document.getElementById("tab-section").classList.toggle("active", tab === "section");
+    }
+
+    // init
+    bindFeatureEvents();
+    bindControls();
+    setBuffersVisible(true);
+    clearSelection();
+  </script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+{
+  "source_repository": "lawrencerowland/Project-web-apps",
+  "source_commit": "a83541f0b872518601a772b3d311741a7bd7e945",
+  "destination_directory": "tangled-triangle",
+  "variants": [
+    {
+      "file": "regional-signalling-control-centre-site-geometry-topology.html",
+      "title": "Site geometry and topology",
+      "purpose": "Read the brief as a simple plan and section, with feature annotations.",
+      "source_url": "https://lawrencerowland.github.io/Project-web-apps/web_apps/regional-signalling-control-centre-site-geometry-topology.html",
+      "destination_url": "https://lawrencerowland.github.io/local-to-global/tangled-triangle/regional-signalling-control-centre-site-geometry-topology.html",
+      "source_sha256": "cb01dae1b8027f09f0a13b3bb6f77a3bd3db66ea978454a02bf8411b476b29e2",
+      "inline_script_sha256": [
+        "46a2e75d38976f60ddbf94afb7ca88c08ea218e59ba65cc37a0d85c59e4b31e7"
+      ],
+      "control_tags": [
+        "<button id=\"tab-plan\" role=\"tab\" aria-controls=\"panel-plan\" aria-selected=\"true\">",
+        "<button id=\"tab-section\" role=\"tab\" aria-controls=\"panel-section\" aria-selected=\"false\">"
+      ],
+      "original_ids": [
+        "app",
+        "tab-plan",
+        "tab-section",
+        "panel-plan",
+        "panel-section",
+        "toast"
+      ]
+    },
+    {
+      "file": "tangled-triangle-concept-geometry-sketch-plan-section.html",
+      "title": "Concept geometry sketch",
+      "purpose": "Inspect boundary features, toggle illustrative bands, and compare plan and section interpretations.",
+      "source_url": "https://lawrencerowland.github.io/Project-web-apps/web_apps/tangled-triangle-concept-geometry-sketch-plan-section.html",
+      "destination_url": "https://lawrencerowland.github.io/local-to-global/tangled-triangle/tangled-triangle-concept-geometry-sketch-plan-section.html",
+      "source_sha256": "645c2a763b65d2b7233917aff5ffac5aad416d3d818117ffb18722dc687bed15",
+      "inline_script_sha256": [
+        "158f4d16232a70cc116243f3badcae2831c0c0a2ddc2bfa2c4efe719663daf3b"
+      ],
+      "control_tags": [
+        "<input type=\"checkbox\" data-layer=\"site\" checked>",
+        "<input type=\"checkbox\" data-layer=\"canal\" checked>",
+        "<input type=\"checkbox\" data-layer=\"road\" checked>",
+        "<input type=\"checkbox\" data-layer=\"rail\" checked>",
+        "<input type=\"checkbox\" data-layer=\"hv\" checked>",
+        "<input type=\"checkbox\" data-layer=\"mine\" checked>",
+        "<input type=\"checkbox\" data-layer=\"interfaces\" checked>",
+        "<input type=\"checkbox\" id=\"toggleBuffers\" checked>",
+        "<button class=\"tabbtn active\" data-tab=\"plan\" role=\"tab\" aria-selected=\"true\">",
+        "<button class=\"tabbtn\" data-tab=\"section\" role=\"tab\" aria-selected=\"false\">",
+        "<button class=\"primary\" id=\"resetBtn\">",
+        "<button id=\"clearBtn\">"
+      ],
+      "original_ids": [
+        "toggleBuffers",
+        "resetBtn",
+        "clearBtn",
+        "tab-plan",
+        "planSvg",
+        "arrow",
+        "planBuffers",
+        "tab-section",
+        "sectionSvg",
+        "arrow2",
+        "sectionBuffers",
+        "infoTitle",
+        "infoBody",
+        "infoMeta",
+        "tooltip",
+        "ttTitle",
+        "ttDesc"
+      ]
+    },
+    {
+      "file": "tangled_triangle_conceptual_plan_section.html",
+      "title": "Conceptual plan and section",
+      "purpose": "Adjust assumed bands and section cuts, and export the resulting drawings as PNGs.",
+      "source_url": "https://lawrencerowland.github.io/Project-web-apps/web_apps/tangled_triangle_conceptual_plan_section.html",
+      "destination_url": "https://lawrencerowland.github.io/local-to-global/tangled-triangle/tangled_triangle_conceptual_plan_section.html",
+      "source_sha256": "ed92875e175f648bec84f597c949aaf2fbda8b78aba5115879ec7be7fb5ff28c",
+      "inline_script_sha256": [
+        "31c106e9b22a623393e384f2d88d8e1a13953183513eb2bab8a7a5cb03d5fa6e"
+      ],
+      "control_tags": [
+        "<input type=\"checkbox\" data-layer=\"site\" checked>",
+        "<input type=\"checkbox\" data-layer=\"canal\" checked>",
+        "<input type=\"checkbox\" data-layer=\"road\" checked>",
+        "<input type=\"checkbox\" data-layer=\"rail\" checked>",
+        "<input type=\"checkbox\" data-layer=\"hv\" checked>",
+        "<input type=\"checkbox\" data-layer=\"mine\" checked>",
+        "<input type=\"checkbox\" data-layer=\"buffers\">",
+        "<input type=\"range\" id=\"hvClear\" min=\"5\" max=\"30\" value=\"12\" step=\"1\" aria-label=\"Assumed HV band width in metres\">",
+        "<input type=\"range\" id=\"railClear\" min=\"5\" max=\"25\" value=\"8\" step=\"1\" aria-label=\"Railway buffer metres\">",
+        "<input type=\"range\" id=\"roadClear\" min=\"2\" max=\"20\" value=\"6\" step=\"1\" aria-label=\"Road buffer metres\">",
+        "<input type=\"range\" id=\"canalClear\" min=\"5\" max=\"30\" value=\"10\" step=\"1\" aria-label=\"Canal buffer metres\">",
+        "<input type=\"range\" id=\"secX\" min=\"80\" max=\"800\" value=\"100\" step=\"1\" aria-label=\"Section X position metres\">",
+        "<button class=\"btn\" id=\"snapRoad\">",
+        "<button class=\"btn\" id=\"snapHV\">",
+        "<button class=\"btn ghost\" id=\"dlPlan\">",
+        "<button class=\"btn ghost\" id=\"dlSection\">"
+      ],
+      "original_ids": [
+        "app",
+        "hvClear",
+        "hvClearVal",
+        "railClear",
+        "railClearVal",
+        "roadClear",
+        "roadClearVal",
+        "canalClear",
+        "canalClearVal",
+        "planCanvas",
+        "planSvg",
+        "secX",
+        "secXVal",
+        "snapRoad",
+        "snapHV",
+        "dlPlan",
+        "dlSection",
+        "sectionCanvas",
+        "sectionSvg",
+        "sectionDesc",
+        "secXNote",
+        "toast"
+      ]
+    },
+    {
+      "file": "interface_topology_sketch_v0.html",
+      "title": "Interface topology sketch v0",
+      "purpose": "Vary assumed bands and levels, inspect signed distances from the site centre, and export SVG views.",
+      "source_url": "https://lawrencerowland.github.io/Project-web-apps/web_apps/interface_topology_sketch_v0.html",
+      "destination_url": "https://lawrencerowland.github.io/local-to-global/tangled-triangle/interface_topology_sketch_v0.html",
+      "source_sha256": "fc6c96926c8c91ae6b3cebfbccffb30aacc71142f97785ba74acd979a7f675ea",
+      "inline_script_sha256": [
+        "829f60d9c1c7827309eaf0ded3bfaa72f537f8e56ea1958b7cf1208d34332983"
+      ],
+      "control_tags": [
+        "<button class=\"btn\" id=\"btnCutAA\" aria-pressed=\"true\" title=\"A\u2013A: composite cut intersecting canal + road + rail envelope\">",
+        "<button class=\"btn\" id=\"btnCutBB\" aria-pressed=\"false\" title=\"B\u2013B: N\u2013S cut centred on OHL corridor\">",
+        "<button class=\"btn\" id=\"btnDownloadPlan\">",
+        "<button class=\"btn\" id=\"btnDownloadSection\">",
+        "<input type=\"checkbox\" id=\"showCanal\" checked>",
+        "<input type=\"checkbox\" id=\"showRoad\" checked>",
+        "<input type=\"checkbox\" id=\"showRail\" checked>",
+        "<input type=\"checkbox\" id=\"showOhl\" checked>",
+        "<input type=\"checkbox\" id=\"showMine\" checked>",
+        "<input type=\"range\" id=\"bufCanal\" min=\"3\" max=\"25\" step=\"1\" value=\"10\">",
+        "<input type=\"range\" id=\"bufRoad\" min=\"3\" max=\"20\" step=\"1\" value=\"8\">",
+        "<input type=\"range\" id=\"bufRail\" min=\"5\" max=\"30\" step=\"1\" value=\"15\">",
+        "<input type=\"range\" id=\"ohlHalf\" min=\"5\" max=\"40\" step=\"1\" value=\"18\">",
+        "<input type=\"range\" id=\"mineInf\" min=\"5\" max=\"60\" step=\"1\" value=\"25\">",
+        "<input type=\"range\" id=\"hRoad\" min=\"2\" max=\"12\" step=\"0.5\" value=\"6\">",
+        "<input type=\"range\" id=\"hRail\" min=\"5\" max=\"22\" step=\"0.5\" value=\"13\">",
+        "<input type=\"range\" id=\"hOhl\" min=\"15\" max=\"40\" step=\"0.5\" value=\"28\">",
+        "<input type=\"range\" id=\"dMine\" min=\"6\" max=\"25\" step=\"0.5\" value=\"10\">",
+        "<input type=\"range\" id=\"dCanal\" min=\"1\" max=\"5\" step=\"0.5\" value=\"2\">"
+      ],
+      "original_ids": [
+        "btnCutAA",
+        "btnCutBB",
+        "btnDownloadPlan",
+        "planSvg",
+        "btnDownloadSection",
+        "sectionSvg",
+        "showCanal",
+        "canalKpi",
+        "showRoad",
+        "roadKpi",
+        "showRail",
+        "railKpi",
+        "showOhl",
+        "ohlKpi",
+        "showMine",
+        "mineKpi",
+        "bufCanal",
+        "bufCanalVal",
+        "bufRoad",
+        "bufRoadVal",
+        "bufRail",
+        "bufRailVal",
+        "ohlHalf",
+        "ohlHalfVal",
+        "mineInf",
+        "mineInfVal",
+        "hRoad",
+        "hRoadVal",
+        "hRail",
+        "hRailVal",
+        "hOhl",
+        "hOhlVal",
+        "dMine",
+        "dMineVal",
+        "dCanal",
+        "dCanalVal",
+        "dominancePills",
+        "tooltip"
+      ]
+    },
+    {
+      "file": "regional-signalling-control-centre.html",
+      "title": "Three architecture alternatives",
+      "purpose": "Compare three conceptual arrangements and the interface questions each creates.",
+      "source_url": "https://lawrencerowland.github.io/Project-web-apps/web_apps/regional-signalling-control-centre.html",
+      "destination_url": "https://lawrencerowland.github.io/local-to-global/tangled-triangle/regional-signalling-control-centre.html",
+      "source_sha256": "fa8eac25f924d2efcef6ac2f7c1d4c75d6be54a44fd183addfc93be742c2c0b7",
+      "inline_script_sha256": [
+        "752a1de069778f96f558b41f97720d6937235fd89593399826e2ffd973058829"
+      ],
+      "control_tags": [
+        "<button role=\"tab\" id=\"tab-plan\" data-target=\"panel-plan\" aria-controls=\"panel-plan\" aria-selected=\"true\">",
+        "<button role=\"tab\" id=\"tab-section\" data-target=\"panel-section\" aria-controls=\"panel-section\" aria-selected=\"false\">",
+        "<button role=\"tab\" id=\"tab-app1\" data-target=\"panel-app1\" aria-controls=\"panel-app1\" aria-selected=\"false\">",
+        "<button role=\"tab\" id=\"tab-app2\" data-target=\"panel-app2\" aria-controls=\"panel-app2\" aria-selected=\"false\">",
+        "<button role=\"tab\" id=\"tab-app3\" data-target=\"panel-app3\" aria-controls=\"panel-app3\" aria-selected=\"false\">"
+      ],
+      "original_ids": [
+        "app",
+        "tab-plan",
+        "tab-section",
+        "tab-app1",
+        "tab-app2",
+        "tab-app3",
+        "panel-plan",
+        "panel-section",
+        "panel-app1",
+        "panel-app2",
+        "panel-app3",
+        "toast"
+      ]
+    },
+    {
+      "file": "regional-signalling-control-centre-architecture-v0.html",
+      "title": "Architecture v0 and interface register",
+      "purpose": "Inspect a candidate system boundary and a register of nine open interface questions.",
+      "source_url": "https://lawrencerowland.github.io/Project-web-apps/web_apps/regional-signalling-control-centre-architecture-v0.html",
+      "destination_url": "https://lawrencerowland.github.io/local-to-global/tangled-triangle/regional-signalling-control-centre-architecture-v0.html",
+      "source_sha256": "9d60e264b3be42559a9ce0ff5e7d7e837baac96ce5157c7ff36dc0ddb2e3ae6b",
+      "inline_script_sha256": [
+        "3c65601f3a56fbe07a2e999f81c99ff8e462a2bd9eb1f3dbdefd49d1222d6772"
+      ],
+      "control_tags": [
+        "<button role=\"tab\" id=\"tab-plan\" data-target=\"panel-plan\" aria-controls=\"panel-plan\" aria-selected=\"true\">",
+        "<button role=\"tab\" id=\"tab-section\" data-target=\"panel-section\" aria-controls=\"panel-section\" aria-selected=\"false\">",
+        "<button role=\"tab\" id=\"tab-app1\" data-target=\"panel-app1\" aria-controls=\"panel-app1\" aria-selected=\"false\">",
+        "<button role=\"tab\" id=\"tab-app2\" data-target=\"panel-app2\" aria-controls=\"panel-app2\" aria-selected=\"false\">",
+        "<button role=\"tab\" id=\"tab-app3\" data-target=\"panel-app3\" aria-controls=\"panel-app3\" aria-selected=\"false\">",
+        "<button role=\"tab\" id=\"tab-archv0\" data-target=\"panel-archv0\" aria-controls=\"panel-archv0\" aria-selected=\"false\">",
+        "<button role=\"tab\" id=\"tab-intf\" data-target=\"panel-intf\" aria-controls=\"panel-intf\" aria-selected=\"false\">"
+      ],
+      "original_ids": [
+        "app",
+        "tab-plan",
+        "tab-section",
+        "tab-app1",
+        "tab-app2",
+        "tab-app3",
+        "tab-archv0",
+        "tab-intf",
+        "panel-plan",
+        "panel-section",
+        "panel-app1",
+        "panel-app2",
+        "panel-app3",
+        "panel-archv0",
+        "panel-intf",
+        "toast"
+      ]
+    }
+  ]
+}

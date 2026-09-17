@@ -4,9 +4,12 @@ This is the public workbench for Portfolio Wave **Foray 140**.
 
 Plan-layer handshake: `FORAY-LOCAL-TO-GLOBAL` · `PW-LDGW-001` · initial receipt `R-006`; scope consolidation `R-008`.
 
-The central question is whether project scope, WBS, state, schedule or risk can be represented so that a coherent global view is patched from useful local accounts—without hiding the disagreements at their interfaces.
+The workbench holds two related lines of enquiry:
 
-The site contains seven active essays. Their IDs stay stable as the collection changes:
+1. **AI interpretation of interfaces, topology and system architecture.** The [Tangled Triangle collection](tangled-triangle/index.html) retains six early variants of the same fictional brief: fixed site sketch, selectable boundary geometry, interactive cuts and bands, topology and levels, three architecture options, and an architecture/interface register. They expose interpretations for inspection; they are not an empirical AI benchmark or engineering proof.
+2. **Local-to-global compatibility and composition.** The later essays ask whether project scope, WBS, state, schedule or risk can be represented so that a coherent global view is patched from useful local accounts—without hiding disagreements at their interfaces.
+
+Alongside the six early Triangle variants, the site contains seven active compatibility/composition essays. Their IDs stay stable as the collection changes:
 
 | Essay ID | Page |
 | --- | --- |
@@ -22,7 +25,7 @@ Essay 001 brings the Pennine Viaduct example, explicit interface rules, scenario
 
 On 2026-09-06, Lawrence retired Essay 005, Infrastructure PMO, because its example and capabilities duplicated Essay 001. Its former URL redirects to 001; the earlier version remains in Git history. No active essay has been renumbered.
 
-The Tangled Triangle is the main worked scenario. It treats the existing project-and-system-architecture brief as a toy local-to-global compatibility problem: local constraints are declared independently, overlaps are checked explicitly, and a global candidate exists only when all selected restrictions agree.
+Essay 003 reuses the Tangled Triangle brief as a toy local-to-global compatibility problem: local constraints are declared independently, overlaps are checked explicitly, and a global candidate exists only when all selected restrictions agree. The early collection and this later essay link reciprocally so their distinct questions remain visible.
 
 ## Epistemic discipline
 
@@ -39,3 +42,5 @@ This repository is a static GitHub Pages site. Open `index.html` through a local
 Public site: <https://lawrencerowland.github.io/local-to-global/>
 
 See [SOURCES.md](SOURCES.md) for the public source trail and limits.
+
+Migration checks: `node tests/tangled-triangle-migration.cjs` verifies the six imported variants, unchanged inline behavior scripts, controls and local navigation; `node tests/architecture-repairs.cjs` checks the topology slider event order. See [the migration note](docs/2026-09-17-tangled-triangle-move.md).

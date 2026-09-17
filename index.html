@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Local to Global: a Portfolio Wave foray into composing project-wide views from local project data.">
+  <meta name="description" content="Two related enquiries: AI interpretation of the Tangled Triangle's interfaces and architecture, and local-to-global compatibility and composition.">
   <title>Local to Global · Portfolio Wave foray</title>
-  <link rel="stylesheet" href="assets/site.css?v=20260713">
-  <script defer src="assets/site-nav.js?v=20260906"></script>
+  <link rel="stylesheet" href="assets/site.css?v=20260917">
+  <script defer src="assets/site-nav.js?v=20260917"></script>
   <style>
     * { box-sizing: border-box; }
     html { color-scheme: light; }
@@ -27,6 +27,13 @@
     .question { margin: 0; padding: 24px 0 2px 24px; border-left: 3px solid #b96b22; font-family: Georgia, "Times New Roman", serif; font-size: 1.25rem; line-height: 1.55; }
     .question small { display: block; margin-top: 10px; color: #637068; font: 700 .72rem/1.4 Inter, sans-serif; letter-spacing: .1em; text-transform: uppercase; }
     main { padding-bottom: 80px; }
+    .enquiries { margin-bottom: 48px; }
+    .enquiry-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 22px; }
+    .enquiry { display: block; padding: 24px; border: 1px solid #d5cfbe; border-radius: 4px; background: #fbf8ef; text-decoration: none; }
+    .enquiry:hover, .enquiry:focus-visible { outline: 2px solid #205f50; }
+    .enquiry h3 { font: 500 1.65rem/1.15 Georgia, serif; margin: 14px 0; }
+    .enquiry p { color: #435148; line-height: 1.55; }
+    .enquiry strong { color: #205f50; }
     .principles { display: grid; grid-template-columns: repeat(5, 1fr); border-block: 1px solid #d5cfbe; margin-bottom: 64px; }
     .principle { padding: 20px 18px; border-right: 1px solid #d5cfbe; }
     .principle:last-child { border-right: 0; }
@@ -76,6 +83,7 @@
       .principle { border-right: 0; }
       .section-head { display: block; }
       .section-head p { margin-top: 10px; }
+      .enquiry-grid { grid-template-columns: 1fr; }
       .essay, .essay.featured { grid-column: 1 / -1; min-height: 250px; }
     }
     @media (prefers-reduced-motion: reduce) { .essay { transition: none; } }
@@ -86,12 +94,30 @@
     <div>
       <p class="eyebrow">Portfolio Wave · Foray 140</p>
       <h1>Local to Global</h1>
-      <p class="dek">A series of deliberately separate essays about a stubborn project question: when can many locally sensible accounts be patched into one coherent global view—and when is their failure to patch the most useful result?</p>
+      <p class="dek">Two connected lines of enquiry: how AI interprets a project's interfaces and architecture, and when local accounts can compose into a coherent global view. The Tangled Triangle connects them while keeping their questions distinct.</p>
     </div>
     <p class="question">Can scope, state, schedule or risk be represented so that a project-wide view is composed from local data without erasing the disagreements at its boundaries?<small>The main foray question</small></p>
   </header>
 
   <main>
+    <section class="enquiries" aria-labelledby="enquiries-title">
+      <h2 id="enquiries-title">Two lines of enquiry</h2>
+      <div class="enquiry-grid">
+        <a class="enquiry" href="tangled-triangle/index.html">
+          <span class="number">1 · Early Tangled Triangle work</span>
+          <h3>AI interpretation of interfaces, topology and system architecture</h3>
+          <p>Six distinct variants make interpretations of one fictional brief available for inspection: fixed sketches, adjustable geometry, topology, architecture options and an interface register. This is exploratory material, not an empirical AI benchmark or engineering proof.</p>
+          <strong>Explore the six Tangled Triangle variants →</strong>
+        </a>
+        <a class="enquiry" href="#compatibility">
+          <span class="number">2 · Later local-to-global work</span>
+          <h3>Compatibility and composition</h3>
+          <p>Separate essays ask when declared local facts and constraints agree across interfaces. Essay 003 reuses the Triangle as a finite compatibility model; the wider collection explores scope, direction and validation.</p>
+          <strong>Explore the compatibility essays →</strong>
+        </a>
+      </div>
+    </section>
+
     <section class="principles" aria-label="Working principles">
       <div class="principle"><b>Local first</b><span>Keep each team’s own useful view before attempting composition.</span></div>
       <div class="principle"><b>Overlaps explicit</b><span>Say which facts must agree across which interfaces.</span></div>
@@ -100,10 +126,10 @@
       <div class="principle"><b>Plural essays</b><span>Hold several concrete attempts apart until later integration is earned.</span></div>
     </section>
 
-    <section aria-labelledby="essays-title">
+    <section id="compatibility" aria-labelledby="essays-title">
       <div class="section-head">
-        <h2 id="essays-title">The essays</h2>
-        <p>Each page keeps a clear example in view. Together they form a workbench, not a claim that one settled formalism already fits every project problem.</p>
+        <h2 id="essays-title">Compatibility and composition</h2>
+        <p>The later enquiry: each essay keeps a clear example in view. Together they form a workbench, not a claim that one settled formalism already fits every project problem.</p>
       </div>
       <div class="essay-grid">
         <a class="essay" href="forays/001-scope-coherence.html">
@@ -115,7 +141,7 @@
           <p>A more sober account of what a compatibility layer can and cannot tell a director.</p><span class="verb">Open essay →</span>
         </a>
         <a class="essay featured" href="forays/003-tangled-triangle.html">
-          <span class="number">Essay 03 · worked scenario</span><h3>The Tangled Triangle</h3>
+          <span class="number">Essay 03 · later compatibility enquiry</span><h3>The Tangled Triangle</h3>
           <p>Five local constraint views meet on one awkward site. Explore whether any candidate location satisfies all of them, and see exactly which interface removes the global solution.</p><span class="verb">Explore the triangle →</span>
         </a>
         <a class="essay" href="forays/004-director-primer.html">
