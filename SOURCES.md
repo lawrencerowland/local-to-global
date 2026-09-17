@@ -1,10 +1,14 @@
 # Sources and limits
 
-## Primary local source
+## Shared scenario and two enquiries
 
-The Tangled Triangle essay is adapted from Lawrence Rowland's **Tangled Triangle — one-shot project and system architecture** brief and report. The original scenario describes a proposed regional signalling control centre on a triangular site constrained by a canal, road, elevated railway, high-voltage line and old mine passage.
+The Tangled Triangle collection and Essay 003 are adapted from Lawrence Rowland's **Tangled Triangle — one-shot project and system architecture** brief and report. The original scenario describes a proposed regional signalling control centre on a triangular site constrained by a canal, road, elevated railway, high-voltage line and old mine passage.
 
-The public essay reuses the scenario as a toy compatibility problem. Its geometry, buffers and candidate locations are illustrative; it is not a site survey, engineering assessment, safety case or design recommendation.
+The [six early variants](tangled-triangle/index.html) explore how AI makes sense of interfaces, topology and system architecture. They preserve distinct ways of drawing and questioning the brief; they do not supply a scored reference interpretation, controlled model comparison or repeatability study. They cannot establish measured AI performance.
+
+[Essay 003](forays/003-tangled-triangle.html) later reuses the scenario as a toy compatibility problem. Its declared geometry, buffers and candidate locations support a deterministic finite check. That result is not an assessment of AI understanding. Both strands are illustrative, not a site survey, engineering assessment, safety case or design recommendation.
+
+The early HTML variants moved from `lawrencerowland/Project-web-apps` after the in-place repairs at commit `a83541f0b872518601a772b3d311741a7bd7e945`. The [migration record](docs/tangled-triangle-migration.json) gives original and destination routes and source/script hashes. Corrections qualify unsupported engineering claims and preserve useful controls. The [migration note](docs/2026-09-17-tangled-triangle-move.md) records the destination changes and checks.
 
 ## Formal and applied reading
 

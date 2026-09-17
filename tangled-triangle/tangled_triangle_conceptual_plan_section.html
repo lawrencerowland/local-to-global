@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tangled Triangle – Conceptual Plan & Section (Interactive)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Conceptual plan and section sketches for a Regional Signalling Control Centre site bounded by canal (south), road (west), and railway viaduct (NW–SE), with an overhead HV line (N–S) and an old mining passage (W–E at -10 m).">
+<style>
+  :root{
+    --bg: #0e1116;
+    --panel: #161b22;
+    --ink: #e6edf3;
+    --muted: #9fb0c3;
+    --accent: #6ab0ff;
+    --accent-2:#ff9f43;
+    --ok:#22c55e; --warn:#f59e0b; --bad:#ef4444;
+    --canal:#3aa0ff; --road:#999999; --rail:#b87333; --mine:#8b8b8b;
+    --hv:#b56aff; --site:#3ddc97;
+    --grid:rgba(255,255,255,0.05);
+    --shadow: 0 0.3rem 1rem rgba(0,0,0,0.35);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;line-height:1.35}
+  h1,h2,h3{line-height:1.15;margin:0 0 .5rem}
+  h1{font-size:clamp(1.2rem,2.6vw,1.6rem)}
+  h2{font-size:clamp(1.1rem,2.2vw,1.4rem)}
+  h3{font-size:clamp(1rem,2vw,1.2rem)}
+  p,li,small{color:var(--muted)}
+  a{color:var(--accent)}
+  code{background:#0b0f14;padding:.1rem .3rem;border-radius:.3rem}
+  .wrap{display:grid;grid-template-rows:auto auto 1fr auto;min-height:100vh}
+  header{padding:1rem 1rem .5rem;display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap}
+  header .badge{background:#0b0f14;color:var(--muted);padding:.25rem .5rem;border-radius:.4rem;border:1px solid #1f2630}
+  .grid{display:grid;gap:1rem;padding:0 1rem 1rem}
+  .grid.cols{grid-template-columns:1fr; }
+  @media(min-width:900px){ .grid.cols{grid-template-columns:1.1fr .9fr} }
+  .panel{background:var(--panel);border:1px solid #1f2630;border-radius:.6rem;box-shadow:var(--shadow);overflow:hidden}
+  .panel header{padding:.75rem 1rem;border-bottom:1px solid #1f2630}
+  .panel .body{padding:0}
+  .panel .pad{padding:.75rem 1rem}
+  .controls{display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:center}
+  .chip{display:inline-flex;gap:.4rem;align-items:center;background:#0f141b;border:1px solid #263141;padding:.35rem .6rem;border-radius:999px;cursor:pointer;user-select:none}
+  .chip input{accent-color:var(--accent)}
+  .row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+  .slider{display:flex;align-items:center;gap:.5rem}
+  input[type="range"]{width:min(48vw,420px)}
+  .kv{display:grid;grid-template-columns:auto 1fr;gap:.3rem .6rem;align-items:center}
+  .legend{display:flex;flex-wrap:wrap;gap:.5rem 1rem}
+  .key{display:flex;align-items:center;gap:.4rem}
+  .swatch{width:1.1rem;height:.8rem;border-radius:.2rem;border:1px solid #1f2630}
+  .btn{background:#0f141b;border:1px solid #263141;border-radius:.4rem;padding:.45rem .7rem;color:var(--ink);cursor:pointer}
+  .btn:active{transform:translateY(1px)}
+  .btn.primary{border-color:#2a72ff;background:#15376b}
+  .btn.ghost{background:transparent}
+  .min-h-64{min-height:16rem}
+  .canvas{position:relative;display:grid;grid-template-rows:auto 1fr;gap:.5rem}
+  svg{width:100%;height:100%;display:block;background:
+      linear-gradient(0deg,var(--grid) 1px,transparent 1px) 0 0/100% 24px,
+      linear-gradient(90deg,var(--grid) 1px,transparent 1px) 0 0/24px 100%,
+      #0b0f14}
+  .caption{padding:.5rem .75rem;border-top:1px solid #1f2630;font-size:.9rem}
+  footer{padding:.75rem 1rem;border-top:1px solid #1f2630;background:#0b0f14}
+  .north-arrow{position:absolute;top:.5rem;right:.5rem;background:#0b0f14;border:1px solid #1f2630;border-radius:.4rem;padding:.3rem .5rem;font-size:.85rem}
+  .toast-wrap{position:fixed;inset:auto 0 1rem 0;display:grid;place-items:center;pointer-events:none}
+  .toast{background:#111827;border:1px solid #283241;color:var(--ink);padding:.6rem .8rem;border-radius:.5rem;box-shadow:var(--shadow);opacity:.95;pointer-events:auto}
+  .dim{opacity:.65}
+  .tag{font-size:.8rem;padding:.1rem .4rem;border-radius:.3rem;border:1px solid #2a2f3a;background:#0b0f14;color:var(--muted)}
+  .callout{border-left:.3rem solid var(--accent);padding:.6rem .8rem;background:#0b0f14;margin:.6rem 0}
+  noscript{display:block;padding:1rem;background:#340d0d;color:#ffd7d7}
+  .note{font-style:italic}
+  .download-row{display:flex;gap:.6rem;flex-wrap:wrap}
+  .sr-only{position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}
+</style>
+  <link rel="stylesheet" href="../assets/site.css?v=20260917">
+  <link rel="stylesheet" href="../assets/tangled-triangle-enquiry.css?v=20260917">
+  <script defer src="../assets/site-nav.js?v=20260917"></script>
+</head>
+<body data-ltg-page="triangle-ai-3" data-ltg-enquiry="ai">
+  <div class="ltg-enquiry-context" aria-label="Tangled Triangle enquiry context">
+    <p><strong>Early enquiry · AI interpretation · Conceptual plan and section</strong></p>
+    <p>How well can AI make sense of interfaces, topology and system architecture? This variant makes one interpretation of the shared fictional brief available for inspection. Adjust assumed bands and section cuts, and export the resulting drawings as PNGs.</p>
+    <p class="ltg-enquiry-context__links"><a href="index.html">← All six Tangled Triangle variants</a><a href="../forays/003-tangled-triangle.html">Later enquiry: local-to-global compatibility →</a></p>
+  </div>
+<div class="wrap" id="app" data-timeout="3000" aria-live="polite">
+  <header>
+    <div>
+      <h1>Tangled Triangle — Conceptual Geometry</h1>
+      <p class="note">Plan and section sketches that show the nature of the physical boundaries: <strong>canal (south, ground level)</strong>; <strong>road (west) crossing over canal</strong>; <strong>railway (NW–SE) on viaduct over road &amp; canal</strong>; <strong>old mining passage (W–E at ~10&nbsp;m depth)</strong>; <strong>overhead HV line (N–S)</strong>.</p>
+      <div class="badge">Concept sketch — illustrative geometry</div>
+    </div>
+  </header>
+
+  <section class="grid cols">
+    <!-- PLAN VIEW -->
+    <article class="panel">
+      <header>
+        <h2>Plan (Top‑Down) — interactive sketch</h2>
+      </header>
+      <div class="pad">
+        <div class="controls">
+          <label class="chip"><input type="checkbox" data-layer="site" checked> Site boundary</label>
+          <label class="chip"><input type="checkbox" data-layer="canal" checked> Canal</label>
+          <label class="chip"><input type="checkbox" data-layer="road" checked> Road &amp; bridge</label>
+          <label class="chip"><input type="checkbox" data-layer="rail" checked> Railway viaduct</label>
+          <label class="chip"><input type="checkbox" data-layer="hv" checked> HV line &amp; assumed band</label>
+          <label class="chip"><input type="checkbox" data-layer="mine" checked> Old mining passage</label>
+          <label class="chip"><input type="checkbox" data-layer="buffers"> Show buffer bands</label>
+        </div>
+        <div class="row" style="margin-top:.5rem">
+          <div class="slider">
+            <label for="hvClear">Illustrative HV band (each side):</label>
+            <input type="range" id="hvClear" min="5" max="30" value="12" step="1" aria-label="Assumed HV band width in metres">
+            <span id="hvClearVal" class="tag">12 m</span>
+          </div>
+          <div class="slider">
+            <label for="railClear">Railway buffer:</label>
+            <input type="range" id="railClear" min="5" max="25" value="8" step="1" aria-label="Railway buffer metres">
+            <span id="railClearVal" class="tag">8 m</span>
+          </div>
+          <div class="slider">
+            <label for="roadClear">Illustrative road band:</label>
+            <input type="range" id="roadClear" min="2" max="20" value="6" step="1" aria-label="Road buffer metres">
+            <span id="roadClearVal" class="tag">6 m</span>
+          </div>
+          <div class="slider">
+            <label for="canalClear">Illustrative canal band:</label>
+            <input type="range" id="canalClear" min="5" max="30" value="10" step="1" aria-label="Canal buffer metres">
+            <span id="canalClearVal" class="tag">10 m</span>
+          </div>
+        </div>
+      </div>
+      <div class="body">
+        <div class="canvas min-h-64" id="planCanvas" role="img" aria-label="Interactive plan view of site geometry and interfaces.">
+          <div class="north-arrow" aria-hidden="true">N ↑</div>
+          <svg id="planSvg" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
+            <title>Plan sketch</title>
+            <desc>Triangular site bounded by west road, south canal, and a NW–SE railway on a viaduct; with a north–south HV line and a west–east old mining passage.</desc>
+            <!-- Layers inserted by JS -->
+          </svg>
+          <noscript>Interactive visualisation (plan). Enable JavaScript to interact.</noscript>
+        </div>
+        <div class="caption">
+          <div class="legend">
+            <span class="key"><span class="swatch" style="background:var(--site)"></span>Site</span>
+            <span class="key"><span class="swatch" style="background:var(--canal)"></span>Canal (south)</span>
+            <span class="key"><span class="swatch" style="background:var(--road)"></span>Road (west)</span>
+            <span class="key"><span class="swatch" style="background:var(--rail)"></span>Railway viaduct (NW–SE)</span>
+            <span class="key"><span class="swatch" style="background:var(--hv)"></span>HV line &amp; buffer</span>
+            <span class="key"><span class="swatch" style="background:var(--mine)"></span>Old mining passage</span>
+          </div>
+          <p class="dim">Tip: toggle layers and adjust assumed bands to compare their geometric overlaps with the site. Overlap does not determine buildability.</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- SECTION VIEW -->
+    <article class="panel">
+      <header>
+        <h2>Section — vertical cut along a movable N↔S line</h2>
+      </header>
+      <div class="pad">
+        <div class="row">
+          <div class="slider">
+            <label for="secX">Section position (east–west, metres):</label>
+            <input type="range" id="secX" min="80" max="800" value="100" step="1" aria-label="Section X position metres">
+            <span id="secXVal" class="tag">x = 100 m (along west road)</span>
+          </div>
+          <button class="btn" id="snapRoad">Snap to road</button>
+          <button class="btn" id="snapHV">Snap to HV line</button>
+          <div class="download-row">
+            <button class="btn ghost" id="dlPlan">Download Plan (PNG)</button>
+            <button class="btn ghost" id="dlSection">Download Section (PNG)</button>
+          </div>
+        </div>
+      </div>
+      <div class="body">
+        <div class="canvas min-h-64" id="sectionCanvas" role="img" aria-label="Interactive section view showing vertical relationships.">
+          <svg id="sectionSvg" viewBox="0 0 920 420" xmlns="http://www.w3.org/2000/svg" aria-describedby="sectionDesc">
+            <title>Section sketch</title>
+            <desc id="sectionDesc">Vertical section looking east, cut along a north–south line at user-defined x. Shows ground, canal (at south), west road bridge over canal, railway viaduct over road &amp; canal, HV line (if intersected), and the old mining passage at −10 m.</desc>
+            <!-- Layers inserted by JS -->
+          </svg>
+          <noscript>Interactive visualisation (section). Enable JavaScript to interact.</noscript>
+        </div>
+        <div class="caption">
+          <div class="callout">
+            <strong>Interpretation.</strong> Section runs <em>north→south</em> along the horizontal axis. Vertical axis is elevation (schematic, not to scale). The road bridge appears where the section passes the canal; the railway deck appears where the section intersects its NW–SE alignment; the HV line appears only when the section crosses x&nbsp;= 450&nbsp;m.
+          </div>
+          <p class="note">Heights/clearances are conceptual placeholders for early optioneering (not design data).</p>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section class="grid" style="padding:0 1rem 1rem">
+    <article class="panel">
+      <header><h2>Assumptions &amp; notes</h2></header>
+      <div class="pad">
+        <ul>
+          <li><strong>Geometry.</strong> Site is idealised as a triangle with vertices at: A(100,200) intersection of railway &amp; west road; B(100,550) road–canal bridge; C(800,550) railway–canal. Railway runs on a viaduct from NW to SE; the road runs north–south; the canal runs east–west at ground level. The road crosses over the canal on a bridge; the railway viaduct flies over both. An old mining passage runs west–east at roughly 10&nbsp;m below ground. An overhead HV line runs north–south across the site.</li>
+          <li><strong>Buffers.</strong> Sliders show illustrative bands beside the road, canal, railway and overhead line. They are drawing inputs, not established easements, safety offsets or a calculated buildable envelope. Site-specific requirements would need separate evidence and assessment.</li>
+          <li><strong>Section logic.</strong> The section is taken along a vertical plane at x&nbsp;=&nbsp;<span id="secXNote">100</span> m; its horizontal axis represents distance from the north boundary (left) to the south boundary (right). The railway deck is drawn where the section crosses the railway alignment; likewise for the HV line.</li>
+          <li><strong>Scale &amp; orientation.</strong> Plan view: north is up (arrow). A light 24&nbsp;m grid supports quick eyeballing. Section: vertical exaggeration may be present for clarity.</li>
+        </ul>
+      </div>
+    </article>
+  </section>
+
+  <footer>
+    <p class="dim">Use the layers and section cut to explore this fictional layout; the sketch does not determine whether a design is feasible or compliant.</p>
+  </footer>
+</div>
+
+<div class="toast-wrap" aria-live="assertive" aria-atomic="true"><div id="toast" class="toast" hidden></div></div>
+
+<script>
+(function(){
+  'use strict';
+  // Boot with safety nets
+  const app = document.getElementById('app');
+  let smokeOk = false;
+  function toast(msg, ms=2200){try{
+    const el=document.getElementById('toast'); el.textContent=msg; el.hidden=false;
+    setTimeout(()=>el.hidden=true, ms);
+  }catch(e){}}
+  function fallback(reason){
+    window.__canvasStatus='fallback';
+    console.error('Fallback:', reason);
+    toast('Showing static fallback: '+reason, 3000);
+    // Provide minimal static marks so the page isn’t blank
+    try{
+      const plan = document.getElementById('planSvg');
+      const section = document.getElementById('sectionSvg');
+      if(plan && plan.children.length===0){
+        plan.innerHTML = `
+          <rect x="0" y="0" width="900" height="600" fill="#0b0f14"/>
+          <polygon points="100,200 100,550 800,550" fill="rgba(61,220,151,.15)" stroke="rgba(61,220,151,.8)" stroke-width="2"/>
+          <rect x="0" y="540" width="900" height="60" fill="rgba(58,160,255,.35)"/>
+          <rect x="80" y="0" width="40" height="600" fill="rgba(200,200,200,.35)"/>
+        `;
+      }
+      if(section && section.children.length===0){
+        section.innerHTML = `
+          <rect x="0" y="0" width="920" height="420" fill="#0b0f14"/>
+          <line x1="40" y1="360" x2="880" y2="360" stroke="#2a3544" stroke-width="2"/>
+          <text x="60" y="380" fill="#9fb0c3" font-size="12">Ground (schematic)</text>
+        `;
+      }
+    }catch(e2){console.error(e2);}
+  }
+  // Visibility watchdog
+  (function watchdog(){
+    const timeout = parseInt(app.getAttribute('data-timeout')||'3000',10);
+    const started = Date.now();
+    const interval = setInterval(()=>{
+      if(app.querySelector('[data-smoke="ok"]')){ clearInterval(interval); }
+      else if(Date.now()-started>timeout){ clearInterval(interval); fallback('timeout'); }
+    },500);
+  })();
+
+  try{
+    // ------------------ MODEL / STATE ------------------
+    const state = {
+      // Plan coordinate system in metres (maps to SVG viewBox 900 x 600)
+      W: 900, H: 600,
+      westRoadX: 100,
+      canalY: 550,
+      railLine: { // y = 0.5 x + 150
+        y: x => 0.5*x + 150,
+        xFromY: y => 2*(y-150),
+        x0: 100, x1: 800
+      },
+      hvX: 450,
+      mineY: 350, // plan line for mine center (for reference)
+      // Buffers (m)
+      buffers: {hv:12, rail:8, road:6, canal:10},
+      // Section positioning (vertical plane at x)
+      sectionX: 100
+    };
+
+    // ------------------ HELPERS ------------------
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => [...document.querySelectorAll(sel)];
+
+    function path(points){ return points.map((p,i)=> (i?'L':'M')+p[0]+','+p[1]).join(' ') + ' Z'; }
+    function linePath(a,b){ return `M${a[0]},${a[1]} L${b[0]},${b[1]}`; }
+
+    function within(v,min,max){ return Math.max(min, Math.min(max, v)); }
+
+    // ------------------ PLAN DRAW ------------------
+    const planSvg = $('#planSvg');
+    const layers = {};
+    function ensureLayer(id){
+      if(!layers[id]){
+        layers[id] = document.createElementNS('http://www.w3.org/2000/svg','g');
+        layers[id].setAttribute('data-layer', id);
+        planSvg.appendChild(layers[id]);
+      }else{
+        layers[id].innerHTML='';
+      }
+      return layers[id];
+    }
+
+    function drawPlan(){
+      // clear
+      planSvg.innerHTML='';
+
+      // BACKGRID and labels
+      const back = ensureLayer('back');
+      back.innerHTML = `
+        <rect x="0" y="0" width="${state.W}" height="${state.H}" fill="transparent"/>
+        <text x="8" y="18" fill="#6b7280" font-size="12">Plan view (schematic)</text>
+        <text x="${state.W-110}" y="${state.H-10}" fill="#6b7280" font-size="12">Scale: 1 unit ≈ 1 m</text>
+      `;
+
+      // Site polygon ABC: A(100,200), B(100,550), C(800,550)
+      const A=[state.westRoadX, 200], B=[state.westRoadX, state.canalY], C=[800, state.canalY];
+      const siteLayer=ensureLayer('site');
+      siteLayer.innerHTML = `
+        <polygon points="${A.join(',')} ${B.join(',')} ${C.join(',')}"
+          fill="rgba(61,220,151,.14)" stroke="var(--site)" stroke-width="2"/>
+        <circle cx="${A[0]}" cy="${A[1]}" r="3" fill="var(--site)"/><text x="${A[0]+6}" y="${A[1]-6}" fill="var(--muted)" font-size="12">A</text>
+        <circle cx="${B[0]}" cy="${B[1]}" r="3" fill="var(--site)"/><text x="${B[0]+6}" y="${B[1]-6}" fill="var(--muted)" font-size="12">B</text>
+        <circle cx="${C[0]}" cy="${C[1]}" r="3" fill="var(--site)"/><text x="${C[0]+6}" y="${C[1]-6}" fill="var(--muted)" font-size="12">C</text>
+      `;
+      // Canal (south, E–W)
+      const canalLayer=ensureLayer('canal');
+      canalLayer.innerHTML = `
+        <rect x="0" y="${state.canalY-10}" width="${state.W}" height="20" fill="rgba(58,160,255,.5)" stroke="var(--canal)" stroke-width="2"/>
+        <text x="10" y="${state.canalY-15}" fill="var(--muted)" font-size="12">Canal (ground level)</text>
+      `;
+
+      // West Road (N–S), including bridge over canal
+      const roadLayer=ensureLayer('road');
+      const roadX = state.westRoadX-10;
+      roadLayer.innerHTML = `
+        <rect x="${roadX}" y="0" width="20" height="${state.H}" fill="rgba(200,200,200,.35)" stroke="var(--road)" stroke-width="2"/>
+        <rect x="${roadX-6}" y="${state.canalY-14}" width="32" height="28" fill="#6b7280" stroke="#515a67" stroke-width="1.5" rx="2" ry="2"/>
+        <text x="${roadX-4}" y="${state.canalY-20}" fill="var(--muted)" font-size="12">Road (bridge over canal)</text>
+      `;
+
+      // Railway viaduct (NW–SE)
+      const railLayer=ensureLayer('rail');
+      const railY = x => state.railLine.y(x);
+      const x0=state.railLine.x0, x1=state.railLine.x1, y0=railY(x0), y1=railY(x1);
+      const track = document.createElementNS('http://www.w3.org/2000/svg','path');
+      track.setAttribute('d', linePath([x0,y0],[x1,y1]));
+      track.setAttribute('stroke','var(--rail)'); track.setAttribute('stroke-width','6'); track.setAttribute('fill','none'); track.setAttribute('stroke-linecap','round');
+      railLayer.appendChild(track);
+      // sleepers hint
+      for(let t=0;t<=1;t+=0.08){
+        const x = x0 + (x1-x0)*t, y = y0 + (y1-y0)*t;
+        const nx = (y1-y0), ny = -(x1-x0); // normal
+        const nlen = Math.hypot(nx,ny)||1; const ux=nx/nlen, uy=ny/nlen;
+        const w=6;
+        const p = document.createElementNS('http://www.w3.org/2000/svg','line');
+        p.setAttribute('x1', x-ux*w); p.setAttribute('y1', y-uy*w);
+        p.setAttribute('x2', x+ux*w); p.setAttribute('y2', y+uy*w);
+        p.setAttribute('stroke','#d39d6a'); p.setAttribute('stroke-width','2'); p.setAttribute('opacity','0.65');
+        railLayer.appendChild(p);
+      }
+      const railLbl = document.createElementNS('http://www.w3.org/2000/svg','text');
+      railLbl.setAttribute('x', x0+50); railLbl.setAttribute('y', y0-10); railLbl.setAttribute('fill','var(--muted)'); railLbl.setAttribute('font-size','12');
+      railLbl.textContent='Railway (viaduct, over road & canal)';
+      railLayer.appendChild(railLbl);
+
+      // Old mining passage (W–E) – shown dashed in plan
+      const mineLayer=ensureLayer('mine');
+      mineLayer.innerHTML = `
+        <line x1="0" y1="${state.mineY}" x2="${state.W}" y2="${state.mineY}" stroke="var(--mine)" stroke-dasharray="6 4" stroke-width="2"/>
+        <text x="10" y="${state.mineY-8}" fill="var(--muted)" font-size="12">Old mining passage (~10&nbsp;m below ground)</text>
+      `;
+
+      // HV line (N–S) + wayleave rectangle
+      const hvLayer=ensureLayer('hv');
+      const hv = state.hvX, half = state.buffers.hv;
+      hvLayer.innerHTML = `
+        <rect x="${hv-half}" y="0" width="${2*half}" height="${state.H}" fill="rgba(181,106,255,.12)" stroke="rgba(181,106,255,.6)" stroke-dasharray="8 5" stroke-width="2"/>
+        <line x1="${hv}" y1="0" x2="${hv}" y2="${state.H}" stroke="var(--hv)" stroke-width="3" stroke-dasharray="3 6"/>
+        <text x="${hv+6}" y="16" fill="var(--muted)" font-size="12">HV transmission line</text>
+        ${drawPylonIcon(hv, 60)} ${drawPylonIcon(hv, 220)} ${drawPylonIcon(hv, 380)} ${drawPylonIcon(hv, 540)}
+      `;
+
+      // Buffer bands (optional)
+      const bufLayer=ensureLayer('buffers');
+      if($('#toggle-buffers')?.checked){/* reserved */}
+      const canalBuf = state.buffers.canal, roadBuf = state.buffers.road, railBuf = state.buffers.rail;
+      // Canal maintenance strip (north bank)
+      const cY = state.canalY - canalBuf;
+      const canalBand = `<rect x="0" y="${cY}" width="${state.W}" height="${canalBuf}" fill="rgba(58,160,255,.14)" stroke="rgba(58,160,255,.5)"/>`;
+      // Road verge (east side)
+      const rX = state.westRoadX + 0;
+      const roadBand = `<rect x="${rX}" y="0" width="${roadBuf}" height="${state.H}" fill="rgba(200,200,200,.14)" stroke="rgba(200,200,200,.4)"/>`;
+      // Railway buffer: use thick stroke as band
+      const railBand = `
+        <path d="${linePath([x0,y0],[x1,y1])}" stroke="rgba(184,115,51,.25)" stroke-width="${railBuf*2}" fill="none" stroke-linecap="butt"/>
+      `;
+      bufLayer.innerHTML = canalBand + roadBand + railBand;
+
+      // Section line indicator (vertical plane at x)
+      const secLayer=ensureLayer('sectionMark');
+      const sx = state.sectionX;
+      secLayer.innerHTML = `
+        <line x1="${sx}" y1="0" x2="${sx}" y2="${state.H}" stroke="#58a6ff" stroke-width="2" stroke-dasharray="6 4"/>
+        <polyline points="${sx-6},8 ${sx},0 ${sx+6},8" fill="#58a6ff"/>
+        <text x="${sx+8}" y="14" fill="#58a6ff" font-size="12">Section at x=${Math.round(sx)} m</text>
+      `;
+
+      // Layer toggles based on UI
+      applyPlanVisibility();
+      // mark smoke OK
+      planSvg.setAttribute('data-smoke','ok'); smokeOk = true; window.__canvasStatus='ready';
+    }
+
+    function drawPylonIcon(x, y){
+      return `<g transform="translate(${x-8},${y-16})">
+        <rect x="5" y="14" width="6" height="18" fill="rgba(181,106,255,.5)"/>
+        <polygon points="8,0 0,12 16,12" fill="rgba(181,106,255,.35)" stroke="rgba(181,106,255,.6)" stroke-width="1"/>
+      </g>`;
+    }
+
+    function applyPlanVisibility(){
+      $$('.chip input[type="checkbox"]').forEach(cb=>{
+        const id = cb.getAttribute('data-layer');
+        const layer = planSvg.querySelector(`g[data-layer="${id}"]`);
+        if(layer) layer.style.display = cb.checked ? 'inline' : 'none';
+      });
+    }
+
+    // ------------------ SECTION DRAW ------------------
+    const sectionSvg = $('#sectionSvg');
+
+    function drawSection(){
+      sectionSvg.innerHTML='';
+      const W=900, H=400, left=40, bottom=360;
+      const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+      sectionSvg.appendChild(g);
+
+      // Axes
+      g.innerHTML += `
+        <rect x="0" y="0" width="920" height="420" fill="transparent"/>
+        <line x1="${left}" y1="${bottom}" x2="${left}" y2="40" stroke="#2a3544" stroke-width="2"/>
+        <line x1="${left}" y1="${bottom}" x2="${left+W-40}" y2="${bottom}" stroke="#2a3544" stroke-width="2"/>
+        <text x="${left-10}" y="50" fill="#9fb0c3" font-size="12" transform="rotate(-90 ${left-10},50)">Elevation (schematic)</text>
+        <text x="${left+W-52}" y="${bottom+18}" fill="#9fb0c3" font-size="12">S</text>
+        <text x="${left-16}" y="${bottom+18}" fill="#9fb0c3" font-size="12">N</text>
+      `;
+
+      // Helpers
+      const yToX = y => left + ( (y / state.H) * (W-80) ); // map plan y (0..600) to horizontal distance
+      const elev = z => bottom - z*10; // 10 px per metre (schematic)
+      // Ground baseline (flat for clarity)
+      g.innerHTML += `<line x1="${left}" y1="${elev(0)}" x2="${left+W-40}" y2="${elev(0)}" stroke="#2a3544" stroke-width="2"/>`;
+      g.innerHTML += `<text x="${left+6}" y="${elev(0)-6}" fill="#9fb0c3" font-size="12">Ground (schematic)</text>`;
+
+      // Canal cut (at y = canalY)
+      const canalX = yToX(state.canalY), canalW = 80; // 80m nominal width zone for illustration
+      g.innerHTML += `
+        <rect x="${canalX-canalW/2}" y="${elev(1)}" width="${canalW}" height="${elev(-2)-elev(1)}"
+          fill="rgba(58,160,255,.5)" stroke="var(--canal)" stroke-width="2"/>
+        <text x="${canalX-canalW/2+4}" y="${elev(1)-6}" fill="var(--muted)" font-size="12">Canal (at south)</text>
+      `;
+
+      // Road bridge over canal (only meaningful close to west road x ~ 100)
+      // Represent as deck + two supports either side of canal
+      const nearRoad = Math.abs(state.sectionX - state.westRoadX) < 40;
+      if(nearRoad){
+        const deckY = elev(4); // 4 m above ground
+        const x1 = canalX - canalW/2 - 20, x2 = canalX + canalW/2 + 20;
+        g.innerHTML += `
+          <rect x="${x1}" y="${deckY-6}" width="${x2-x1}" height="12" fill="#6b7280" stroke="#515a67"/>
+          <rect x="${x1+8}" y="${deckY}" width="8" height="${elev(0)-deckY}" fill="#6b7280"/>
+          <rect x="${x2-16}" y="${deckY}" width="8" height="${elev(0)-deckY}" fill="#6b7280"/>
+          <text x="${x1}" y="${deckY-10}" fill="var(--muted)" font-size="12">West road bridge</text>
+        `;
+      }else{
+        g.innerHTML += `<text x="${yToX(520)}" y="${elev(0)-24}" fill="#9fb0c3" font-size="12" class="dim">Road bridge not in this section (move section to x≈100 m)</text>`;
+      }
+
+      // Railway viaduct deck where the section intersects the NW–SE line:
+      // At section x, the railway is at y = 0.5x + 150 (if within [x0,x1])
+      const secX = state.sectionX;
+      let railY = state.railLine.y(secX);
+      const hitsRail = secX>=state.railLine.x0 && secX<=state.railLine.x1;
+      if(hitsRail){
+        const rx = yToX(railY);
+        const deckZ = 8; // 8 m above ground
+        const pierH = deckZ; const span = 140;
+        g.innerHTML += `
+          <rect x="${rx-span/2}" y="${elev(deckZ)-6}" width="${span}" height="12" fill="#d39d6a" stroke="#b87333"/>
+          <rect x="${rx-6}" y="${elev(0)}" width="12" height="${elev(0)-elev(deckZ)}" fill="#d39d6a" stroke="#b87333"/>
+          <text x="${rx-span/2}" y="${elev(deckZ)-12}" fill="var(--muted)" font-size="12">Railway viaduct (deck)</text>
+        `;
+      }else{
+        g.innerHTML += `<text x="${yToX(120)}" y="${elev(10)}" fill="#9fb0c3" font-size="12" class="dim">Railway not intersected by this section</text>`;
+      }
+
+      // HV line — only shows if section plane crosses x = hvX
+      const hvHit = Math.abs(state.sectionX - state.hvX) < 15;
+      if(hvHit){
+        const way = state.buffers.hv;
+        const x0 = yToX(50), x1 = yToX(state.H-50);
+        // show a pylon + wayleave hatch band over the full section span (visual)
+        g.innerHTML += `
+          <rect x="${yToX(0)}" y="${elev(22)}" width="${W-80}" height="${elev(16)-elev(22)}" fill="rgba(181,106,255,.12)" stroke="rgba(181,106,255,.6)" stroke-dasharray="8 5"/>
+          <polygon points="${x0-8},${elev(0)} ${x0+8},${elev(0)} ${x0},${elev(18)}" fill="rgba(181,106,255,.5)"/>
+          <line x1="${x0}" y1="${elev(18)}" x2="${x1}" y2="${elev(18)}" stroke="var(--hv)" stroke-width="2" stroke-dasharray="6 4"/>
+          <text x="${x0+10}" y="${elev(18)-6}" fill="var(--muted)" font-size="12">HV conductors (schematic)</text>
+        `;
+      }else{
+        g.innerHTML += `<text x="${yToX(60)}" y="${elev(21)}" fill="#9fb0c3" font-size="12" class="dim">HV line not in this section (snap to HV)</text>`;
+      }
+
+      // Old mining passage (−10 m)
+      const mineZ = -10;
+      g.innerHTML += `
+        <line x1="${left}" y1="${elev(mineZ)}" x2="${left+W-40}" y2="${elev(mineZ)}" stroke="var(--mine)" stroke-dasharray="8 6" stroke-width="2"/>
+        <text x="${left+6}" y="${elev(mineZ)-6}" fill="var(--muted)" font-size="12">Old mining passage (≈−10 m)</text>
+      `;
+
+      // Section markers for North/South ends
+      g.innerHTML += `
+        <text x="${left+2}" y="${elev(-1)}" fill="#9fb0c3" font-size="12">North</text>
+        <text x="${left+W-84}" y="${elev(-1)}" fill="#9fb0c3" font-size="12">South</text>
+      `;
+
+      // Draw the plan’s section line projection below for context
+      g.innerHTML += `
+        <text x="${left+W-280}" y="${bottom+36}" fill="#58a6ff" font-size="12">Section plane at x=${Math.round(state.sectionX)} m</text>
+      `;
+
+      // Mark smoke OK
+      sectionSvg.setAttribute('data-smoke','ok');
+    }
+
+    // ------------------ PNG EXPORT (lightweight) ------------------
+    async function svgToPng(svgEl, outName){
+      try{
+        const s = new XMLSerializer().serializeToString(svgEl);
+        const blob = new Blob([s], {type:'image/svg+xml'});
+        const url = URL.createObjectURL(blob);
+        const img = new Image();
+        await new Promise((res,rej)=>{
+          img.onload = ()=>res();
+          img.onerror = rej;
+          img.src = url;
+        });
+        const canvas = document.createElement('canvas');
+        canvas.width = svgEl.viewBox.baseVal.width;
+        canvas.height = svgEl.viewBox.baseVal.height;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#0b0f14'; ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.drawImage(img, 0, 0);
+        const a = document.createElement('a');
+        a.download = outName;
+        a.href = canvas.toDataURL('image/png');
+        a.click();
+        URL.revokeObjectURL(url);
+        toast('Downloaded '+outName);
+      }catch(e){
+        console.error(e); toast('Download failed');
+      }
+    }
+
+    // ------------------ UI WIRING ------------------
+    // Layer checkboxes
+    $$('.chip input[type="checkbox"]').forEach(cb=>{
+      cb.addEventListener('change', applyPlanVisibility);
+    });
+
+    // Sliders
+    const hvClear = $('#hvClear'), railClear = $('#railClear'), roadClear = $('#roadClear'), canalClear = $('#canalClear');
+    const hvClearVal = $('#hvClearVal'), railClearVal = $('#railClearVal'), roadClearVal = $('#roadClearVal'), canalClearVal = $('#canalClearVal');
+
+    function bindSlider(el, lab, key){
+      el.addEventListener('input', ()=>{
+        state.buffers[key] = +el.value;
+        lab.textContent = el.value+' m';
+        drawPlan();
+      });
+    }
+    bindSlider(hvClear, hvClearVal, 'hv');
+    bindSlider(railClear, railClearVal, 'rail');
+    bindSlider(roadClear, roadClearVal, 'road');
+    bindSlider(canalClear, canalClearVal, 'canal');
+
+    // Section slider
+    const secX = $('#secX'), secXVal = $('#secXVal'), secXNote=$('#secXNote');
+    function updateSectionX(){
+      state.sectionX = +secX.value;
+      secXVal.textContent = `x = ${Math.round(state.sectionX)} m${Math.abs(state.sectionX-state.westRoadX)<3?' (along west road)':''}`;
+      secXNote.textContent = Math.round(state.sectionX);
+      // Update visual section marker on plan and the section view
+      drawPlan(); drawSection();
+    }
+    secX.addEventListener('input', updateSectionX);
+
+    // Snap buttons
+    $('#snapRoad').addEventListener('click', ()=>{ secX.value = state.westRoadX; updateSectionX(); });
+    $('#snapHV').addEventListener('click', ()=>{ secX.value = state.hvX; updateSectionX(); });
+
+    // Downloads
+    $('#dlPlan').addEventListener('click', ()=>svgToPng($('#planSvg'), 'tangled-triangle_plan.png'));
+    $('#dlSection').addEventListener('click', ()=>svgToPng($('#sectionSvg'), 'tangled-triangle_section.png'));
+
+    // Initial draw
+    drawPlan(); drawSection();
+    app.setAttribute('data-smoke','ok');
+    smokeOk = true; window.__canvasStatus='ready';
+  }catch(e){
+    fallback(e?.message||'init error');
+  }
+})();
+</script>
+</body>
+</html>

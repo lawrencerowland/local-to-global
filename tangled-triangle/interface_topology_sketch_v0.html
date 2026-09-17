@@ -1,0 +1,976 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Regional Signalling Control Centre — Interface Topology Sketch (v0)</title>
+  <style>
+    :root{
+      --bg:#0b0f17;
+      --panel:#101827;
+      --panel2:#0f172a;
+      --text:#e5e7eb;
+      --muted:#a7b0c0;
+      --grid:#24324a;
+      --accent:#7dd3fc;
+      --warn:#fbbf24;
+      --danger:#fb7185;
+      --ok:#34d399;
+      --canal:#38bdf8;
+      --road:#9ca3af;
+      --rail:#f97316;
+      --ohl:#fb7185;
+      --mine:#d4a373;
+      --outline:#94a3b8;
+      --shadow: 0 12px 28px rgba(0,0,0,.38);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background: radial-gradient(1200px 900px at 15% 10%, #13213a 0%, var(--bg) 55%),
+                  radial-gradient(1000px 700px at 90% 15%, #1a2441 0%, var(--bg) 60%);
+      color:var(--text);
+      font-family:var(--sans);
+    }
+    header{
+      padding:18px 18px 10px 18px;
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      justify-content:space-between;
+    }
+    .title{
+      display:flex; flex-direction:column; gap:6px;
+    }
+    .back-link{
+      font-size:12.5px;
+      color:var(--accent);
+      text-decoration:none;
+    }
+    .back-link:hover{
+      text-decoration:underline;
+    }
+    .title h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+      font-weight:650;
+    }
+    .title .subtitle{
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.35;
+      max-width:980px;
+    }
+    .badge-row{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:flex-end;
+    }
+    .badge{
+      border:1px solid rgba(148,163,184,.25);
+      background:rgba(16,24,39,.68);
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      color:var(--muted);
+      box-shadow:var(--shadow);
+      white-space:nowrap;
+    }
+    .badge b{ color:var(--text); font-weight:650;}
+    main{
+      padding: 10px 18px 18px 18px;
+      display:grid;
+      grid-template-columns: 1.25fr .95fr;
+      grid-template-rows: auto auto;
+      gap:14px;
+    }
+    .panel{
+      background: linear-gradient(180deg, rgba(16,24,39,.92) 0%, rgba(15,23,42,.88) 100%);
+      border:1px solid rgba(148,163,184,.18);
+      border-radius:14px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .panel .bar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:10px 12px;
+      border-bottom:1px solid rgba(148,163,184,.14);
+      background:rgba(3,7,18,.28);
+      gap:10px;
+    }
+    .bar .left{
+      display:flex; align-items:center; gap:10px;
+    }
+    .bar .right{
+      display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end;
+    }
+    .bar h2{
+      margin:0;
+      font-size:13.5px;
+      font-weight:650;
+      letter-spacing:.2px;
+    }
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+    }
+    .canvas-wrap{
+      padding:10px 12px 12px 12px;
+    }
+    svg{
+      width:100%;
+      height:auto;
+      border-radius:10px;
+      background:
+        linear-gradient(90deg, rgba(36,50,74,.35) 1px, transparent 1px) 0 0/20px 20px,
+        linear-gradient(0deg, rgba(36,50,74,.35) 1px, transparent 1px) 0 0/20px 20px,
+        radial-gradient(900px 520px at 30% 30%, rgba(125,211,252,.05) 0%, rgba(0,0,0,0) 60%);
+      border:1px solid rgba(148,163,184,.14);
+    }
+    .controls{
+      grid-column: 1 / -1;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    .panel .content{
+      padding:12px;
+    }
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .control-group{
+      border:1px solid rgba(148,163,184,.14);
+      background:rgba(3,7,18,.18);
+      border-radius:12px;
+      padding:10px;
+    }
+    .control-group h3{
+      margin:0 0 6px 0;
+      font-size:12.5px;
+      font-weight:700;
+      color:var(--text);
+    }
+    .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin:8px 0;
+      font-size:12.5px;
+      color:var(--muted);
+    }
+    .row label{
+      display:flex; align-items:center; gap:8px;
+      user-select:none;
+      cursor:pointer;
+    }
+    input[type="checkbox"]{ transform: translateY(1px); }
+    input[type="range"]{ width: 220px; max-width: 52vw; }
+    .mono{
+      font-family:var(--mono);
+      font-size:12px;
+      color:#cbd5e1;
+    }
+    .small{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.35;
+    }
+    .kpi{
+      display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;
+    }
+    .pill{
+      border:1px solid rgba(148,163,184,.16);
+      background:rgba(17,24,39,.55);
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:12px;
+      color:var(--muted);
+      display:flex; gap:6px; align-items:center;
+    }
+    .dot{ width:9px; height:9px; border-radius:50%; display:inline-block; }
+    .btn{
+      border:1px solid rgba(148,163,184,.22);
+      background:rgba(15,23,42,.55);
+      color:var(--text);
+      padding:6px 10px;
+      border-radius:10px;
+      font-size:12px;
+      cursor:pointer;
+      transition: transform .04s ease, background .15s ease;
+      user-select:none;
+    }
+    .btn:hover{ background:rgba(30,41,59,.55); }
+    .btn:active{ transform: translateY(1px); }
+    .seg{
+      display:flex; gap:6px; flex-wrap:wrap;
+    }
+    .seg button[aria-pressed="true"]{
+      border-color: rgba(125,211,252,.55);
+      box-shadow: 0 0 0 2px rgba(125,211,252,.12) inset;
+    }
+    .tooltip{
+      position:fixed;
+      pointer-events:none;
+      background:rgba(3,7,18,.9);
+      border:1px solid rgba(148,163,184,.25);
+      border-radius:10px;
+      padding:8px 10px;
+      max-width:min(340px, 86vw);
+      font-size:12px;
+      color:var(--text);
+      box-shadow: var(--shadow);
+      z-index:50;
+      display:none;
+    }
+    .tooltip .t-title{ font-weight:700; margin-bottom:4px;}
+    .tooltip .t-body{ color:var(--muted); line-height:1.35;}
+    .footer{
+      padding:0 18px 18px 18px;
+      color:rgba(167,176,192,.9);
+      font-size:12px;
+      line-height:1.45;
+    }
+    .footer code{
+      font-family:var(--mono);
+      font-size:11.5px;
+      padding:2px 6px;
+      border-radius:8px;
+      background:rgba(3,7,18,.35);
+      border:1px solid rgba(148,163,184,.14);
+    }
+    @media (max-width: 980px){
+      main{ grid-template-columns: 1fr; }
+      .controls{ grid-template-columns: 1fr; }
+      input[type="range"]{ width: 52vw; }
+    }
+  </style>
+  <link rel="stylesheet" href="../assets/site.css?v=20260917">
+  <link rel="stylesheet" href="../assets/tangled-triangle-enquiry.css?v=20260917">
+  <script defer src="../assets/site-nav.js?v=20260917"></script>
+</head>
+
+<body data-ltg-page="triangle-ai-4" data-ltg-enquiry="ai">
+  <div class="ltg-enquiry-context" aria-label="Tangled Triangle enquiry context">
+    <p><strong>Early enquiry · AI interpretation · Interface topology sketch v0</strong></p>
+    <p>How well can AI make sense of interfaces, topology and system architecture? This variant makes one interpretation of the shared fictional brief available for inspection. Vary assumed bands and levels, inspect signed distances from the site centre, and export SVG views.</p>
+    <p class="ltg-enquiry-context__links"><a href="index.html">← All six Tangled Triangle variants</a><a href="../forays/003-tangled-triangle.html">Later enquiry: local-to-global compatibility →</a></p>
+  </div>
+<header>
+  <div class="title">
+    <a class="back-link" href="index.html">Back to Tangled Triangle</a>
+    <h1>Interface Topology Sketch (v0) — Control Centre Site with Canal / Road Bridge / Rail Viaduct / OHL / Mine</h1>
+    <div class="subtitle">
+      Conceptual geometry/topology only: a triangular site bounded by a <b>canal (south)</b>, a <b>road on the west</b> (crossing the canal), and a <b>railway alignment NW→SE</b> along the hypotenuse, carried on <b>viaduct</b>. Under the site: <b>mining passage</b> at depth; above: <b>high voltage overhead line</b> N→S.
+      Use the toggles/sliders to explore the controlling envelopes and to “read” interface pressure points.
+    </div>
+  </div>
+  <div class="badge-row">
+    <div class="badge"><b>Plan</b>: boundaries & corridors</div>
+    <div class="badge"><b>Section</b>: vertical stack</div>
+    <div class="badge"><b>Assumptions</b>: parametric, editable</div>
+  </div>
+</header>
+
+<main>
+  <!-- PLAN -->
+  <section class="panel">
+    <div class="bar">
+      <div class="left">
+        <h2>Plan (schematic)</h2>
+        <div class="hint">Hover features for interface notes • Click a section cut to update the section view</div>
+      </div>
+      <div class="right">
+        <div class="seg" role="group" aria-label="Section cuts">
+          <button class="btn" id="btnCutAA" aria-pressed="true" title="A–A: composite cut intersecting canal + road + rail envelope">Cut A–A</button>
+          <button class="btn" id="btnCutBB" aria-pressed="false" title="B–B: N–S cut centred on OHL corridor">Cut B–B</button>
+        </div>
+        <button class="btn" id="btnDownloadPlan">Download plan SVG</button>
+      </div>
+    </div>
+    <div class="canvas-wrap">
+      <svg id="planSvg" viewBox="0 0 900 560" aria-label="Plan view schematic"></svg>
+    </div>
+  </section>
+
+  <!-- SECTION -->
+  <section class="panel">
+    <div class="bar">
+      <div class="left">
+        <h2>Section (schematic)</h2>
+        <div class="hint">Shows a controlling vertical “stack” rather than exact chainage</div>
+      </div>
+      <div class="right">
+        <button class="btn" id="btnDownloadSection">Download section SVG</button>
+      </div>
+    </div>
+    <div class="canvas-wrap">
+      <svg id="sectionSvg" viewBox="0 0 820 560" aria-label="Section view schematic"></svg>
+    </div>
+  </section>
+
+  <!-- CONTROLS + NOTES -->
+  <section class="controls">
+    <div class="panel">
+      <div class="bar">
+        <div class="left">
+          <h2>Controls (envelopes & visibility)</h2>
+          <div class="hint">Numbers are illustrative drawing inputs. Verified site requirements and separate engineering checks would be needed for design use.</div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="grid2">
+          <div class="control-group">
+            <h3>Show / hide constraints</h3>
+            <div class="row"><label><input type="checkbox" id="showCanal" checked>Canal boundary + buffer</label><span class="mono" id="canalKpi"></span></div>
+            <div class="row"><label><input type="checkbox" id="showRoad" checked>Road + bridge zone</label><span class="mono" id="roadKpi"></span></div>
+            <div class="row"><label><input type="checkbox" id="showRail" checked>Railway + viaduct zone</label><span class="mono" id="railKpi"></span></div>
+            <div class="row"><label><input type="checkbox" id="showOhl" checked>HV overhead line corridor</label><span class="mono" id="ohlKpi"></span></div>
+            <div class="row"><label><input type="checkbox" id="showMine" checked>Mining passage influence</label><span class="mono" id="mineKpi"></span></div>
+          </div>
+
+          <div class="control-group">
+            <h3>Key parameters</h3>
+            <div class="row"><span>Canal buffer (m)</span><input type="range" id="bufCanal" min="3" max="25" step="1" value="10"><span class="mono" id="bufCanalVal"></span></div>
+            <div class="row"><span>Road buffer (m)</span><input type="range" id="bufRoad" min="3" max="20" step="1" value="8"><span class="mono" id="bufRoadVal"></span></div>
+            <div class="row"><span>Rail buffer (m)</span><input type="range" id="bufRail" min="5" max="30" step="1" value="15"><span class="mono" id="bufRailVal"></span></div>
+            <div class="row"><span>OHL corridor half-width (m)</span><input type="range" id="ohlHalf" min="5" max="40" step="1" value="18"><span class="mono" id="ohlHalfVal"></span></div>
+            <div class="row"><span>Mine influence radius (m)</span><input type="range" id="mineInf" min="5" max="60" step="1" value="25"><span class="mono" id="mineInfVal"></span></div>
+          </div>
+
+          <div class="control-group">
+            <h3>Vertical stack (section)</h3>
+            <div class="row"><span>Road deck height (m)</span><input type="range" id="hRoad" min="2" max="12" step="0.5" value="6"><span class="mono" id="hRoadVal"></span></div>
+            <div class="row"><span>Rail deck height (m)</span><input type="range" id="hRail" min="5" max="22" step="0.5" value="13"><span class="mono" id="hRailVal"></span></div>
+            <div class="row"><span>OHL conductor height (m)</span><input type="range" id="hOhl" min="15" max="40" step="0.5" value="28"><span class="mono" id="hOhlVal"></span></div>
+            <div class="row"><span>Mine depth to crown (m)</span><input type="range" id="dMine" min="6" max="25" step="0.5" value="10"><span class="mono" id="dMineVal"></span></div>
+            <div class="row"><span>Canal bed depth (m)</span><input type="range" id="dCanal" min="1" max="5" step="0.5" value="2"><span class="mono" id="dCanalVal"></span></div>
+          </div>
+
+          <div class="control-group">
+            <h3>Read-out (distance from the site centre to assumed bands)</h3>
+            <div class="small">
+              The figures rank up to four visible bands by distance from the triangle’s centre to the assumed band edge. A negative value means that centre lies inside the band. This is a geometric illustration, not a ranking of engineering risks or a buildable-area calculation.
+              In section, compare the assumed heights and depths. This drawing does not calculate which constraint governs a feasible design or select a foundation strategy.
+            </div>
+            <div class="kpi" id="dominancePills"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="bar">
+        <div class="left">
+          <h2>Concept notes (topology → interfaces)</h2>
+          <div class="hint">These are the seeds for your later interface register.</div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="small" style="margin-bottom:10px">
+          <b>Topology of boundaries.</b> You have a <span style="color:var(--canal)">hydraulic/amenity edge</span> (canal) on the south, a <span style="color:var(--road)">transport edge</span> (road) on the west, and a <span style="color:var(--rail)">high-consequence linear edge</span> (rail corridor) on the diagonal.
+          Vertically, the site is “sandwiched” between <span style="color:var(--mine)">legacy subsurface</span> and <span style="color:var(--ohl)">electrical exclusion</span>.
+        </div>
+
+        <div class="small">
+          <b>Interface pressure points.</b>
+          <ul style="margin:8px 0 0 18px; padding:0; line-height:1.5; color:var(--muted)">
+            <li><b>South-west corner</b>: canal + road bridge abutments + flood/overbank + access constraints (compound interface).</li>
+            <li><b>Diagonal boundary</b>: rail viaduct piers/embankment + possession/access + stray current/EMC considerations (hard interface).</li>
+            <li><b>Overhead line crossing</b>: establish asset-specific constraints for buildings, cranes, earthing/bonding and work near the line; identify the relevant permissions.</li>
+            <li><b>Mining passage</b>: investigate ground response and agree risk allocation, monitoring and acceptance criteria; the sketch sets no settlement limit.</li>
+          </ul>
+        </div>
+
+        <div class="small" style="margin-top:10px">
+          <b>Suggested section choice.</b> The cut is deliberately a <i>controlling envelope</i> (composite) rather than a literal chainage: it’s a way to reason early about “how many vertical masters” the building has.
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="footer">
+  <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+    <span class="badge" style="box-shadow:none; background:rgba(3,7,18,.18)">Legend: <span class="dot" style="background:var(--canal)"></span> Canal <span class="dot" style="background:var(--road)"></span> Road <span class="dot" style="background:var(--rail)"></span> Rail <span class="dot" style="background:var(--ohl)"></span> OHL <span class="dot" style="background:var(--mine)"></span> Mine</span>
+    <span class="badge" style="box-shadow:none; background:rgba(3,7,18,.18)">Changing a band changes the sketch; it does not establish permission to build or verify a clearance. Use site-specific evidence for any later design assessment.</span>
+  </div>
+  <div style="margin-top:10px">
+    If you want this to become a working project manager aid, the next step is to add: <code>import of survey (DXF/GeoJSON)</code>, <code>clearance rulesets</code>, and <code>auto-generated interface register</code> from the geometry.
+  </div>
+</div>
+
+<div class="tooltip" id="tooltip" role="dialog" aria-hidden="true"></div>
+
+<script>
+/**
+ * Interface Topology Sketch (v0)
+ * - No external dependencies
+ * - Uses SVG for crisp annotation
+ * - Geometry is conceptual (parametric) and intended to be overwritten by survey later
+ */
+
+const state = {
+  cut: "AA", // "AA" or "BB"
+  show: { canal:true, road:true, rail:true, ohl:true, mine:true },
+  // Plan parameters (metres)
+  buffers: { canal:10, road:8, rail:15, ohlHalf:18, mineInf:25 },
+  // Section parameters (metres, relative to local ground datum = 0)
+  section: { hRoad:6, hRail:13, hOhl:28, dMine:10, dCanal:2 },
+  // Conceptual site geometry (metres)
+  site: {
+    // Triangular site: bounded on three sides by road (west), canal (south), rail (diagonal NW->SE)
+    A: {x: 18, y: 10},  // NW corner on road boundary
+    B: {x: 18, y: 62},  // SW corner at canal/road
+    C: {x: 118, y: 62}, // SE corner at canal/rail
+    // Features (as axes/centrelines)
+    canalY: 62,          // canal along south boundary
+    roadX: 18,           // road along west boundary
+    ohlX: 68,            // overhead line corridor centre N-S
+    mineY: 36            // mining passage plan trace W-E
+  }
+};
+
+const planSvg = document.getElementById("planSvg");
+const sectionSvg = document.getElementById("sectionSvg");
+
+const tooltip = document.getElementById("tooltip");
+function showTooltip(x, y, title, body){
+  tooltip.style.display = "block";
+  tooltip.style.left = (x + 14) + "px";
+  tooltip.style.top = (y + 14) + "px";
+  tooltip.innerHTML = `<div class="t-title">${title}</div><div class="t-body">${body}</div>`;
+  tooltip.setAttribute("aria-hidden","false");
+}
+function hideTooltip(){
+  tooltip.style.display = "none";
+  tooltip.setAttribute("aria-hidden","true");
+}
+
+function el(tag, attrs={}, children=[]){
+  const n = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for (const [k,v] of Object.entries(attrs)){
+    if (k === "textContent") n.textContent = v;
+    else n.setAttribute(k, v);
+  }
+  for (const c of children) n.appendChild(c);
+  return n;
+}
+function clear(node){ while(node.firstChild) node.removeChild(node.firstChild); }
+
+function line(x1,y1,x2,y2, stroke, w=3, dash=null, opacity=1){
+  return el("line", {x1,y1,x2,y2, stroke, "stroke-width":w, "stroke-linecap":"round", "stroke-opacity":opacity,
+    ...(dash? {"stroke-dasharray": dash}: {})});
+}
+function text(x,y, str, fill="#e5e7eb", size=12, weight=600, anchor="start"){
+  return el("text", {x,y, fill, "font-size":size, "font-weight":weight, "text-anchor":anchor, "dominant-baseline":"middle", textContent:str});
+}
+function rect(x,y,w,h, fill, stroke=null, sw=1, opacity=1, rx=8){
+  const a = {x,y,width:w,height:h,fill, "fill-opacity":opacity, rx, ry:rx};
+  if (stroke) Object.assign(a, {stroke, "stroke-width":sw, "stroke-opacity":opacity});
+  return el("rect", a);
+}
+function polygon(points, fill, stroke=null, sw=2, opacity=1){
+  const p = points.map(pt => `${pt.x},${pt.y}`).join(" ");
+  const a = {points:p, fill, "fill-opacity":opacity};
+  if (stroke) Object.assign(a, {stroke, "stroke-width":sw, "stroke-opacity":opacity});
+  return el("polygon", a);
+}
+function path(d, stroke, w=2, fill="none", dash=null, opacity=1){
+  return el("path", {d, stroke, "stroke-width":w, fill, ...(dash? {"stroke-dasharray": dash}: {}), "stroke-opacity":opacity, "fill-opacity":opacity, "stroke-linecap":"round", "stroke-linejoin":"round"});
+}
+
+function metersToPlanPx(m){ // plan scale
+  // 1m ~ 6px, with padding embedded in viewBox choices
+  return m * 6.0;
+}
+function planX(xm){ return 70 + metersToPlanPx(xm); }
+function planY(ym){ return 60 + metersToPlanPx(ym); }
+
+function drawPlan(){
+  clear(planSvg);
+
+  const g = el("g");
+
+  // title block / north arrow / scale bar
+  g.appendChild(text(22, 20, "PLAN — conceptual (not to scale)", "#cbd5e1", 12, 700));
+  // north arrow
+  g.appendChild(path("M860 85 L860 35 L845 55 L875 55 Z", "#7dd3fc", 2, "rgba(125,211,252,.22)"));
+  g.appendChild(text(860, 100, "N", "#7dd3fc", 12, 700, "middle"));
+  // scale bar: 50m
+  g.appendChild(line(740, 520, 890, 520, "rgba(229,231,235,.7)", 3));
+  g.appendChild(line(740, 514, 740, 526, "rgba(229,231,235,.7)", 3));
+  g.appendChild(line(890, 514, 890, 526, "rgba(229,231,235,.7)", 3));
+  g.appendChild(text(815, 540, "≈50 m", "rgba(229,231,235,.75)", 12, 650, "middle"));
+
+  // Site triangle
+  const A = {x:planX(state.site.A.x), y:planY(state.site.A.y)};
+  const B = {x:planX(state.site.B.x), y:planY(state.site.B.y)};
+  const C = {x:planX(state.site.C.x), y:planY(state.site.C.y)};
+
+  // background land around site
+  g.appendChild(rect(20, 30, 860, 500, "rgba(3,7,18,.18)", null, 0, 1, 18));
+
+  // buffers first (underlay)
+  // Canal buffer inside site: parallel strip above canal boundary (south edge)
+  if (state.show.canal){
+    const b = state.buffers.canal;
+    const y0 = B.y - metersToPlanPx(b);
+    const w = C.x - B.x;
+    g.appendChild(rect(B.x, y0, w, metersToPlanPx(b), "rgba(56,189,248,.16)", "rgba(56,189,248,.45)", 2, 1, 10))
+      .classList?.add("feature");
+  }
+  // Road buffer inside site: strip right of road boundary (west edge)
+  if (state.show.road){
+    const b = state.buffers.road;
+    const x0 = A.x;
+    g.appendChild(rect(x0, A.y, metersToPlanPx(b), B.y - A.y, "rgba(156,163,175,.16)", "rgba(156,163,175,.45)", 2, 1, 10));
+  }
+  // Rail buffer inside site: offset polygon from hypotenuse (approx)
+  if (state.show.rail){
+    const b = state.buffers.rail;
+    // Construct an offset-ish polygon by moving hypotenuse inward; approximated by interpolating along normal.
+    const dx = C.x - A.x, dy = C.y - A.y;
+    const len = Math.hypot(dx,dy);
+    const nx = -dy/len, ny = dx/len; // unit normal (points roughly inward for our triangle orientation)
+    const off = metersToPlanPx(b);
+    const A2 = {x: A.x + nx*off, y: A.y + ny*off};
+    const C2 = {x: C.x + nx*off, y: C.y + ny*off};
+    g.appendChild(polygon([A, C, C2, A2], "rgba(249,115,22,.13)", "rgba(249,115,22,.46)", 2, 1));
+  }
+  // OHL corridor (vertical strip across scene)
+  if (state.show.ohl){
+    const half = metersToPlanPx(state.buffers.ohlHalf);
+    const x = planX(state.site.ohlX);
+    g.appendChild(rect(x-half, 70, half*2, 460, "rgba(251,113,133,.10)", "rgba(251,113,133,.40)", 2, 1, 10));
+  }
+  // Mine influence (halo around mine line, clipped visually)
+  if (state.show.mine){
+    const inf = metersToPlanPx(state.buffers.mineInf);
+    const y = planY(state.site.mineY);
+    g.appendChild(rect(70, y-inf, 800, inf*2, "rgba(212,163,115,.08)", "rgba(212,163,115,.33)", 2, 1, 10));
+  }
+
+  // site polygon itself
+  g.appendChild(polygon([A,B,C], "rgba(148,163,184,.06)", "rgba(148,163,184,.62)", 2.5, 1));
+
+  // Feature lines
+  // Canal line
+  if (state.show.canal){
+    const y = B.y;
+    g.appendChild(line(70, y, 880, y, "rgba(56,189,248,.95)", 5));
+    g.appendChild(text(78, y-16, "Canal (south boundary)", "rgba(56,189,248,.95)", 12, 750));
+  }
+  // Road line (west)
+  if (state.show.road){
+    const x = A.x;
+    g.appendChild(line(x, 70, x, 530, "rgba(156,163,175,.95)", 6));
+    // bridge segment over canal
+    g.appendChild(path(`M ${x-10} ${B.y-10} L ${x+10} ${B.y-10} L ${x+10} ${B.y+10} L ${x-10} ${B.y+10} Z`,
+      "rgba(156,163,175,.95)", 1.5, "rgba(156,163,175,.22)"));
+    g.appendChild(text(x+12, 92, "Road (west boundary) — crosses canal", "rgba(156,163,175,.95)", 12, 750));
+  }
+  // Railway hypotenuse (NW->SE)
+  if (state.show.rail){
+    g.appendChild(line(A.x, A.y, C.x, C.y, "rgba(249,115,22,.95)", 7));
+    // viaduct piers (conceptual)
+    for (let t=0.15; t<=0.9; t+=0.15){
+      const px = A.x + (C.x-A.x)*t;
+      const py = A.y + (C.y-A.y)*t;
+      g.appendChild(rect(px-4, py-4, 8, 8, "rgba(249,115,22,.28)", "rgba(249,115,22,.65)", 1.3, 1, 2));
+    }
+    g.appendChild(text(500, 142, "Railway (NW→SE) — on viaduct", "rgba(249,115,22,.95)", 12, 750));
+  }
+  // OHL centreline + pylons
+  if (state.show.ohl){
+    const x = planX(state.site.ohlX);
+    g.appendChild(line(x, 70, x, 530, "rgba(251,113,133,.95)", 3, "10 8"));
+    // pylons
+    g.appendChild(path(`M ${x} 85 L ${x-18} 125 L ${x+18} 125 Z`, "rgba(251,113,133,.85)", 2, "rgba(251,113,133,.18)"));
+    g.appendChild(path(`M ${x} 515 L ${x-18} 475 L ${x+18} 475 Z`, "rgba(251,113,133,.85)", 2, "rgba(251,113,133,.18)"));
+    g.appendChild(text(x+10, 150, "HV OHL (N→S) corridor", "rgba(251,113,133,.95)", 12, 750));
+  }
+  // Mining passage line (W->E)
+  if (state.show.mine){
+    const y = planY(state.site.mineY);
+    g.appendChild(line(70, y, 880, y, "rgba(212,163,115,.95)", 3, "6 6"));
+    g.appendChild(text(78, y-16, "Old mining passage (W→E) @ ~10m depth", "rgba(212,163,115,.95)", 12, 750));
+  }
+
+  // Section cuts
+  const cuts = el("g");
+  // Cut A-A: runs roughly from road to rail through mid-latitudes, intersects canal buffer zone
+  const midY = (A.y + B.y)/2 + 30;
+  const cutA1 = {x: A.x+10, y: midY};
+  const cutA2 = {x: C.x-10, y: midY};
+  const cutB1 = {x: planX(state.site.ohlX), y: 80};
+  const cutB2 = {x: planX(state.site.ohlX), y: 520};
+
+  const cutStyle = (active) => active ? {stroke:"rgba(125,211,252,.95)", w:4, dash:"8 6"} : {stroke:"rgba(148,163,184,.5)", w:3, dash:"8 7"};
+
+  const aa = cutStyle(state.cut==="AA");
+  const bb = cutStyle(state.cut==="BB");
+
+  const aaLine = line(cutA1.x, cutA1.y, cutA2.x, cutA2.y, aa.stroke, aa.w, aa.dash, 1);
+  aaLine.style.cursor = "pointer";
+  aaLine.addEventListener("click", () => setCut("AA"));
+  aaLine.addEventListener("mousemove", (e) => showTooltip(e.clientX, e.clientY, "Cut A–A (composite)", "A controlling envelope through the site: reads canal/road/rail effects in one go."));
+  aaLine.addEventListener("mouseleave", hideTooltip);
+  cuts.appendChild(aaLine);
+  cuts.appendChild(text(cutA1.x-10, cutA1.y-14, "A", aa.stroke, 12, 800, "end"));
+  cuts.appendChild(text(cutA2.x+10, cutA2.y-14, "A", aa.stroke, 12, 800, "start"));
+
+  const bbLine = line(cutB1.x, cutB1.y, cutB2.x, cutB2.y, bb.stroke, bb.w, bb.dash, 1);
+  bbLine.style.cursor = "pointer";
+  bbLine.addEventListener("click", () => setCut("BB"));
+  bbLine.addEventListener("mousemove", (e) => showTooltip(e.clientX, e.clientY, "Cut B–B (corridor)", "A N–S cut centred on the overhead line corridor; emphasises height and lateral offsets."));
+  bbLine.addEventListener("mouseleave", hideTooltip);
+  cuts.appendChild(bbLine);
+  cuts.appendChild(text(cutB1.x, cutB1.y-14, "B", bb.stroke, 12, 800, "middle"));
+  cuts.appendChild(text(cutB2.x, cutB2.y+14, "B", bb.stroke, 12, 800, "middle"));
+
+  g.appendChild(cuts);
+
+  // Labels at corners
+  g.appendChild(text(A.x-6, A.y, "NW corner", "rgba(226,232,240,.72)", 12, 650, "end"));
+  g.appendChild(text(B.x-6, B.y, "SW corner", "rgba(226,232,240,.72)", 12, 650, "end"));
+  g.appendChild(text(C.x+6, C.y, "SE corner", "rgba(226,232,240,.72)", 12, 650, "start"));
+
+  // Interactivity: attach tooltip to each feature group by invisible hitboxes
+  function hitbox(x,y,w,h,title,body){
+    const r = rect(x,y,w,h,"rgba(0,0,0,0)", null, 0, 1, 6);
+    r.style.cursor = "help";
+    r.addEventListener("mousemove", (e) => showTooltip(e.clientX, e.clientY, title, body));
+    r.addEventListener("mouseleave", hideTooltip);
+    return r;
+  }
+  if (state.show.canal){
+    g.appendChild(hitbox(70, B.y-18, 810, 36, "Canal interface", "Hydraulic boundary: water level/flood, bank stability, access, drainage outfalls, permit-to-work and permanent works approvals."));
+  }
+  if (state.show.road){
+    g.appendChild(hitbox(A.x-18, 70, 44, 460, "Road interface", "Bridge/road authority: load limits, bridge strike risk, access management, sightlines, drainage, and protection works during construction."));
+  }
+  if (state.show.rail){
+    g.appendChild(hitbox(240, 120, 560, 240, "Rail interface (viaduct)", "Rail corridor: possessions, structural clearances, EMI/EMC, vibration, stray currents, and foundation interaction near viaduct piers."));
+  }
+  if (state.show.ohl){
+    const x = planX(state.site.ohlX);
+    g.appendChild(hitbox(x-28, 70, 56, 460, "OHL interface", "Power authority: exclusion zone, crane management plan, earthing/bonding, induced voltages, outage windows and access to pylons."));
+  }
+  if (state.show.mine){
+    const y = planY(state.site.mineY);
+    g.appendChild(hitbox(70, y-20, 810, 40, "Mining interface", "Legacy subsurface: ground risk, monitoring, settlement limits, piling restrictions, and risk allocation across contracts."));
+  }
+
+  planSvg.appendChild(g);
+
+  // KPI strings
+  document.getElementById("canalKpi").textContent = state.show.canal ? `buf ${state.buffers.canal}m` : "";
+  document.getElementById("roadKpi").textContent  = state.show.road  ? `buf ${state.buffers.road}m` : "";
+  document.getElementById("railKpi").textContent  = state.show.rail  ? `buf ${state.buffers.rail}m` : "";
+  document.getElementById("ohlKpi").textContent   = state.show.ohl   ? `±${state.buffers.ohlHalf}m` : "";
+  document.getElementById("mineKpi").textContent  = state.show.mine  ? `inf ${state.buffers.mineInf}m` : "";
+}
+
+function drawSection(){
+  clear(sectionSvg);
+  const g = el("g");
+
+  // Axes / datum
+  const margin = {l:60, r:30, t:40, b:70};
+  const W = 820, H = 560;
+  const groundY = 400;
+
+  // vertical scale: 1m = 9px
+  const vScale = 9.0;
+  function yFromElev(e){ // elev in metres (ground=0, up positive, down negative)
+    return groundY - e*vScale;
+  }
+
+  // Section title
+  const cutName = state.cut === "AA" ? "A–A (controlling envelope)" : "B–B (OHL-centric)";
+  g.appendChild(text(16, 20, `SECTION — ${cutName}`, "#cbd5e1", 12, 750));
+
+  // ground line + fill
+  g.appendChild(rect(0, groundY, W, H-groundY, "rgba(148,163,184,.06)", null, 0, 1, 0));
+  g.appendChild(line(margin.l, groundY, W-margin.r, groundY, "rgba(226,232,240,.65)", 2));
+
+  // y-axis labels
+  for (let e=-20; e<=40; e+=5){
+    const y = yFromElev(e);
+    g.appendChild(line(margin.l-6, y, margin.l, y, "rgba(148,163,184,.55)", 1.5));
+    g.appendChild(text(margin.l-12, y, `${e}m`, "rgba(148,163,184,.85)", 11, 650, "end"));
+    g.appendChild(line(margin.l, y, W-margin.r, y, "rgba(36,50,74,.35)", 1));
+  }
+  g.appendChild(text(margin.l, yFromElev(42), "elevation (m)", "rgba(148,163,184,.85)", 11, 650));
+
+  // x positions (notional)
+  const xRoad = 170, xCanal = 320, xRail = 540, xSite = 700;
+
+  // Canal (if cut AA, show explicitly; if BB, show faint)
+  const showCanal = state.show.canal && (state.cut==="AA" || state.cut==="BB");
+  if (showCanal){
+    const bed = -state.section.dCanal;
+    // canal water body
+    g.appendChild(rect(xCanal-85, yFromElev(0), 170, yFromElev(bed)-yFromElev(0), "rgba(56,189,248,.18)", "rgba(56,189,248,.55)", 2, 1, 10));
+    g.appendChild(text(xCanal, yFromElev(2.5), "Canal", "rgba(56,189,248,.95)", 12, 750, "middle"));
+    g.appendChild(text(xCanal, yFromElev(-state.section.dCanal-1.2), `bed ≈ -${state.section.dCanal}m`, "rgba(56,189,248,.78)", 11, 650, "middle"));
+  }
+
+  // Road bridge deck
+  if (state.show.road){
+    const h = state.section.hRoad;
+    const y = yFromElev(h);
+    g.appendChild(rect(xRoad-110, y-14, 220, 28, "rgba(156,163,175,.18)", "rgba(156,163,175,.65)", 2, 1, 10));
+    g.appendChild(text(xRoad, y-26, `Road deck ≈ +${h}m`, "rgba(156,163,175,.95)", 12, 750, "middle"));
+    // abutment hint down to ground
+    g.appendChild(rect(xRoad-105, y, 16, groundY-y, "rgba(156,163,175,.12)", "rgba(156,163,175,.45)", 1.5, 1, 6));
+    g.appendChild(rect(xRoad+89, y, 16, groundY-y, "rgba(156,163,175,.12)", "rgba(156,163,175,.45)", 1.5, 1, 6));
+  }
+
+  // Rail viaduct deck
+  if (state.show.rail){
+    const h = state.section.hRail;
+    const y = yFromElev(h);
+    g.appendChild(rect(xRail-140, y-16, 280, 32, "rgba(249,115,22,.16)", "rgba(249,115,22,.70)", 2, 1, 10));
+    g.appendChild(text(xRail, y-28, `Rail deck ≈ +${h}m`, "rgba(249,115,22,.95)", 12, 750, "middle"));
+    // piers
+    for (let i=-1; i<=1; i++){
+      g.appendChild(rect(xRail + i*70 -10, y+16, 20, groundY-(y+16), "rgba(249,115,22,.10)", "rgba(249,115,22,.45)", 1.5, 1, 6));
+    }
+  }
+
+  // OHL conductor / corridor
+  if (state.show.ohl){
+    const h = state.section.hOhl;
+    const y = yFromElev(h);
+    const sag = 18; // px
+    const x1 = margin.l+60, x2 = W-margin.r-40;
+    g.appendChild(path(`M ${x1} ${y-8} Q ${(x1+x2)/2} ${y+sag} ${x2} ${y-8}`, "rgba(251,113,133,.95)", 3, "none", "10 7"));
+    g.appendChild(text(W-160, y-28, `OHL conductor ≈ +${h}m`, "rgba(251,113,133,.95)", 12, 750, "start"));
+
+    // vertical exclusion band above a nominal building height line
+    const exclTop = yFromElev(h-6);
+    g.appendChild(rect(margin.l+40, exclTop, W-margin.l-margin.r-80, yFromElev(h+6)-exclTop, "rgba(251,113,133,.06)", "rgba(251,113,133,.25)", 1.5, 1, 12));
+    g.appendChild(text(margin.l+54, yFromElev(h+8), "OHL management envelope (indicative)", "rgba(251,113,133,.70)", 11, 650, "start"));
+  }
+
+  // Mining passage at depth
+  if (state.show.mine){
+    const d = state.section.dMine;
+    const y = yFromElev(-d);
+    // tunnel as capsule
+    g.appendChild(rect(xSite-165, y-14, 330, 28, "rgba(212,163,115,.14)", "rgba(212,163,115,.70)", 2, 1, 14));
+    g.appendChild(text(xSite, y-26, `Mining passage crown ≈ -${d}m`, "rgba(212,163,115,.95)", 12, 750, "middle"));
+    // influence envelope
+    const inf = state.buffers.mineInf;
+    const y1 = yFromElev(-(d+inf/4)); // scaled down in section for readability
+    const y2 = yFromElev(-(d-inf/4));
+    g.appendChild(rect(xSite-230, y1, 460, y2-y1, "rgba(212,163,115,.05)", "rgba(212,163,115,.24)", 1.5, 1, 12));
+    g.appendChild(text(xSite-210, y1-12, "Ground risk / settlement envelope (indicative)", "rgba(212,163,115,.70)", 11, 650, "start"));
+  }
+
+  // Notional building mass (as something to collide with envelopes)
+  const bTop = state.cut==="BB" ? Math.min(state.section.hOhl-7, 18) : 16;
+  const bW = 130, bH = bTop;
+  const bx = 660, by = yFromElev(bTop);
+  g.appendChild(rect(bx-bW/2, by, bW, bH*vScale, "rgba(125,211,252,.09)", "rgba(125,211,252,.55)", 2, 1, 12));
+  g.appendChild(text(bx, by-18, "Notional building mass", "rgba(125,211,252,.95)", 12, 750, "middle"));
+  g.appendChild(text(bx, by + (bH*vScale)/2, `${Math.round(bTop)}m envelope`, "rgba(125,211,252,.75)", 12, 650, "middle"));
+
+  // x-axis caption
+  g.appendChild(text(margin.l, H-26, "notional chainage (features placed for legibility)", "rgba(148,163,184,.75)", 11, 650, "start"));
+
+  // Interface tags at bottom
+  const tags = [
+    {x:xRoad, label:"Road authority", color:"rgba(156,163,175,.9)"},
+    {x:xCanal, label:"Canal authority", color:"rgba(56,189,248,.9)"},
+    {x:xRail, label:"Rail (internal)", color:"rgba(249,115,22,.9)"},
+    {x:W-250, label:"Power authority", color:"rgba(251,113,133,.9)"},
+    {x:xSite, label:"Mining authority", color:"rgba(212,163,115,.9)"},
+  ];
+  for (const t of tags){
+    g.appendChild(rect(t.x-78, H-58, 156, 28, "rgba(3,7,18,.25)", t.color, 1.4, 1, 10));
+    g.appendChild(text(t.x, H-44, t.label, t.color, 11.5, 750, "middle"));
+  }
+
+  // tooltips on section feature zones
+  function hitbox(x,y,w,h,title,body){
+    const r = rect(x,y,w,h,"rgba(0,0,0,0)", null, 0, 1, 6);
+    r.style.cursor = "help";
+    r.addEventListener("mousemove", (e) => showTooltip(e.clientX, e.clientY, title, body));
+    r.addEventListener("mouseleave", hideTooltip);
+    return r;
+  }
+  if (state.show.ohl){
+    g.appendChild(hitbox(120, yFromElev(state.section.hOhl)-60, 620, 120, "OHL vertical interface", "Investigate asset-specific requirements for buildings, plant movement, temporary works and earthing. This assumed band does not determine which constraint governs the design."));
+  }
+  if (state.show.mine){
+    g.appendChild(hitbox(420, yFromElev(-state.section.dMine)-50, 380, 110, "Mining constraint", "Subsurface interface is often ‘latent’: surprises become change. Consider early intrusive investigation, monitoring, and risk allocation."));
+  }
+  if (state.show.rail){
+    g.appendChild(hitbox(360, yFromElev(state.section.hRail)-70, 360, 150, "Rail viaduct interface", "Think: possessions, structural clearances, vibration/settlement, and access logistics under/near piers."));
+  }
+
+  sectionSvg.appendChild(g);
+}
+
+function updateDominance(){
+  // crude heuristic: which plan constraint intrudes deepest into the site centroid
+  // centroid of triangle
+  const A = state.site.A, B = state.site.B, C = state.site.C;
+  const centroid = {x:(A.x+B.x+C.x)/3, y:(A.y+B.y+C.y)/3};
+  const scores = [];
+
+  // distances from centroid to each boundary/corridor edge minus buffer; lower is "more constraining"
+  // Road boundary at x=roadX
+  if (state.show.road){
+    const d = (centroid.x - state.site.roadX) - state.buffers.road;
+    scores.push({k:"Road", v:d, c:"var(--road)"});
+  }
+  // Canal boundary at y=canalY
+  if (state.show.canal){
+    const d = (state.site.canalY - centroid.y) - state.buffers.canal;
+    scores.push({k:"Canal", v:d, c:"var(--canal)"});
+  }
+  // Rail boundary line through A-C: distance point-to-line - buffer
+  if (state.show.rail){
+    const x0=centroid.x, y0=centroid.y;
+    const x1=A.x, y1=A.y, x2=C.x, y2=C.y;
+    const num = Math.abs((y2-y1)*x0 - (x2-x1)*y0 + x2*y1 - y2*x1);
+    const den = Math.hypot(y2-y1, x2-x1);
+    const dist = num/den - state.buffers.rail;
+    scores.push({k:"Rail", v:dist, c:"var(--rail)"});
+  }
+  // OHL corridor: distance from centroid to corridor edge
+  if (state.show.ohl){
+    const d = Math.abs(centroid.x - state.site.ohlX) - state.buffers.ohlHalf;
+    scores.push({k:"OHL", v:d, c:"var(--ohl)"});
+  }
+  // Mine influence: distance from centroid to mine line minus influence radius
+  if (state.show.mine){
+    const d = Math.abs(centroid.y - state.site.mineY) - state.buffers.mineInf;
+    scores.push({k:"Mine", v:d, c:"var(--mine)"});
+  }
+
+  // smaller v = tighter (negative means centroid is within envelope)
+  scores.sort((a,b)=>a.v-b.v);
+
+  const container = document.getElementById("dominancePills");
+  container.innerHTML = "";
+  for (const s of scores.slice(0,4)){
+    const pill = document.createElement("div");
+    pill.className = "pill";
+    pill.innerHTML = `<span class="dot" style="background:${s.c}"></span><span><b style="color:var(--text)">${s.k}</b> <span style="color:var(--muted)">(${s.v.toFixed(1)}m)</span></span>`;
+    container.appendChild(pill);
+  }
+}
+
+function setCut(cut){
+  state.cut = cut;
+  document.getElementById("btnCutAA").setAttribute("aria-pressed", cut==="AA" ? "true" : "false");
+  document.getElementById("btnCutBB").setAttribute("aria-pressed", cut==="BB" ? "true" : "false");
+  drawPlan();
+  drawSection();
+}
+
+function downloadSvg(svgEl, filename){
+  const clone = svgEl.cloneNode(true);
+  // add inline background rectangle for better export
+  const vb = svgEl.getAttribute("viewBox").split(" ").map(Number);
+  const bg = document.createElementNS("http://www.w3.org/2000/svg","rect");
+  bg.setAttribute("x", vb[0]); bg.setAttribute("y", vb[1]);
+  bg.setAttribute("width", vb[2]); bg.setAttribute("height", vb[3]);
+  bg.setAttribute("fill", "#0b0f17");
+  clone.insertBefore(bg, clone.firstChild);
+
+  const xml = new XMLSerializer().serializeToString(clone);
+  const blob = new Blob([xml], {type:"image/svg+xml;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+// Wire controls
+function bind(){
+  const $ = (id) => document.getElementById(id);
+
+  const bindRange = (id, labelId, target, key, decimals=0) => {
+    const input = $(id), label = $(labelId);
+    const update = () => {
+      target[key] = Number(input.value);
+      label.textContent = `${target[key].toFixed(decimals)}m`;
+    };
+    input.addEventListener("input", () => {
+      update();
+      refresh();
+    });
+    update();
+  };
+
+  // checkboxes
+  [
+    ["showCanal","canal"],
+    ["showRoad","road"],
+    ["showRail","rail"],
+    ["showOhl","ohl"],
+    ["showMine","mine"],
+  ].forEach(([id,k])=>{
+    $(id).addEventListener("change", (e)=>{
+      state.show[k]=e.target.checked;
+      refresh();
+    });
+  });
+
+  // buffers
+  bindRange("bufCanal","bufCanalVal",state.buffers,"canal");
+  bindRange("bufRoad","bufRoadVal",state.buffers,"road");
+  bindRange("bufRail","bufRailVal",state.buffers,"rail");
+  bindRange("ohlHalf","ohlHalfVal",state.buffers,"ohlHalf");
+  bindRange("mineInf","mineInfVal",state.buffers,"mineInf");
+
+  // section heights/depths
+  bindRange("hRoad","hRoadVal",state.section,"hRoad",1);
+  bindRange("hRail","hRailVal",state.section,"hRail",1);
+  bindRange("hOhl","hOhlVal",state.section,"hOhl",1);
+  bindRange("dMine","dMineVal",state.section,"dMine",1);
+  bindRange("dCanal","dCanalVal",state.section,"dCanal",1);
+
+  // cut buttons
+  $("btnCutAA").addEventListener("click", ()=> setCut("AA"));
+  $("btnCutBB").addEventListener("click", ()=> setCut("BB"));
+
+  // downloads
+  $("btnDownloadPlan").addEventListener("click", ()=> downloadSvg(planSvg, "plan_interface_topology_v0.svg"));
+  $("btnDownloadSection").addEventListener("click", ()=> downloadSvg(sectionSvg, "section_interface_topology_v0.svg"));
+}
+
+function refresh(){
+  drawPlan();
+  drawSection();
+  updateDominance();
+}
+
+// init
+bind();
+refresh();
+
+// prevent tooltip stuck
+window.addEventListener("scroll", hideTooltip);
+window.addEventListener("resize", hideTooltip);
+</script>
+
+</body>
+</html>

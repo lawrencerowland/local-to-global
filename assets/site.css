@@ -44,6 +44,11 @@
 
 .ltg-site-nav__brand span { color: var(--ltg-muted); font-size: 12px; }
 
+.ltg-site-nav__groups { display: grid; gap: 5px; }
+.ltg-site-nav__group { display: flex; gap: 14px; align-items: center; min-width: 0; }
+.ltg-site-nav__label { flex: 0 0 215px; color: var(--ltg-ink); font-size: 12px; font-weight: 750; }
+.ltg-site-nav__group .ltg-site-nav__tabs { min-width: 0; }
+
 .ltg-site-nav__tabs {
   display: flex;
   gap: 5px;
@@ -97,6 +102,8 @@
   .ltg-site-nav__inner { padding-inline: 12px; }
   .ltg-site-nav__brand { align-items: flex-start; flex-direction: column; gap: 2px; }
   .ltg-site-nav__brand span { font-size: 11px; }
+  .ltg-site-nav__group { display: block; }
+  .ltg-site-nav__label { display: block; margin-block: 5px 2px; }
   .ltg-site-nav__tabs a { padding: 6px 9px; font-size: 12px; }
   .ltg-review-note { padding-inline: 12px; text-align: left; }
 }

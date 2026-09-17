@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regional Signalling Control Centre – Site Geometry & Topology (Concept Sketch)</title>
+<style>
+/* --- Critical CSS --- */
+html,body{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#fafafa;color:#111;}
+h1{font-size:clamp(1.6rem,2.5vw,2.2rem);margin:0.5rem 0;text-align:center;}
+#app{display:flex;flex-direction:column;align-items:center;gap:1rem;min-height:64vh;padding:1rem;}
+.tab-buttons{display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;}
+button{padding:0.4rem 0.8rem;font-size:1rem;border:none;border-radius:0.25rem;background:#e0e0e0;cursor:pointer;transition:background 0.2s;}
+button[aria-selected="true"]{background:#1565c0;color:#fff;}
+svg{width:100%;height:auto;max-width:960px;border:1px solid #ddd;background:#fff;}
+label{cursor:pointer;}
+/* toast */
+.toast{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);background:#323232;color:#fff;padding:0.75rem 1rem;border-radius:0.5rem;opacity:0;transition:opacity 0.3s;}
+.toast.show{opacity:1;}
+/* legend */
+.legend{display:flex;gap:0.75rem;flex-wrap:wrap;justify-content:center;margin-top:0.5rem;font-size:0.9rem;}
+.swatch{display:inline-block;width:1.2rem;height:1.2rem;border:1px solid #666;margin-right:0.25rem;}
+/* reserve svg height to avoid CLS */
+svg[data-view="plan"]{min-height:24rem;}
+svg[data-view="section"]{min-height:20rem;}
+</style>
+<noscript>Interactive visualisation – enable JavaScript.</noscript>
+  <link rel="stylesheet" href="../assets/site.css?v=20260917">
+  <link rel="stylesheet" href="../assets/tangled-triangle-enquiry.css?v=20260917">
+  <script defer src="../assets/site-nav.js?v=20260917"></script>
+</head>
+<body data-ltg-page="triangle-ai-1" data-ltg-enquiry="ai">
+  <div class="ltg-enquiry-context" aria-label="Tangled Triangle enquiry context">
+    <p><strong>Early enquiry · AI interpretation · Site geometry and topology</strong></p>
+    <p>How well can AI make sense of interfaces, topology and system architecture? This variant makes one interpretation of the shared fictional brief available for inspection. Read the brief as a simple plan and section, with feature annotations.</p>
+    <p class="ltg-enquiry-context__links"><a href="index.html">← All six Tangled Triangle variants</a><a href="../forays/003-tangled-triangle.html">Later enquiry: local-to-global compatibility →</a></p>
+  </div>
+<div id="app" data-timeout="3000">
+  <h1>Conceptual Site Sketch – Plan &amp; Section</h1>
+  <p style="max-width:70ch;text-align:center;line-height:1.5">Fictional site geometry for discussion. Levels and positions are illustrative, not surveyed; this sketch checks no clearance, development envelope or engineering feasibility.</p>
+  <p><a href="index.html">Back to Tangled Triangle</a></p>
+
+  <!--Tab controls-->
+  <div class="tab-buttons" role="tablist">
+    <button id="tab-plan" role="tab" aria-controls="panel-plan" aria-selected="true">Plan View</button>
+    <button id="tab-section" role="tab" aria-controls="panel-section" aria-selected="false">Section View</button>
+  </div>
+
+  <!--Plan-->
+  <div id="panel-plan" role="tabpanel">
+    <svg viewBox="0 0 1000 600" data-view="plan">
+      <!-- Canal -->
+      <rect x="0" y="520" width="1000" height="80" fill="#4FC3F7" data-info="Canal – ground level waterway (southern boundary)" />
+      <!-- Road -->
+      <rect x="0" y="0" width="90" height="600" fill="#8D6E63" data-info="Road – western boundary, crosses canal on bridge" />
+      <!-- Road bridge across canal -->
+      <rect x="0" y="520" width="90" height="20" fill="#6D4C41" />
+      <!-- Railway -->
+      <polygon points="0,100 1000,600 1000,540 0,40" fill="#9E9E9E" data-info="Railway viaduct – NW to SE alignment flying over road &amp; canal" />
+      <!-- Transmission line -->
+      <line x1="500" y1="0" x2="500" y2="600" stroke="#F44336" stroke-width="6" stroke-dasharray="20 10" data-info="High-voltage transmission line (overhead)" />
+      <!-- Site outline (for clarity) -->
+      <rect x="1" y="1" width="998" height="598" fill="none" stroke="#bbb" stroke-dasharray="4 4"/>
+      <!-- Labels -->
+      <text x="500" y="570" font-size="24" text-anchor="middle" fill="#fff">Canal</text>
+      <text x="45" y="300" font-size="18" text-anchor="middle" transform="rotate(-90 45 300)" fill="#fff">Road</text>
+      <text x="750" y="350" font-size="18" text-anchor="middle" fill="#212121" transform="rotate(-30 750 350)">Railway Viaduct</text>
+      <text x="515" y="200" font-size="14" fill="#D32F2F">HV Line</text>
+    </svg>
+  </div>
+
+  <!--Section-->
+  <div id="panel-section" role="tabpanel" hidden>
+    <svg viewBox="0 0 1000 500" data-view="section">
+      <!-- Ground -->
+      <rect x="0" y="300" width="1000" height="200" fill="#A1887F" data-info="Ground level" />
+      <!-- Canal cut -->
+      <rect x="300" y="300" width="150" height="50" fill="#4FC3F7" data-info="Canal water at ground level" />
+      <!-- Road bridge -->
+      <rect x="290" y="260" width="170" height="20" fill="#6D4C41" data-info="Road deck crossing canal" />
+      <!-- Railway viaduct -->
+      <rect x="250" y="170" width="500" height="30" fill="#9E9E9E" data-info="Railway viaduct (elevated)" />
+      <rect x="260" y="200" width="20" height="100" fill="#757575"/>
+      <rect x="710" y="200" width="20" height="100" fill="#757575"/>
+      <!-- Mining passage -->
+      <rect x="200" y="380" width="600" height="20" fill="#5D4037" data-info="Old mining passage – illustrative depth only; not surveyed" />
+      <!-- HV line towers -->
+      <line x1="500" y1="0" x2="500" y2="120" stroke="#D32F2F" stroke-width="6" />
+      <polygon points="490,120 510,120 530,150 470,150" fill="#D32F2F"/>
+      <text x="515" y="160" font-size="14" fill="#D32F2F">HV Line</text>
+      <!-- Labels for heights -->
+      <text x="850" y="315" font-size="12">Illustrative datum</text>
+      <text x="850" y="185" font-size="12">Rail: illustrative level</text>
+      <text x="850" y="395" font-size="12">Mine: illustrative depth</text>
+    </svg>
+  </div>
+
+  <!--Legend-->
+  <div class="legend">
+    <span><span class="swatch" style="background:#4FC3F7"></span>Canal</span>
+    <span><span class="swatch" style="background:#8D6E63"></span>Road</span>
+    <span><span class="swatch" style="background:#9E9E9E"></span>Railway Viaduct</span>
+    <span><span class="swatch" style="background:#D32F2F"></span>HV Line</span>
+    <span><span class="swatch" style="background:#5D4037"></span>Mining Passage</span>
+  </div>
+
+  <p style="max-width:60ch;text-align:center;font-size:0.95rem">
+    Tap/click any element for a brief description. Use the buttons above to switch between plan
+    and section perspectives of the bounded site.
+  </p>
+</div>
+
+<!--Toast-->
+<div class="toast" id="toast"></div>
+
+<script>
+/* --- Boot sequence --- */
+(function(){
+  const container=document.getElementById('app');
+  const tabPlan=document.getElementById('tab-plan');
+  const tabSection=document.getElementById('tab-section');
+  const panelPlan=document.getElementById('panel-plan');
+  const panelSection=document.getElementById('panel-section');
+  const toast=document.getElementById('toast');
+
+  function showToast(msg,dur=2500){
+    toast.textContent=msg;
+    toast.classList.add('show');
+    setTimeout(()=>toast.classList.remove('show'),dur);
+  }
+
+  // tab switching
+  function selectTab(target){
+    const isPlan=target===tabPlan;
+    tabPlan.setAttribute('aria-selected',isPlan);
+    tabSection.setAttribute('aria-selected',!isPlan);
+    panelPlan.hidden=!isPlan;
+    panelSection.hidden=isPlan;
+  }
+  tabPlan.addEventListener('click',()=>selectTab(tabPlan));
+  tabSection.addEventListener('click',()=>selectTab(tabSection));
+
+  // element click descriptions
+  [...document.querySelectorAll('svg [data-info]')].forEach(el=>{
+    el.addEventListener('click',(e)=>{
+      e.stopPropagation();
+      showToast(el.dataset.info||'');
+    });
+  });
+
+  // smoke ready
+  setTimeout(()=>{container.dataset.smoke='ok';window.__canvasStatus='ready';},50);
+
+  /* --- Visibility watchdog --- */
+  const max=+container.dataset.timeout||3000;
+  let waited=0;
+  const timer=setInterval(()=>{
+    waited+=500;
+    if(container.dataset.smoke==='ok'){clearInterval(timer);}
+    else if(waited>=max){
+      clearInterval(timer);
+      fallback('timeout');
+    }
+  },500);
+
+  // fallback for errors
+  window.fallback=function(reason){
+    console.error('Fallback',reason);
+    window.__canvasStatus='fallback';
+    showToast('Interactive view failed – showing static sketch.');
+    // degrade SVG interactivity
+    [...document.querySelectorAll('svg [data-info]')].forEach(el=>el.replaceWith(el.cloneNode(true)));
+  };
+
+})(); /* end IIFE */
+</script>
+</body>
+</html>
