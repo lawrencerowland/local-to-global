@@ -49,3 +49,9 @@ body.tt-hub {
 .tt-hub footer { border-top: 1px solid #d5cfbe; padding: 24px 0 36px; font-size: .85rem; color: #435148; }
 @media (max-width: 850px) { .tt-hub .tt-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .tt-hub .tt-cards { grid-template-columns: 1fr; } .tt-hub header { padding-top: 32px; } }
+
+.tt-hub .tt-first{display:grid;grid-template-columns:minmax(240px,.85fr) 1.15fr;gap:32px;align-items:center;padding:28px;border:1px solid #cbd0bf;border-radius:5px;background:#e9eddc;margin:5px 0 44px}
+.tt-hub .tt-first figure{margin:0;min-width:0}.tt-hub .tt-first img{display:block;width:100%;height:auto}.tt-hub .tt-first figcaption{font-size:.75rem;color:#52685b;line-height:1.5;margin-top:12px}
+.tt-hub .tt-first h2{font-size:clamp(1.8rem,3vw,2.5rem)}.tt-hub .tt-first p{font-size:.94rem}.tt-hub .tt-first-link{display:inline-block;background:#294c3b;color:#fffdf3;padding:12px 17px;border-radius:3px;text-decoration:none;font-size:.91rem;font-weight:650}
+.tt-hub .tt-first a:focus-visible{outline:3px solid #b96b22;outline-offset:4px}
+@media(max-width:760px){.tt-hub .tt-first{grid-template-columns:1fr;padding:22px;gap:22px}.tt-hub .tt-first figure{max-width:440px}.tt-hub .tt-first img{max-height:230px;object-fit:contain}}

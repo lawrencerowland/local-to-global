@@ -17,10 +17,10 @@
     home: 'Two related lines of enquiry: early AI interpretation and later local-to-global compatibility. Their separate variants and essays remain available.',
     'triangle-enquiry': 'Exploratory AI interpretation variants, not an empirical AI benchmark. Geometry, assumptions and architecture proposals are illustrative, not engineering proof.',
     scope: 'Worked prototype. Inspect declared interface rules and compare fictional scenarios; compatibility is limited to these six interfaces and does not validate project outcomes.',
-    director: 'Reviewed prototype. It checks declared local facts on selected overlaps; it does not certify a whole project or remove judgement.',
+    director: 'Prototype. It checks declared local facts on selected overlaps; it does not certify a whole project or remove judgement.',
     triangle: 'Later compatibility enquiry. Geometry and clearance values are illustrative; the checker tests declared rules, not AI capability or engineering design.',
-    primer: 'Reviewed teaching prototype. “Local truth” means a declared package fact in the toy model, not an independently verified fact.',
-    validator: 'Reviewed code demo. Sample data and red/amber/green thresholds are illustrative; exported reports describe only this toy dataset.',
+    primer: 'Teaching prototype. “Local truth” means a declared package fact in the toy model, not an independently verified fact.',
+    validator: 'Code demo. Sample data and red/amber/green thresholds are illustrative; exported reports describe only this toy dataset.',
     blueprint: 'Picture essay. The generated image is a mnemonic, not a mathematical diagram or proof.',
     navigation: 'Picture essay. The generated image is a prompt for thinking about scale, not a formal local-to-global model.'
   };
@@ -38,32 +38,31 @@
     const home = document.createElement('a');
     home.href = new URL('index.html', root).href;
     home.textContent = 'Local to Global';
-    const descriptor = document.createElement('span');
-    descriptor.textContent = 'Two lines of enquiry · separate variants and essays';
-    brand.append(home, descriptor);
+    const estate = document.createElement('div');
+    estate.className = 'ltg-site-nav__estate';
+    [['Projects', 'side-projects.html'], ['Library', 'library.html']].forEach(([label, path]) => {
+      const link = document.createElement('a');
+      link.href = new URL(path, 'https://lawrencerowland.github.io/').href;
+      link.textContent = label;
+      estate.appendChild(link);
+    });
+    brand.append(home, estate);
 
-    const groups = document.createElement('div');
-    groups.className = 'ltg-site-nav__groups';
-    const ai = document.createElement('div');
-    ai.className = 'ltg-site-nav__group';
-    const aiLabel = document.createElement('span');
-    aiLabel.className = 'ltg-site-nav__label';
-    aiLabel.textContent = '1 · AI interpretation';
-    const aiTabs = document.createElement('div');
-    aiTabs.className = 'ltg-site-nav__tabs';
+    const routes = document.createElement('div');
+    routes.className = 'ltg-site-nav__routes';
     const aiLink = document.createElement('a');
     aiLink.href = new URL('tangled-triangle/index.html', root).href;
-    aiLink.textContent = 'Tangled Triangle · six variants';
+    aiLink.textContent = '1 · AI interpretation';
     if (current === 'triangle-enquiry') aiLink.setAttribute('aria-current', 'page');
-    aiTabs.appendChild(aiLink);
-    ai.append(aiLabel, aiTabs);
+    if (current.startsWith('triangle-ai-')) aiLink.setAttribute('aria-current', 'location');
+    const compositionLink = document.createElement('a');
+    compositionLink.href = new URL('index.html#compatibility', root).href;
+    compositionLink.textContent = '2 · Compatibility & composition';
 
-    const composition = document.createElement('div');
-    composition.className = 'ltg-site-nav__group';
-    const compositionLabel = document.createElement('a');
-    compositionLabel.className = 'ltg-site-nav__label';
-    compositionLabel.href = new URL('index.html#compatibility', root).href;
-    compositionLabel.textContent = '2 · Compatibility & composition';
+    const contents = document.createElement('details');
+    contents.className = 'ltg-site-nav__contents';
+    const summary = document.createElement('summary');
+    summary.textContent = 'All seven essays';
     const tabs = document.createElement('div');
     tabs.className = 'ltg-site-nav__tabs';
     pages.forEach(([id, label, path]) => {
@@ -73,17 +72,24 @@
       if (id === current) link.setAttribute('aria-current', 'page');
       tabs.appendChild(link);
     });
+    contents.append(summary, tabs);
+    routes.append(aiLink, compositionLink, contents);
+    inner.append(brand, routes);
 
-    composition.append(compositionLabel, tabs);
-    groups.append(ai, composition);
-    inner.append(brand, groups);
+    const currentPage = pages.find(([id]) => id === current);
+    if (currentPage) {
+      const location = document.createElement('p');
+      location.className = 'ltg-site-nav__current';
+      location.textContent = 'Reading: ' + currentPage[1];
+      inner.appendChild(location);
+    }
     nav.appendChild(inner);
     document.body.prepend(nav);
 
     const note = document.createElement('p');
     note.className = 'ltg-review-note';
     const label = document.createElement('strong');
-    label.textContent = 'Status: ';
+    label.textContent = 'Scope: ';
     note.append(label, document.createTextNode(reviewNotes[current] || (current.startsWith('triangle-ai-') ? reviewNotes['triangle-enquiry'] : reviewNotes.home)));
     nav.insertAdjacentElement('afterend', note);
   }

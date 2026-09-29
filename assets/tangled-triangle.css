@@ -111,3 +111,9 @@ footer { padding: 26px 0 44px; border-top: 1px solid #d5cfbe; color: #637068; fo
   .overlap-grid article:last-child { border-bottom: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .candidate { transition: none; } }
+
+/* Reader guidance: no changes to the controls, candidate grid or model. */
+.first-guide{padding:18px 20px;margin:0 0 28px;border:1px solid #75938a;border-radius:4px;background:#204d41;font-size:.9rem;line-height:1.6}
+.first-guide summary{cursor:pointer;font-weight:700;color:#fff3dc}.first-guide ol{padding-left:22px;margin:14px 0}.first-guide li{margin:7px 0}.first-guide p{max-width:1060px;margin:12px 0 0}.first-guide a{color:#f4c997;text-underline-offset:3px}.first-guide a:focus-visible,.first-guide summary:focus-visible{outline:3px solid #efbd84;outline-offset:4px}
+.construction-notes{padding:0 0 54px}.construction-notes h2{font-size:clamp(2rem,3.5vw,3rem);line-height:1.12}.construction-note-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:30px;margin-top:26px}.construction-note-grid>div{border-top:1px solid #d5cfbe;padding-top:20px}.construction-note-grid h3{font-size:1.3rem;margin-bottom:12px}.construction-note-grid p{color:#536058;font-size:.93rem;line-height:1.65}
+@media(max-width:760px){.construction-note-grid{grid-template-columns:1fr;gap:12px}.first-guide{padding:15px}.first-guide ol{padding-left:18px}}
