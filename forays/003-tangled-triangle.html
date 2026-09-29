@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="The Tangled Triangle: an interactive local-to-global project compatibility essay.">
   <title>The Tangled Triangle · Local to Global</title>
-  <link rel="stylesheet" href="../assets/site.css?v=20260917">
-  <link rel="stylesheet" href="../assets/tangled-triangle.css?v=20260713">
-  <script defer src="../assets/site-nav.js?v=20260917"></script>
+  <link rel="stylesheet" href="../assets/site.css?v=20260929">
+  <link rel="stylesheet" href="../assets/tangled-triangle.css?v=20260929">
+  <script defer src="../assets/site-nav.js?v=20260929"></script>
   <script defer src="../assets/tangled-triangle.js?v=20260713"></script>
 </head>
 <body data-ltg-page="triangle">
@@ -28,6 +28,16 @@
     </section>
 
     <section class="lab" aria-labelledby="lab-title">
+      <details class="first-guide" id="first-try" open>
+        <summary>First try · Compare two sets of local rules</summary>
+        <ol>
+          <li>Press <strong>Balanced</strong>. Read <strong>91</strong> global candidates and a best minimum margin of <strong>+44 units</strong>.</li>
+          <li>Press <strong>No global fit</strong>. Now <strong>0</strong> samples pass. The selected strongest sample, <strong>(196, 456)</strong>, still has a <strong>Canal margin of −11 units</strong>.</li>
+          <li>Press <strong>Balanced</strong> again to restore the first comparison. Select another dot to inspect its five margins.</li>
+        </ol>
+        <p><strong>Interpretation:</strong> all five margins must be non-negative at the same sample. The preset changes several buffers; Canal identifies this selected point’s failure, not the sole cause of the whole result. Zero passing samples is not proof that every point between them is impossible.</p>
+        <p><a href="#construction-notes">Construction, named sources and limits</a> · <a href="../tangled-triangle/index.html">The separate early AI interpretation enquiry</a></p>
+      </details>
       <div class="lab-heading">
         <div><p class="eyebrow">Compatibility lab</p><h2 id="lab-title">Move the local boundaries</h2></div>
         <div class="preset-group" aria-label="Scenario presets">
@@ -95,7 +105,7 @@
           <dl id="margin-list">
             <div><dt>Road</dt><dd>—</dd></div><div><dt>Canal</dt><dd>—</dd></div><div><dt>Rail</dt><dd>—</dd></div><div><dt>Power</dt><dd>—</dd></div><div><dt>Mine</dt><dd>—</dd></div>
           </dl>
-          <p class="metric-note"><strong>M(x)</strong> is the smallest of the five margins. Positive means every declared local rule agrees at this sampled point; negative locates at least one obstruction.</p>
+          <p class="metric-note"><strong>M(x)</strong> is the smallest of the five margins. Non-negative means every declared local rule agrees at this sampled point; negative locates at least one obstruction.</p>
         </aside>
       </div>
     </section>
@@ -120,7 +130,16 @@
         <li><strong>Investigate.</strong> A failed patch names the boundary to revisit; it is not silently “resolved” by fluent synthesis.</li>
       </ol>
     </section>
+    <section class="construction-notes" id="construction-notes" aria-labelledby="construction-title">
+      <p class="eyebrow">From source question to this finite check</p>
+      <h2 id="construction-title">What is supplied, and what is computed?</h2>
+      <div class="construction-note-grid">
+        <div><h3>The source question</h3><p>Daniel Rosiak’s <em>Sheaf Theory through Examples</em> is part of the retained reading on local data, restriction to overlaps and gluing compatible sections. Choosing the cover and comparison maps matters; the vocabulary alone does not establish a sheaf.</p><p><a href="../SOURCES.md">Named sources, scenario provenance and the full interpretation</a></p></div>
+        <div><h3>The construction here</h3><p>The code supplies a triangular envelope, five illustrative exclusion rules and <strong>462 sampled locations</strong> on a 16-unit grid. For each point it computes five margins and takes their minimum, <strong>M(x)</strong>. A point passes when <strong>M(x) ≥ 0</strong>; the strongest sample maximises that minimum.</p><p><a href="../assets/tangled-triangle.js">Read the implemented rules and presets</a></p></div>
+        <div><h3>The boundary</h3><p>The result concerns this grid and these declared rules. It neither proves continuous infeasibility nor establishes the full sheaf condition of unique gluing. Geometry, units and buffers are illustrative; there is no site survey, engineering validation or measured AI performance here.</p><p>To compare package disagreements with missing information, continue to <a href="001-scope-coherence.html">Essay 001: Scope coherence</a>.</p></div>
+      </div>
+    </section>
   </main>
-  <footer>Adapted from the Tangled Triangle one-shot project and system architecture scenario. <a href="../SOURCES.md">Sources and limits</a>.</footer>
+  <footer>Adapted from the Tangled Triangle one-shot project and system architecture scenario. <a href="../SOURCES.md">Sources and limits</a>.<br><a href="../index.html">Local to Global home</a> · <a href="../tangled-triangle/index.html">Early AI interpretations</a> · <a href="https://lawrencerowland.github.io/side-projects.html">Projects</a> · <a href="https://lawrencerowland.github.io/library.html">Library</a>.</footer>
 </body>
 </html>

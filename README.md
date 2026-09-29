@@ -27,6 +27,12 @@ On 2026-09-06, Lawrence retired Essay 005, Infrastructure PMO, because its examp
 
 Essay 003 reuses the Tangled Triangle brief as a toy local-to-global compatibility problem: local constraints are declared independently, overlaps are checked explicitly, and a global candidate exists only when all selected restrictions agree. The early collection and this later essay link reciprocally so their distinct questions remain visible.
 
+## First visits
+
+The entrance keeps the two enquiries separate. For the early interpretation work, open the fixed sketch from the [six-variant hub](tangled-triangle/index.html) and compare Plan View with Section View.
+
+For the later question, [Essay 003’s first-try guide](forays/003-tangled-triangle.html#first-try) compares Balanced → No global fit → Balanced. The sampled-grid result is 91 passing candidates → 0 → 91. Inspect the selected point’s margins; the preset changes several rules, so its one failing margin is a candidate diagnosis, not a claim about the sole cause of the whole result. Construction, named sources and limits follow the lab. Projects and Library remain available in shared navigation; the complete seven-essay list is in its disclosure.
+
 ## Epistemic discipline
 
 - “Local truth” means a declared fact inside a prototype, not an independently verified fact.
@@ -42,5 +48,7 @@ This repository is a static GitHub Pages site. Open `index.html` through a local
 Public site: <https://lawrencerowland.github.io/local-to-global/>
 
 See [SOURCES.md](SOURCES.md) for the public source trail and limits.
+
+Reader-journey checks: `node tests/reader-journey.cjs` executes the actual Triangle preset handlers and verifies the first comparison.
 
 Migration checks: `node tests/tangled-triangle-migration.cjs` verifies the six imported variants, unchanged inline behavior scripts, controls and local navigation; `node tests/architecture-repairs.cjs` checks the topology slider event order. See [the migration note](docs/2026-09-17-tangled-triangle-move.md).

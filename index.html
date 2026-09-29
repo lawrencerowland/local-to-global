@@ -3,145 +3,76 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Two related enquiries: AI interpretation of the Tangled Triangle's interfaces and architecture, and local-to-global compatibility and composition.">
-  <title>Local to Global · Portfolio Wave foray</title>
-  <link rel="stylesheet" href="assets/site.css?v=20260917">
-  <script defer src="assets/site-nav.js?v=20260917"></script>
-  <style>
-    * { box-sizing: border-box; }
-    html { color-scheme: light; }
-    body {
-      margin: 0;
-      color: #17211c;
-      background:
-        radial-gradient(circle at 82% 3%, rgba(185, 107, 34, .12), transparent 28rem),
-        linear-gradient(180deg, #f5f0e3 0, #fbf8ef 28rem, #f3efe3 100%);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-    a { color: inherit; }
-    .hero, main, footer { width: min(1180px, calc(100% - 36px)); margin-inline: auto; }
-    .hero { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(270px, .65fr); gap: 44px; padding: 76px 0 54px; align-items: end; }
-    .eyebrow { margin: 0 0 12px; color: #205f50; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; font-size: .76rem; }
-    h1 { max-width: 760px; margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(3rem, 7vw, 6.6rem); font-weight: 400; line-height: .93; letter-spacing: -.055em; }
-    .dek { max-width: 720px; margin: 24px 0 0; color: #435148; font-size: clamp(1.05rem, 1.8vw, 1.35rem); line-height: 1.55; }
-    .question { margin: 0; padding: 24px 0 2px 24px; border-left: 3px solid #b96b22; font-family: Georgia, "Times New Roman", serif; font-size: 1.25rem; line-height: 1.55; }
-    .question small { display: block; margin-top: 10px; color: #637068; font: 700 .72rem/1.4 Inter, sans-serif; letter-spacing: .1em; text-transform: uppercase; }
-    main { padding-bottom: 80px; }
-    .enquiries { margin-bottom: 48px; }
-    .enquiry-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 22px; }
-    .enquiry { display: block; padding: 24px; border: 1px solid #d5cfbe; border-radius: 4px; background: #fbf8ef; text-decoration: none; }
-    .enquiry:hover, .enquiry:focus-visible { outline: 2px solid #205f50; }
-    .enquiry h3 { font: 500 1.65rem/1.15 Georgia, serif; margin: 14px 0; }
-    .enquiry p { color: #435148; line-height: 1.55; }
-    .enquiry strong { color: #205f50; }
-    .principles { display: grid; grid-template-columns: repeat(5, 1fr); border-block: 1px solid #d5cfbe; margin-bottom: 64px; }
-    .principle { padding: 20px 18px; border-right: 1px solid #d5cfbe; }
-    .principle:last-child { border-right: 0; }
-    .principle b { display: block; margin-bottom: 7px; font-family: Georgia, serif; font-size: 1.08rem; font-weight: 600; }
-    .principle span { color: #637068; font-size: .83rem; line-height: 1.45; }
-    .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; margin-bottom: 22px; }
-    h2 { margin: 0; font-family: Georgia, serif; font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 400; letter-spacing: -.035em; }
-    .section-head p { max-width: 530px; margin: 0; color: #637068; line-height: 1.5; }
-    .essay-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
-    .essay {
-      grid-column: span 4;
-      min-height: 290px;
-      display: flex;
-      flex-direction: column;
-      padding: 24px;
-      border: 1px solid #d5cfbe;
-      border-radius: 4px;
-      background: rgba(251, 248, 239, .82);
-      text-decoration: none;
-      transition: transform .16s ease, border-color .16s ease, background .16s ease;
-    }
-    .essay:hover, .essay:focus-visible { transform: translateY(-3px); border-color: #205f50; background: #fffdf7; outline: none; }
-    .essay.featured { grid-column: span 8; color: #f8f4e9; background: #173d34; border-color: #173d34; }
-    .essay.featured:hover, .essay.featured:focus-visible { background: #205f50; }
-    .essay.picture { padding: 0; overflow: hidden; }
-    .essay.picture img { width: 100%; height: 210px; object-fit: cover; object-position: center 30%; filter: saturate(.84) contrast(.98); }
-    .essay.picture .essay-copy { padding: 20px 22px 23px; }
-    .number { color: #b96b22; font-size: .72rem; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
-    .featured .number { color: #f2b16f; }
-    .essay h3 { margin: 18px 0 10px; font-family: Georgia, serif; font-size: 1.6rem; font-weight: 500; line-height: 1.08; }
-    .essay p { margin: 0; color: #637068; line-height: 1.55; font-size: .92rem; }
-    .featured p { max-width: 650px; color: #dce9e3; font-size: 1.03rem; }
-    .essay .verb { margin-top: auto; padding-top: 28px; color: #205f50; font-weight: 800; font-size: .82rem; }
-    .featured .verb { color: #f2c18e; }
-    footer { padding: 28px 0 44px; border-top: 1px solid #d5cfbe; color: #637068; font-size: .82rem; line-height: 1.55; }
-    @media (max-width: 900px) {
-      .hero { grid-template-columns: 1fr; gap: 28px; padding-top: 54px; }
-      .question { max-width: 650px; }
-      .principles { grid-template-columns: repeat(2, 1fr); }
-      .principle { border-bottom: 1px solid #d5cfbe; }
-      .essay, .essay.featured { grid-column: span 6; }
-    }
-    @media (max-width: 620px) {
-      .hero, main, footer { width: min(100% - 24px, 1180px); }
-      h1 { font-size: clamp(3rem, 17vw, 4.8rem); }
-      .principles { grid-template-columns: 1fr; }
-      .principle { border-right: 0; }
-      .section-head { display: block; }
-      .section-head p { margin-top: 10px; }
-      .enquiry-grid { grid-template-columns: 1fr; }
-      .essay, .essay.featured { grid-column: 1 / -1; min-height: 250px; }
-    }
-    @media (prefers-reduced-motion: reduce) { .essay { transition: none; } }
-  </style>
-<style>
-/* Scenario-first orientation: scoped to avoid changing the models below. */
-.pw-scenario{box-sizing:border-box;display:grid;grid-template-columns:minmax(150px,240px) minmax(0,1fr);gap:clamp(18px,3vw,32px);align-items:center;width:100%;max-width:1100px;margin:24px auto;padding:clamp(18px,3vw,28px);background:#f3f0e6;color:#203e3b;border:1px solid #d5dacf;border-radius:16px;text-align:left;font-family:system-ui,sans-serif;line-height:1.55}
-.pw-scenario figure{margin:0;min-width:0}.pw-scenario img{display:block;width:100%;height:210px;object-fit:contain;border-radius:8px;background:#f9f7ef}.pw-scenario figcaption{font-size:11px;line-height:1.4;color:#52665e;margin-top:8px}.pw-scenario .pw-kicker{font-size:11px;letter-spacing:.11em;text-transform:uppercase;font-weight:700;color:#476f62;margin:0 0 8px}.pw-scenario h2{font-size:clamp(21px,2.7vw,30px);line-height:1.2;letter-spacing:-.025em;margin:0 0 12px;color:#203e3b;max-width:none}.pw-scenario p{font-size:15px;line-height:1.6;max-width:none;margin:0 0 12px;color:#304b44}.pw-scenario .pw-question{font-weight:700;margin:0;color:#165c4c}
-@media(max-width:600px){.pw-scenario{grid-template-columns:1fr}.pw-scenario>div{grid-row:1}.pw-scenario img{height:165px}.pw-scenario figcaption{max-width:440px}.pw-scenario{margin:16px auto}}
-</style>
-<style>header.hero{display:block}header.hero .question{max-width:900px;margin-top:24px}header.hero{padding-top:32px;padding-bottom:24px}</style>
+  <meta name="description" content="One awkward site, two enquiries: early AI interpretations of interfaces and architecture, and later checks of whether declared local constraints agree.">
+  <title>Local to Global · One site, two enquiries</title>
+  <link rel="stylesheet" href="assets/site.css?v=20260929">
+  <link rel="stylesheet" href="assets/entrance.css">
+  <script defer src="assets/site-nav.js?v=20260929"></script>
 </head>
 <body data-ltg-page="home">
+  <a class="skip" href="#main">Skip to the two enquiries</a>
   <header class="hero">
-    <div>
-      <p class="eyebrow">Portfolio Wave · Foray 140</p>
-      <h1>Local to Global</h1>
-<section class="pw-scenario" aria-label="Scenario and motivating question">
-  <figure><img src="https://lawrencerowland.github.io/local-to-global/assets/scenarios/triangle.svg" alt="Schematic triangular control-centre site crossed by road, railway and canal" width="640" height="400" decoding="async"><figcaption>Simplified site emblem, not a surveyed layout. The variants expose the additional power-line and mine interfaces.</figcaption></figure>
-  <div><p class="pw-kicker">Toy scenario</p><h2>Fit a control centre onto the Tangled Triangle.</h2><p>A fictional triangular site is crossed by a canal, road, railway viaduct, overhead power line and mine passage. Each team sees different constraints. Early sketches ask how AI interprets that brief; later models ask whether the declared local constraints leave any compatible overall solution.</p><p class="pw-question">Can locally sensible proposals agree at their shared boundaries?</p></div>
-</section>
-
-      <p class="dek">Two connected lines of enquiry: how AI interprets a project's interfaces and architecture, and when local accounts can compose into a coherent global view. The Tangled Triangle connects them while keeping their questions distinct.</p>
-    </div>
-    <p class="question">Can scope, state, schedule or risk be represented so that a project-wide view is composed from local data without erasing the disagreements at its boundaries?<small>The main foray question</small></p>
+    <p class="eyebrow">Foray 140 · Independent project experiments</p>
+    <h1>Local to Global</h1>
+    <p class="dek">A control centre must fit onto the Tangled Triangle: a fictional site crossed by a canal, road, railway viaduct, overhead power line and old mine passage. Different accounts of the same place raise two different questions.</p>
   </header>
-
-  <main>
-    <section class="enquiries" aria-labelledby="enquiries-title">
-      <h2 id="enquiries-title">Two lines of enquiry</h2>
-      <div class="enquiry-grid">
-        <a class="enquiry" href="tangled-triangle/index.html">
-          <span class="number">1 · Early Tangled Triangle work</span>
-          <h3>AI interpretation of interfaces, topology and system architecture</h3>
-          <p>Six distinct variants make interpretations of one fictional brief available for inspection: fixed sketches, adjustable geometry, topology, architecture options and an interface register. This is exploratory material, not an empirical AI benchmark or engineering proof.</p>
-          <strong>Explore the six Tangled Triangle variants →</strong>
-        </a>
-        <a class="enquiry" href="#compatibility">
-          <span class="number">2 · Later local-to-global work</span>
-          <h3>Compatibility and composition</h3>
-          <p>Separate essays ask when declared local facts and constraints agree across interfaces. Essay 003 reuses the Triangle as a finite compatibility model; the wider collection explores scope, direction and validation.</p>
-          <strong>Explore the compatibility essays →</strong>
-        </a>
-      </div>
+  <main id="main">
+    <section class="enquiries" id="enquiries-title" aria-label="Two lines of enquiry">
+      <article class="enquiry">
+        <div class="enquiry-heading">
+          <p class="eyebrow">Early enquiry · Six distinct variants</p>
+          <h2>How has AI interpreted the brief?</h2>
+          <a class="button" href="tangled-triangle/index.html">Explore the early interpretations <span aria-hidden="true">→</span></a>
+        </div>
+        <figure><a class="picture-link" href="tangled-triangle/index.html"><img src="assets/scenarios/triangle.svg" alt="Schematic triangular control-centre site crossed by road, railway and canal" width="640" height="400" decoding="async"></a><figcaption>Site emblem, not a surveyed layout. The variants also expose the power-line and mine interfaces.</figcaption></figure>
+        <div class="enquiry-copy">
+          <p>Inspect the interfaces, topology and system architecture implied by sketches, sections and arrangements. Notice what each interpretation makes visible, assumes or omits.</p>
+          <p class="first-cue"><strong>First look:</strong> switch the fixed sketch from <strong>Plan View</strong> to <strong>Section View</strong>. Compare the overhead line, raised railway and mine below ground.</p>
+          <p class="boundary">These are exploratory interpretations, not a ranked sequence, measured AI benchmark or engineering proof.</p>
+        </div>
+      </article>
+      <article class="enquiry">
+        <div class="enquiry-heading">
+          <p class="eyebrow">Later enquiry · Seven separate essays</p>
+          <h2>Can the declared local rules agree?</h2>
+          <a class="button" href="forays/003-tangled-triangle.html#first-try">Try the compatibility lab <span aria-hidden="true">→</span></a>
+        </div>
+        <figure><a class="picture-link" href="forays/003-tangled-triangle.html#first-try"><img class="mnemonic" src="assets/images/local-tasks-to-global-coherence.png" alt="Existing illustrated blueprint connecting local project tasks to global coherence" width="640" height="400" decoding="async"></a><figcaption>A mnemonic for the later enquiry. The illustration is not the checker or evidence for its result.</figcaption></figure>
+        <div class="enquiry-copy">
+          <p>Keep each local account useful, then make its shared boundaries explicit. The Triangle compatibility lab tests five exclusion rules against the same candidate locations.</p>
+          <p class="first-cue"><strong>First try:</strong> compare <strong>Balanced</strong> with <strong>No global fit</strong>. Read why the strongest sampled candidate still fails a rule, then restore Balanced.</p>
+          <p class="boundary">A finite declared-rule check. It does not assess AI understanding, prove a whole sheaf construction or establish a real site's feasibility.</p>
+          <a class="secondary-link" href="#compatibility">Browse all seven compatibility essays</a>
+        </div>
+      </article>
     </section>
 
-    <section class="principles" aria-label="Working principles">
-      <div class="principle"><b>Local first</b><span>Keep each team’s own useful view before attempting composition.</span></div>
-      <div class="principle"><b>Overlaps explicit</b><span>Say which facts must agree across which interfaces.</span></div>
-      <div class="principle"><b>Failure is evidence</b><span>A mismatch can locate an obstruction rather than merely create a red light.</span></div>
-      <div class="principle"><b>Checker, not oracle</b><span>Let language models propose structure; let declared rules judge compatibility.</span></div>
-      <div class="principle"><b>Plural essays</b><span>Hold several concrete attempts apart until later integration is earned.</span></div>
+    <section class="first-reading" aria-labelledby="reading-title">
+      <div><p class="eyebrow">Reading the first result</p><h2 id="reading-title">A failed candidate can tell you where to look.</h2></div>
+      <div><p>The balanced Triangle rules admit <strong>91 of 462 sampled locations</strong>. The <strong>No global fit</strong> preset admits none. At the strongest remaining sample, the canal margin is <strong>−11 units</strong>: that location fails one of the five rules.</p><p class="boundary">The preset changes several buffers. That candidate diagnosis does not attribute the whole loss of candidates to the canal alone. Zero passing grid points also does not establish that every point between samples is impossible.</p></div>
+    </section>
+
+    <section class="construction" id="construction" aria-labelledby="construction-title">
+      <p class="eyebrow">From idea to check</p>
+      <h2 id="construction-title">Make agreement inspectable.</h2>
+      <div class="construction-grid">
+        <article><h3>Source idea</h3><p>Daniel Rosiak’s <em>Sheaf Theory through Examples</em>, named in the source trail, provides the formal questions about local accounts, restriction to overlaps and gluing compatible sections. Choosing the parts and comparison maps is itself a modelling decision.</p><p><a href="SOURCES.md">Read the retained sources and interpretation</a></p></article>
+        <article><h3>Executable construction</h3><p>In Essay 003, each candidate receives five signed margins. It passes exactly when every declared margin is non-negative. In Essay 001, six explicit interface rules compare fictional package fields and separate conflicts from missing information.</p><p class="formula">M(x) = min(m₁(x), …, m₅(x))<br>sample passes when M(x) ≥ 0</p></article>
+        <article><h3>What the result leaves open</h3><p>A compatible sample is a candidate under supplied rules. It supplies neither a survey nor an engineering assessment. The finite checks do not establish the stronger sheaf condition of unique gluing.</p><p><a href="forays/003-tangled-triangle.html#construction-notes">Read the Triangle’s construction and limits</a></p></article>
+      </div>
+      <details class="principles"><summary>Working principles across the later essays</summary><ul>
+        <li><strong>Local first.</strong> Keep each team’s own useful view before attempting composition.</li>
+        <li><strong>Overlaps explicit.</strong> Say which facts must agree across which interfaces.</li>
+        <li><strong>Failure is evidence.</strong> A mismatch can locate an obstruction rather than merely create a red light.</li>
+        <li><strong>Checker, not oracle.</strong> Language models may propose structure; declared rules judge compatibility.</li>
+        <li><strong>Plural essays.</strong> Hold concrete attempts apart until integration is earned.</li>
+      </ul></details>
     </section>
 
     <section id="compatibility" aria-labelledby="essays-title">
       <div class="section-head">
-        <h2 id="essays-title">Compatibility and composition</h2>
-        <p>The later enquiry: each essay keeps a clear example in view. Together they form a workbench, not a claim that one settled formalism already fits every project problem.</p>
+        <div><p class="eyebrow">The later enquiry</p><h2 id="essays-title">All seven compatibility essays</h2></div>
+        <p>Scope, state, schedule and risk pose different modelling questions. These remain separate attempts, with stable essay numbers—not one settled formalism for every project. For a second hands-on example, try <strong>Scope coherence</strong> and distinguish a resolved interface from a fully reconciled set.</p>
       </div>
       <div class="essay-grid">
         <a class="essay" href="forays/001-scope-coherence.html">
@@ -154,7 +85,7 @@
         </a>
         <a class="essay featured" href="forays/003-tangled-triangle.html">
           <span class="number">Essay 03 · later compatibility enquiry</span><h3>The Tangled Triangle</h3>
-          <p>Five local constraint views meet on one awkward site. Explore whether any candidate location satisfies all of them, and see exactly which interface removes the global solution.</p><span class="verb">Explore the triangle →</span>
+          <p>Five local constraint views meet on one awkward site. Explore whether any candidate location satisfies all of them, and inspect which rules reject a selected candidate.</p><span class="verb">Explore the triangle →</span>
         </a>
         <a class="essay" href="forays/004-director-primer.html">
           <span class="number">Essay 04 · primer</span><h3>A director’s primer</h3>
@@ -175,6 +106,6 @@
       </div>
     </section>
   </main>
-  <footer>Foray 140 is exploratory Portfolio Wave work. It separates formal inspiration, toy implementations and empirical claims so they can be tested before being integrated.</footer>
+  <footer><p>Lawrence Rowland · Independent project experiments<br>Foray 140 keeps early AI interpretation and later compatibility checks distinct.</p><nav aria-label="Estate and sources"><a href="https://lawrencerowland.github.io/side-projects.html">Projects</a><a href="https://lawrencerowland.github.io/library.html">Library</a><a href="SOURCES.md">Sources and limits</a><a href="https://github.com/lawrencerowland/local-to-global">Source repository</a></nav></footer>
 </body>
 </html>

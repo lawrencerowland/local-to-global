@@ -83,9 +83,9 @@ class Element {
   insertAdjacentElement(position, element) { this.after = element; }
 }
 function descendants(element) { return [element, ...element.children.flatMap(descendants)]; }
-for (const current of ['home', 'triangle-enquiry', 'triangle-ai-1', 'triangle-ai-6', 'triangle', 'validator']) {
+for (const current of ['home', 'triangle-enquiry', 'triangle-ai-1', 'triangle-ai-6', 'scope', 'director', 'triangle', 'primer', 'validator', 'blueprint', 'navigation']) {
   const body = new Element('body'); body.dataset = {ltgPage: current};
-  const document = {body, readyState: 'complete', currentScript: {src: 'https://example.test/local-to-global/assets/site-nav.js?v=20260917'},
+  const document = {body, readyState: 'complete', currentScript: {src: 'https://example.test/local-to-global/assets/site-nav.js?v=20260929'},
     createElement: tag => new Element(tag), createTextNode: text => ({textContent: text, children: []})};
   vm.runInNewContext(read('assets/site-nav.js'), {document, URL});
   const nav = body.children[0];
@@ -96,8 +96,15 @@ for (const current of ['home', 'triangle-enquiry', 'triangle-ai-1', 'triangle-ai
   const links = nodes.filter(node => node.tagName === 'a');
   assert.ok(links.some(link => link.href === 'https://example.test/local-to-global/tangled-triangle/index.html'));
   assert.ok(links.some(link => link.href === 'https://example.test/local-to-global/forays/003-tangled-triangle.html'));
+  const disclosure = nodes.find(node => node.tagName === 'details');
+  assert.ok(disclosure, 'The complete essay list remains available in a native disclosure');
+  assert.equal(descendants(disclosure).filter(node => node.tagName === 'a').length, 7);
+  assert.ok(nodes.some(node => node.tagName === 'summary' && node.textContent === 'All seven essays'));
+  for (const route of ['side-projects.html', 'library.html']) {
+    assert.ok(links.some(link => link.href === `https://lawrencerowland.github.io/${route}`));
+  }
   const active = links.filter(link => link.attributes['aria-current'] === 'page');
-  assert.equal(active.length, ['triangle-enquiry', 'triangle', 'validator'].includes(current) ? 1 : 0);
+  assert.equal(active.length, ['triangle-enquiry', 'scope', 'director', 'triangle', 'primer', 'validator', 'blueprint', 'navigation'].includes(current) ? 1 : 0);
   if (current.startsWith('triangle-ai-')) assert.match(nav.after.children[1].textContent, /not an empirical AI benchmark/);
 }
-console.log(`PASS: six variants, ${scriptCount} preserved behavior scripts, controls, reciprocal routes, ${links} local links/assets across ${htmlFiles.length} pages, and six navigation contexts.`);
+console.log(`PASS: six variants, ${scriptCount} preserved behavior scripts, controls, reciprocal routes, ${links} local links/assets across ${htmlFiles.length} pages, and eleven compact-navigation contexts.`);
